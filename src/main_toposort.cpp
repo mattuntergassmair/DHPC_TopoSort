@@ -11,6 +11,7 @@ int main() {
 	testgraph_paper.topSort();
 
 	testgraph_paper.printNodeInfo();
+	testgraph_paper.viz("paper");
 
 	return 0;
 

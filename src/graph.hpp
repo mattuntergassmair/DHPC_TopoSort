@@ -30,6 +30,8 @@ class DirGraph {
 		void topSort();
 		void connect(unsigned);
 
+		void viz(std::string) const;
+
 		inline Node* getNextNode(); // TODO: Kevin
 
 

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <cassert>
 
 #include "node.hpp"
 
@@ -18,7 +19,8 @@ class Node {
 		Node(index_type id)
 			: id_(id)
 			, v_(1) // value = 1 by default
-			, childnodes_(nodecontainer_type(0))
+			, childcount_(0)
+			, childnodes_(nodecontainer_type(childcount_))
 		{
 			// NOTE: value = 1 indicates that a node is a source node
 			// (no other nodes pointing to it)
@@ -39,12 +41,20 @@ class Node {
 			v_ = r;
 		}
 
-		inline bool getChild() const;
+		inline Node* getChild(index_type i) {
+			assert(i<childcount_);
+			return childnodes_[i];
+		}
+
+		inline unsigned getChildCount() const {
+			return childcount_;
+		}
 
 
 	private:
 
 		const index_type id_;
+		unsigned childcount_;
 		value_type v_;
 		nodecontainer_type childnodes_;
 
