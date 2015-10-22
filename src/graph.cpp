@@ -2,10 +2,32 @@
 #include <cassert>
 #include <string>
 #include <cstdio>
+#include <list>
 
 void DirGraph::topSort() {
+	
 	// Sorting Magic happens here
-	// TODO: Johannes
+	std::list<Node*> currentnodes;
+	for(unsigned i=0; i<N_; ++i) {
+		if(nodes_[i]->getValue() == 1) currentnodes.push_back(nodes_[i]);
+	}
+	Node* parent;
+	Node* child;
+	unsigned childcount = 0;
+	unsigned currentvalue = 0;
+	
+	while(!currentnodes.empty()) { // stop when queue is empty
+		parent = currentnodes.front();
+		currentnodes.pop_front(); // remove current node - already visited
+		currentvalue = parent->getValue();
+		++currentvalue; // increase value for child nodes
+		childcount = parent->getChildCount();
+		for(unsigned i=0; i<childcount; ++i) {
+			child = parent->getChild(i);
+			currentnodes.push_back(child); // add child node at end of queue
+			child->setValue(currentvalue); // set value of child node to parentvalue+1
+		}
+	}
 	
 }
 
