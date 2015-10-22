@@ -1,7 +1,8 @@
 COMPILER = g++
 FLAGS = -O0
 
-GRAPHSRC_FILES := $(wildcard *.gv)
+GRAPH_DIR := graph_output
+GRAPHSRC_FILES := $(wildcard $(GRAPH_DIR)/*.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 
@@ -26,7 +27,7 @@ run: toposort.exe
 	./toposort.exe
 
 viz: $(GRAPHIMG_FILES)
-	display *.png;
+	display $(GRAPH_DIR)/*.png;
 
 %.png: %.gv
 	# circo -Tpng $< -o $@
