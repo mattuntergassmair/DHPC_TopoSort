@@ -7,14 +7,17 @@ GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 all: toposort.exe
 
-toposort.exe: main_toposort.o graph.o node.o
-	$(COMPILER) $(FLAGS) main_toposort.o graph.o node.o -o toposort.exe
+toposort.exe: main_toposort.o graph.o graphdoc.o node.o
+	$(COMPILER) $(FLAGS) main_toposort.o graph.o graphdoc.o node.o -o toposort.exe
 
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c main_toposort.cpp
 
 graph.o: graph.cpp graph.hpp
 	$(COMPILER) $(FLAGS) -c graph.cpp
+
+graphdoc.o: graphdoc.cpp graph.hpp
+	$(COMPILER) $(FLAGS) -c graphdoc.cpp
 
 node.o: node.cpp node.hpp
 	$(COMPILER) $(FLAGS) -c node.cpp
