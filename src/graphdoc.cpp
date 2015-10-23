@@ -5,6 +5,14 @@
 #include <cstdio>
 #include <list>
 
+#ifndef CMAKE_SOURCE_DIR
+#define CMAKE_SOURCE_DIR ""
+#endif
+
+#ifndef DS
+#define DS "/"
+#endif
+
 // Print Node Info to console
 void DirGraph::printNodeInfo() {
 	for(unsigned i=0; i<N_; ++i) {
