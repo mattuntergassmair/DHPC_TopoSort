@@ -9,10 +9,6 @@
 #define CMAKE_SOURCE_DIR ""
 #endif
 
-#ifndef DS
-#define DS "/"
-#endif
-
 // Print Node Info to console
 void DirGraph::printNodeInfo() {
 	for(unsigned i=0; i<N_; ++i) {
@@ -26,7 +22,7 @@ void DirGraph::viz(std::string graphfilename) const {
 	graphfilename.append(".gv");
 
 	FILE* outfile_ptr;
-	std::string path = std::string(CMAKE_SOURCE_DIR) + std::string(DS) + "graph_output" + std::string(DS) + graphfilename;
+	std::string path = std::string(CMAKE_SOURCE_DIR) + "/graph_output/" + graphfilename;
 	outfile_ptr = fopen(path.c_str(),"w");
 	if(outfile_ptr != NULL){
 		fprintf(outfile_ptr,"# Visualization of Graph %s, size=%u\n\n",path.c_str(),N_);
