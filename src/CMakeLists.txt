@@ -7,7 +7,7 @@ if(!WIN32)
 
 # Manually set CXX Flags
 set(CXX_FLAGS
-    "-DNDEBUG -O3"
+    "-std=c++11"
     CACHE STRING
     "Additional CXX-Compiler flags. Use Build Type None if you want to have full control over the flags."
 )

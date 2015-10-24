@@ -1,5 +1,5 @@
 COMPILER = g++
-FLAGS = -O0
+FLAGS = -O0 -std=c++11
 
 GRAPH_DIR := graph_output
 GRAPHSRC_FILES := $(wildcard $(GRAPH_DIR)/*.gv)
