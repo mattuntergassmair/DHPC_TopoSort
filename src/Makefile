@@ -1,5 +1,5 @@
 COMPILER = g++
-FLAGS = -O0
+FLAGS = -std=c++11 -O0
 
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)

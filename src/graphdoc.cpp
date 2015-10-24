@@ -3,7 +3,11 @@
 #include <cassert>
 #include <string>
 #include <cstdio>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <list>
+#include <algorithm>
 
 // Print Node Info to console
 void DirGraph::printNodeInfo() {
@@ -27,8 +31,26 @@ void DirGraph::viz(std::string graphfilename) const {
 	fprintf(outfile_ptr,"\n\t#TITLE\n\tlabelloc=\"t\";\n\tlabel=\"type=%s, size=%u;\"\n",graphfilename.c_str(),N_);
 	
 	fprintf(outfile_ptr,"\n\t# NODES\n");
+	unsigned maxv;
 	for(unsigned n=0; n<N_; ++n) {
-		fprintf(outfile_ptr,"\tN%02u [ color=\"#000000\", fillcolor=\"%s\", shape=\"circle\", style=\"filled,solid\" ];\n",n,"#66ffcc"); // TODO: calculate color based on value
+		unsigned v = nodes_[n]->getValue();
+		maxv = std::max(v,maxv);
+	}
+	std::cout << "maxv = " << maxv;
+
+	// Constructing color string for node
+	std::stringstream stream;
+
+	for(unsigned n=0; n<N_; ++n) {
+		unsigned v = nodes_[n]->getValue();
+		stream << "#";
+		stream << std::setfill ('0') << std::setw(2) << std::hex << unsigned((250.*v)/maxv);
+		stream << std::setfill ('0') << std::setw(2) << std::hex << unsigned((250.*v)/maxv);
+		stream << std::setfill ('0') << std::setw(2) << std::hex << unsigned((250.*v)/maxv);
+		std::string color( stream.str() );
+		stream.str(std::string()); // clear string stream
+		std::cout << "\n" << color;
+		fprintf(outfile_ptr,"\tN%02u [ color=\"#000000\", fillcolor=\"%s\", shape=\"circle\", style=\"filled,solid\" ];\n",n,color.c_str());
 	}
 
 	fprintf(outfile_ptr,"\n\t# EDGES\n");

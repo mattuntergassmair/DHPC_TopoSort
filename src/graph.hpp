@@ -32,8 +32,6 @@ class DirGraph {
 
 		void viz(std::string) const;
 
-		inline Node* getNextNode(); // TODO: Kevin
-
 
 	private:
 
