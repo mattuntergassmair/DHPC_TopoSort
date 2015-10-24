@@ -29,3 +29,6 @@
 
 # VIM swap files
 *.swp
+
+# Graph files
+*.gv

@@ -11,7 +11,7 @@ class DirGraph {
 
 	public:
 
-		enum GRAPH_TYPE {PAPER};
+		enum GRAPH_TYPE {PAPER, RANDOM_EDGES};
 
 		typedef std::vector<Node*> nodearray_type; // TODO: what is the best data structure here?
 

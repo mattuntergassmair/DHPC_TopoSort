@@ -28,6 +28,7 @@ class Node {
 		}
 
 		void addChild(Node& child);
+		bool hasChild(Node& childCandidate);
 
 		inline value_type getValue() const {
 			return v_;

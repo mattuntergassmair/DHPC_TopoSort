@@ -1,10 +1,10 @@
-# Visualization of Graph paper.gv, size=9
+# Visualization of Graph /home/kevin/Documents/ETH/2015_DesignOfParallelAndHPC/project/src/paper.gv, size=9
 
 digraph g {
 
 	#TITLE
 	labelloc="t";
-	label="type=paper.gv, size=9;"
+	label="type=/home/kevin/Documents/ETH/2015_DesignOfParallelAndHPC/project/src/paper.gv, size=9;"
 
 	# NODES
 	N00 [ color="#000000", fillcolor="#66ffcc", shape="circle", style="filled,solid" ];

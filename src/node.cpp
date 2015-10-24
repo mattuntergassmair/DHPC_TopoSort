@@ -9,3 +9,11 @@ void Node::addChild(Node& child) {
 	++childcount_;
 	child.setValue(0); // set value to 0 - child is not a root anymore
 }
+
+bool Node::hasChild(Node& childCandidate) {
+	for(auto child : childnodes_) {
+		if(child == &childCandidate)
+			return true;
+	}
+	return false;
+}
