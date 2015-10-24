@@ -10,7 +10,7 @@
 #include <algorithm>
 
 #ifndef CMAKE_SOURCE_DIR
-#define CMAKE_SOURCE_DIR ""
+#define CMAKE_SOURCE_DIR "."
 #endif
 
 // Print Node Info to console
@@ -27,7 +27,7 @@ void DirGraph::viz(std::string graphfilename) const {
 
 	FILE* outfile_ptr;
 	
-	std::string path = "." + std::string(CMAKE_SOURCE_DIR) + "/graph_output/" + graphfilename;
+	std::string path = std::string(CMAKE_SOURCE_DIR) + "/graph_output/" + graphfilename;
 	outfile_ptr = fopen(path.c_str(),"w");
 	if(outfile_ptr != NULL) {
 		fprintf(outfile_ptr,"# Visualization of Graph %s, size=%u\n\n",path.c_str(),N_);
