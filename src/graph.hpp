@@ -31,9 +31,8 @@ class DirGraph {
 		void printNodeInfo();
 
 		void topSort();
-		void connect(unsigned);
-		bool checkCorrect();
-
+		void connect(unsigned, double edgeFillDegree = .3);
+        bool checkCorrect();
 		void viz(std::string) const;
 
 

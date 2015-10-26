@@ -40,7 +40,7 @@ void DirGraph::topSort() {
 
 }
 
-void DirGraph::connect(unsigned type) {
+void DirGraph::connect(unsigned type, double edgeFillDegree) {
 	
 	std::cout << "\nConnection Mode:\t";
 
@@ -64,9 +64,10 @@ void DirGraph::connect(unsigned type) {
 			break;
 
 		case RANDOM_EDGES:
-			{
+		{
+			assert(edgeFillDegree > 0. && edgeFillDegree <= 1.);
 			// Specify (roughly) number of edges
-			const int nEdges = N_ * (N_ - 1) / 3; //TODO: Somehow make the desired number of edges accessible from outside
+			const int nEdges = N_ * (N_ - 1) * 0.5 * edgeFillDegree;
 			int nEffectiveEdges = 0;
 
 			// Create random order of nodes
@@ -80,7 +81,7 @@ void DirGraph::connect(unsigned type) {
 			const int seed = 42;
 			std::mt19937 gen(seed);
 			std::uniform_int_distribution<DirGraph::nodearray_type::size_type> dis(0, N_-1);
-		    auto rnd = std::bind(dis, gen);
+			auto rnd = std::bind(dis, gen);
 
 			for(DirGraph::nodearray_type::size_type i = 0; i < nEdges; i++){
 				auto rn0 = rnd();
@@ -104,9 +105,10 @@ void DirGraph::connect(unsigned type) {
 			}
 			std::cout << "Created Graph with " << nEffectiveEdges << " edges." << std::endl;
 			break;
-			}
+		}
+
 		default:
-            std::cout << "\nERROR:\tInvalid connection index - no connections added\n";
+			std::cout << "\nERROR:\tInvalid connection index - no connections added\n";
 
 	}
 

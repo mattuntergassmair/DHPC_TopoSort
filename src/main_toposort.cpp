@@ -17,7 +17,7 @@ int main() {
 	// Initializing graph with random edges
 	unsigned const N = 20;
 	DirGraph testgraph_random(N);
-	testgraph_random.connect(DirGraph::RANDOM_EDGES); // Constructing graph from paper
+	testgraph_random.connect(DirGraph::RANDOM_EDGES, 0.05); // Constructing graph from paper
 	testgraph_random.topSort();
 	testgraph_random.checkCorrect();
 	testgraph_random.printNodeInfo();
