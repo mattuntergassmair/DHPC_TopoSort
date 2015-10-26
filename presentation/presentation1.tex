@@ -1,0 +1,114 @@
+\input{./beamerheader.sty}
+
+\author[]{Kevin Wallimann \quad Johannes Baum \quad Matthias Untergassmair}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Topological Sorting]{Parallel Topological Sorting} % The short title appears at the bottom of every slide, the full title is only on the title page
+\subtitle{Design of High Performance Computing, Fall 2015}
+
+\institute[ETHZ] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ETH Zürich \\ % Your institution for the title page
+\medskip
+\textit{untergam@student.ethz.ch} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Topic}
+%------------------------------------------------
+
+\subsection{Problem Description}
+% TODO: Johannes
+
+\begin{frame}
+\frametitle{Problem Description}
+
+\begin{description}
+	\item[Input] Directed acyclic graph (DAG) with $N$ nodes
+	\item[Output] Topological Sortings of DAG
+\end{description}
+
+\end{frame}
+
+
+
+
+%------------------------------------------------
+\subsection{Related Work}
+%------------------------------------------------
+
+% TODO: Johannes
+\begin{frame}
+\frametitle{"Efficient" Parallel and Distributed Topological Sort Algorithms}
+
+\begin{itemize}
+	\item Runtime: $\mathcal{O} (\log^2 N)$
+	\item Reduces to matrix-matrix multiplication problem
+\end{itemize}
+
+\begin{block}{Problem:}
+	$\mathcal{O} (N^3)$ execution units required
+\end{block}
+
+
+\end{frame}
+
+
+
+
+%------------------------------------------------
+\section{Serial Implementation}
+%------------------------------------------------
+% TODO: matthias (2min)
+% linked list of nodes
+
+\begin{frame}
+\end{frame}
+
+
+%------------------------------------------------
+\section{Parallelization}
+%------------------------------------------------
+% TODO: Kevin (3min)
+% Hardware/Tools - which cluster / MPI + OMP
+% Synchronization vs. Locks
+\begin{frame}
+
+\frametitle{Parallelization Ideas}
+\begin{itemize}
+	\item 
+\end{itemize}<++>
+\end{frame}
+
+\begin{frame}
+\frametitle{Challenges}
+\begin{itemize}
+	\item Task/Load balancing
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Questions}
+\begin{itemize}
+	\item Which platform?
+	\item Memory distribution?
+\end{itemize}
+\end{frame}
+
+
+\end{document} 
