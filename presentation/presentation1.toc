@@ -1,7 +1,0 @@
-\beamer@endinputifotherversion {3.33pt}
-\select@language {english}
-\beamer@sectionintoc {1}{Topic}{2}{0}{1}
-\beamer@subsectionintoc {1}{1}{Problem Description}{2}{0}{1}
-\beamer@subsectionintoc {1}{2}{Related Work}{3}{0}{1}
-\beamer@sectionintoc {2}{Serial Implementation}{4}{0}{2}
-\beamer@sectionintoc {3}{Parallelization}{5}{0}{3}
