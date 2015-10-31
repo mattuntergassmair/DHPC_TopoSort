@@ -34,5 +34,8 @@
 *.gv
 
 # Tex files
+*.aux
+*.nav
+*.toc
 *.vrb
 *.log
