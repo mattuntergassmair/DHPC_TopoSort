@@ -51,13 +51,13 @@ void DirGraph::viz(std::string graphfilename) const {
 		for(unsigned n=0; n<N_; ++n) {
 			unsigned v = nodes_[n]->getValue();
 			stream << "#";
-			stream << std::setfill ('0') << std::setw(2) << std::hex << unsigned((250.*v)/maxv);
-			stream << std::setfill ('0') << std::setw(2) << std::hex << unsigned((250.*v)/maxv);
-			stream << std::setfill ('0') << std::setw(2) << std::hex << unsigned((250.*v)/maxv);
+			stream << std::setfill ('0') << std::setw(2) << std::hex << 0x00; // unsigned((250.*v)/maxv);
+			stream << std::setfill ('0') << std::setw(2) << std::hex << 0x00; // unsigned((250.*v)/maxv);
+			stream << std::setfill ('0') << std::setw(2) << std::hex << unsigned((30+(220.*v))/maxv);
 			std::string color( stream.str() );
 			stream.str(std::string()); // clear string stream
 			// std::cout << "\n" << color;
-			fprintf(outfile_ptr,"\tN%02u [ color=\"#000000\", fillcolor=\"%s\", shape=\"circle\", style=\"filled,solid\" ];\n",n,color.c_str());
+			fprintf(outfile_ptr,"\tN%02u [ color=\"#000000\", fillcolor=\"%s\", fontcolor=white, fontname=\"Courier:italic\", shape=\"circle\", style=\"filled,solid\" ];\n",n,color.c_str());
 		}
 
 		fprintf(outfile_ptr,"\n\t# EDGES\n");
