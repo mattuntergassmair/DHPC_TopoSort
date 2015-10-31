@@ -99,20 +99,70 @@ while(!currentnodes.empty()) {
 \section{Parallelization}
 %------------------------------------------------
 % TODO: Kevin (3min)
-% Hardware/Tools - which cluster / MPI + OMP
-% Synchronization vs. Locks
 \begin{frame}
 
 \frametitle{Parallelization Ideas}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{itemize}
+        \item Start in parallel at source nodes
+        \item Spawn a new thread for every child node
+        \item Synchronization needed when a node has multiple parents
+        \item Performance dependent on topology of graph. Worst case $\mathcal{O}(n)$
+    \end{itemize}
+  \end{column}
+  
+  \begin{column}{0.5\textwidth}
+    \begin{figure}[ht]
+    %%TODO: Replace with more beautiful graph
+    \includegraphics[width=0.4\textwidth]{paper.png}
+    \end{figure}
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Synchronization ideas}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{itemize}
+            \item Each thread enumerates the nodes it visits.
+            \item If a node already has a number, take the higher number
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{itemize}
+            \item Problem: Multiple threads might ``follow'' each other.
+            \item Idea: Only last thread arriving at a node may continue.
+    \end{itemize}
+  \end{column}
+%   
+  \begin{column}{0.5\textwidth}
+    \begin{figure}[ht]
+    %%TODO: Replace with more beautiful graph
+    \includegraphics[width=0.4\textwidth]{paper.png}
+    \end{figure}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Hardware / Tools}
+%TODO: Do we want to try MPI? Only makes things worse. We have no good way of fine-grained / coarse-grained parallelism
 \begin{itemize}
-	\item 
-\end{itemize}<++>
+        \item Shared memory parallelization
+        \item OpenMP or C\texttt{++}11 threads.
+        \item On Euler: 12-core Intel Xeon E5
+        \item Intel Xeon Phi
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Challenges}
 \begin{itemize}
-	\item Task/Load balancing
+	\item Task queue
+	\item Find a way to cope with chain-like graphs.
+	\item Optional goal: Find all possible topological sortings.
 \end{itemize}
 \end{frame}
 
@@ -120,8 +170,8 @@ while(!currentnodes.empty()) {
 \begin{frame}
 \frametitle{Questions}
 \begin{itemize}
-	\item Which platform?
-	\item Memory distribution?
+	\item Up to how many execution units should we parallelize at least?
+	\item From your experience, what are the main time-consuming, maybe unexpected obstacles when running on Intel Xeon Phi?
 \end{itemize}
 \end{frame}
 
