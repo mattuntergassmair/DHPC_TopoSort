@@ -71,28 +71,45 @@
 % TODO: matthias (2min)
 % linked list of nodes
 
-\begin{frame}[fragile]
-	\frametitle{Serial Code}
-	\begin{lstlisting}[style=cpp]
-std::list<Node*> currentnodes;
-. . .
-Node* parent, child;
-unsigned childcount = currentvalue = 0;
-. . .
-while(!currentnodes.empty()) {
-  parent = currentnodes.front();
-  currentnodes.pop_front();
-  currentvalue = parent->getValue();
-  ++currentvalue;
-  childcount = parent->getChildCount();
-  for(unsigned i=0; i<childcount; ++i) {
-    child = parent->getChild(i);
-    currentnodes.push_back(child);
-    child->setValue(currentvalue);
-  }
-}
-\end{lstlisting}
+\subsection{UML}
+\begin{frame}
+	\frametitle{UML Diagram}
+	\begin{center}
+		\includegraphics[width=.8\textwidth]{img/toposortUML}
+	\end{center}
 \end{frame}
+
+\subsection{Code}
+\begin{frame}
+	\frametitle{Serial Code}
+	\begin{center}
+		\includegraphics[width=\textwidth]{img/code1} \\
+		\includegraphics[width=\textwidth]{img/code2} \\
+		\includegraphics[width=\textwidth]{img/code3}
+	\end{center}
+\end{frame}
+% \begin{frame}[fragile]
+% 	\frametitle{Serial Code}
+% 	\begin{lstlisting}[style=cpp]
+% std::list<Node*> currentnodes;
+% . . .
+% Node* parent, child;
+% unsigned childcount = currentvalue = 0;
+% . . .
+% while(!currentnodes.empty()) {
+%   parent = currentnodes.front();
+%   currentnodes.pop_front();
+%   currentvalue = parent->getValue();
+%   ++currentvalue;
+%   childcount = parent->getChildCount();
+%   for(unsigned i=0; i<childcount; ++i) {
+%     child = parent->getChild(i);
+%     currentnodes.push_back(child);
+%     child->setValue(currentvalue);
+%   }
+% }
+% \end{lstlisting}
+% \end{frame}
 
 
 %------------------------------------------------
