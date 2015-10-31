@@ -32,3 +32,6 @@
 
 # Graph files
 *.gv
+
+# Tex files
+*.log *.vrb

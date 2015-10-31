@@ -9,12 +9,7 @@
 \title[Topological Sorting]{Parallel Topological Sorting} % The short title appears at the bottom of every slide, the full title is only on the title page
 \subtitle{Design of High Performance Computing, Fall 2015}
 
-\institute[ETHZ] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
-{
-ETH Zürich \\ % Your institution for the title page
-\medskip
-\textit{untergam@student.ethz.ch} % Your email address
-}
+\institute[ETHZ]{ ETH Zürich }
 \date{\today} % Date, can be changed to a custom date
 
 \begin{document}
@@ -76,7 +71,27 @@ ETH Zürich \\ % Your institution for the title page
 % TODO: matthias (2min)
 % linked list of nodes
 
-\begin{frame}
+\begin{frame}[fragile]
+	\frametitle{Serial Code}
+	\begin{lstlisting}[style=cpp]
+std::list<Node*> currentnodes;
+. . .
+Node* parent, child;
+unsigned childcount = currentvalue = 0;
+. . .
+while(!currentnodes.empty()) {
+  parent = currentnodes.front();
+  currentnodes.pop_front();
+  currentvalue = parent->getValue();
+  ++currentvalue;
+  childcount = parent->getChildCount();
+  for(unsigned i=0; i<childcount; ++i) {
+    child = parent->getChild(i);
+    currentnodes.push_back(child);
+    child->setValue(currentvalue);
+  }
+}
+\end{lstlisting}
 \end{frame}
 
 

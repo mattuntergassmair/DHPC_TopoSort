@@ -17,7 +17,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{verbatim}
-
+\usepackage{listings}
 
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND THEMES
@@ -88,3 +88,25 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 
+
+
+\lstdefinestyle{cpp}{
+  language=C++,
+  basicstyle=\ttfamily\footnotesize,  % Use small true type font
+  showstringspaces=false,                 % Don't put marks in string spaces
+  tabsize=2,                              % 5 spaces per tab
+  escapeinside={@}{@},                % for invisible labels
+  breaklines=true,
+  breakatwhitespace=true,
+  emptylines=1,
+  texcl=true,
+  escapechar=@,
+  mathescape=true,
+  xleftmargin=2.5ex,
+  keywordstyle=[1]\color{blue},
+  % keywordstyle=[2]\color{red},
+	% stringstyle=\color{red},
+	% commentstyle=\color{green},
+	% morekeywords=[1]{pop_front}
+	% morekeywords=[2]{parent,child}
+}
