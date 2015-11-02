@@ -13,7 +13,8 @@ class DirGraph {
 
 		enum GRAPH_TYPE {PAPER, RANDOM_EDGES};
 
-		typedef std::vector<Node*> nodearray_type; // TODO: what is the best data structure here?
+		typedef std::vector<Node*> nodearray_type;
+		// TODO: memory leak here - using smart pointers? 
 
 		DirGraph(unsigned N)
 			: N_(N)
@@ -21,6 +22,7 @@ class DirGraph {
 		{
 			std::cout << "Initialized graph of size " << N_ << "\n";
 			for(unsigned i=0; i<N_; ++i) {
+				// TODO: memory leak here - using smart pointers? 
 				nodes_[i] = new Node(i);
 			}
 		}
