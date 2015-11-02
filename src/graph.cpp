@@ -28,11 +28,15 @@ void DirGraph::topSort() {
 		childcount = parent->getChildCount();
 		for(unsigned i=0; i<childcount; ++i) {
 			child = parent->getChild(i);
-			currentnodes.push_back(child); // add child node at end of queue
-			child->setValue(currentvalue); // set value of child node to parentvalue+1
+			if(child->requestValueUpdate()) { // last parent checking child
+				currentnodes.push_back(child); // add child node at end of queue
+				child->setValue(currentvalue); // set value of child node to parentvalue+1
+			} else {
+				// do nothing
+			}
 		}
 	}
-	
+
 }
 
 void DirGraph::connect(unsigned type) {

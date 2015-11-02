@@ -27,7 +27,7 @@ run: toposort.exe
 	./toposort.exe
 
 viz: $(GRAPHIMG_FILES)
-	display $(GRAPH_DIR)/*.png;
+	mirage $(GRAPH_DIR)/*.png;
 
 %.png: %.gv
 	# circo -Tpng $< -o $@

@@ -20,6 +20,7 @@ class Node {
 			: id_(id)
 			, v_(1) // value = 1 by default
 			, childcount_(0)
+			, parcount_(0)
 			, childnodes_(nodecontainer_type(childcount_))
 		{
 			// NOTE: value = 1 indicates that a node is a source node
@@ -51,6 +52,12 @@ class Node {
 			return childcount_;
 		}
 
+		inline bool requestValueUpdate() {
+			--parcount_;
+			assert(parcount_>=0);
+			return (parcount_ == 0);
+		}
+
 
 	private:
 
@@ -58,6 +65,9 @@ class Node {
 		unsigned childcount_;
 		value_type v_;
 		nodecontainer_type childnodes_;
+		
+	protected:
+		unsigned parcount_;
 
 };
 
