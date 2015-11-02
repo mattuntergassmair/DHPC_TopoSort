@@ -57,7 +57,7 @@ void DirGraph::viz(std::string graphfilename) const {
 			std::string color( stream.str() );
 			stream.str(std::string()); // clear string stream
 			// std::cout << "\n" << color;
-			fprintf(outfile_ptr,"\tN%02u [ color=\"#000000\", fillcolor=\"%s\", fontcolor=white, fontname=\"Courier:italic\", shape=\"circle\", style=\"filled,solid\" ];\n",n,color.c_str());
+			fprintf(outfile_ptr,"\tN%02u [ label=\"%2u\"color=\"#000000\", fillcolor=\"%s\", fontcolor=white, fontname=\"Courier:italic\", shape=\"circle\", style=\"filled,solid\" ];\n",n,v,color.c_str());
 		}
 
 		fprintf(outfile_ptr,"\n\t# EDGES\n");
