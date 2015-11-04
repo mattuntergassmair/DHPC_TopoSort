@@ -31,6 +31,7 @@ class DirGraph {
 
 		void topSort();
 		void connect(unsigned);
+		bool checkCorrect();
 
 		void viz(std::string) const;
 

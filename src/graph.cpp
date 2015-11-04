@@ -26,8 +26,8 @@ void DirGraph::topSort() {
 		currentvalue = parent->getValue();
 		++currentvalue; // increase value for child nodes
 		childcount = parent->getChildCount();
-		for(unsigned i=0; i<childcount; ++i) {
-			child = parent->getChild(i);
+		for(unsigned c=0; c<childcount; ++c) {
+			child = parent->getChild(c);
 			if(child->requestValueUpdate()) { // last parent checking child
 				currentnodes.push_back(child); // add child node at end of queue
 				child->setValue(currentvalue); // set value of child node to parentvalue+1
@@ -113,3 +113,29 @@ void DirGraph::connect(unsigned type) {
 
 }
 
+bool DirGraph::checkCorrect() {
+	
+	bool correct = true;
+
+	unsigned val, childcount;
+
+	for(unsigned n=0; n<N_; ++n) {
+		Node* node = nodes_[n];
+		val = node->getValue();
+		childcount = node->getChildCount();
+		// std::cout << "\np: " << val << "\tc: ";
+		for(unsigned c=0; c<childcount; ++c) {
+			Node* child = node->getChild(c);
+			if( !(child->getValue()>val) ) correct = false;
+			// std::cout << child->getValue() << " ";
+		}
+	}
+
+	if(correct) {
+		std::cout << "\n\tOK\n";
+	} else {
+		std::cout << "\n\nERROR: INVALID TOPOLOCIGAL SORTING.\n\n";
+	}
+
+	return correct;
+}
