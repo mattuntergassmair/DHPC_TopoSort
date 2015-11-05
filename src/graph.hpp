@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #include "node.hpp"
 
@@ -13,7 +14,7 @@ class DirGraph {
 
 		enum GRAPH_TYPE {PAPER, RANDOM_EDGES};
 
-		typedef std::vector<Node*> nodearray_type;
+		typedef std::vector<std::shared_ptr<Node> > nodearray_type;
 		// TODO: memory leak here - using smart pointers? 
 
 		DirGraph(unsigned N)
@@ -23,7 +24,7 @@ class DirGraph {
 			std::cout << "Initialized graph of size " << N_ << "\n";
 			for(unsigned i=0; i<N_; ++i) {
 				// TODO: memory leak here - using smart pointers? 
-				nodes_[i] = new Node(i);
+				nodes_[i] = std::make_shared<Node>(i);
 			}
 		}
 

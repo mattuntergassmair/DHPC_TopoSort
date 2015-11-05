@@ -38,7 +38,7 @@ void DirGraph::viz(std::string graphfilename) const {
 		fprintf(outfile_ptr,"\n\t#TITLE\n\tlabelloc=\"t\";\n\tlabel=\"type=%s, size=%u;\"\n",graphfilename.c_str(),N_);
 
 		fprintf(outfile_ptr,"\n\t# NODES\n");
-		unsigned maxv;
+		unsigned maxv = 0;
 		for(unsigned n=0; n<N_; ++n) {
 			unsigned v = nodes_[n]->getValue();
 			maxv = std::max(v,maxv);

@@ -5,6 +5,7 @@
 #include <list>
 #include <vector>
 #include <cassert>
+#include <memory>
 
 #include "node.hpp"
 
@@ -14,7 +15,7 @@ class Node {
 
 		typedef unsigned index_type;
 		typedef unsigned value_type;
-		typedef std::vector<Node*> nodecontainer_type;
+		typedef std::vector<std::shared_ptr<Node> > nodecontainer_type;
 
 		Node(index_type id)
 			: id_(id)
@@ -28,8 +29,8 @@ class Node {
 			// by default every node that is constructed is a source node
 		}
 
-		void addChild(Node& child);
-		bool hasChild(Node& childCandidate);
+		void addChild(std::shared_ptr<Node> child);
+		bool hasChild(std::shared_ptr<Node> childCandidate);
 
 		inline value_type getValue() const {
 			return v_;
@@ -43,7 +44,7 @@ class Node {
 			v_ = r;
 		}
 
-		inline Node* getChild(index_type i) {
+		inline std::shared_ptr<Node> getChild(index_type i) {
 			assert(i<childcount_);
 			return childnodes_[i];
 		}

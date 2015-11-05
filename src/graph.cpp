@@ -7,16 +7,17 @@
 #include <random>
 #include <functional>
 #include <numeric>
+#include <memory>
 
 void DirGraph::topSort() {
 	
 	// Sorting Magic happens here
-	std::list<Node*> currentnodes;
+	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {
 		if(nodes_[i]->getValue() == 1) currentnodes.push_back(nodes_[i]);
 	}
-	Node* parent;
-	Node* child;
+	std::shared_ptr<Node> parent;
+	std::shared_ptr<Node> child;
 	unsigned childcount = 0;
 	unsigned currentvalue = 0;
 	
@@ -49,16 +50,16 @@ void DirGraph::connect(unsigned type) {
 
 		case PAPER: // Construct simple example graph from paper
 			assert(N_==9);
-			nodes_[0]->addChild(*nodes_[2]);
-			nodes_[2]->addChild(*nodes_[6]);
-			nodes_[6]->addChild(*nodes_[3]);
-			nodes_[6]->addChild(*nodes_[4]);
-			nodes_[3]->addChild(*nodes_[5]);
-			nodes_[4]->addChild(*nodes_[7]);
-			nodes_[7]->addChild(*nodes_[5]);
-			nodes_[1]->addChild(*nodes_[7]);
-			nodes_[8]->addChild(*nodes_[1]);
-			nodes_[8]->addChild(*nodes_[4]);
+			nodes_[0]->addChild(nodes_[2]);
+			nodes_[2]->addChild(nodes_[6]);
+			nodes_[6]->addChild(nodes_[3]);
+			nodes_[6]->addChild(nodes_[4]);
+			nodes_[3]->addChild(nodes_[5]);
+			nodes_[4]->addChild(nodes_[7]);
+			nodes_[7]->addChild(nodes_[5]);
+			nodes_[1]->addChild(nodes_[7]);
+			nodes_[8]->addChild(nodes_[1]);
+			nodes_[8]->addChild(nodes_[4]);
 			std::cout << "Paper";
 			break;
 
@@ -96,8 +97,8 @@ void DirGraph::connect(unsigned type) {
 					pointeeNode = rn0;
 				}
 
-				if(!nodes_[pointerNode]->hasChild(*nodes_[pointeeNode])){
-					nodes_[pointerNode]->addChild(*nodes_[pointeeNode]);
+				if(!nodes_[pointerNode]->hasChild(nodes_[pointeeNode])){
+					nodes_[pointerNode]->addChild(nodes_[pointeeNode]);
 					++nEffectiveEdges;
 				}
 			}
@@ -120,12 +121,12 @@ bool DirGraph::checkCorrect() {
 	unsigned val, childcount;
 
 	for(unsigned n=0; n<N_; ++n) {
-		Node* node = nodes_[n];
+		auto node = nodes_[n];
 		val = node->getValue();
 		childcount = node->getChildCount();
 		// std::cout << "\np: " << val << "\tc: ";
 		for(unsigned c=0; c<childcount; ++c) {
-			Node* child = node->getChild(c);
+			auto child = node->getChild(c);
 			if( !(child->getValue()>val) ) correct = false;
 			// std::cout << child->getValue() << " ";
 		}
