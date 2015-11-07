@@ -39,3 +39,8 @@
 *.toc
 *.vrb
 *.log
+
+# temporary cmake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake

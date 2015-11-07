@@ -11,7 +11,7 @@ project(TopoSort)
 if(UNIX)
 # Manually set CXX Flags
 set(CXX_FLAGS
-    "-std=c++11"
+    "-std=c++11 -fopenmp"
     CACHE STRING
     "Additional CXX-Compiler flags. Use Build Type None if you want to have full control over the flags."
 )
