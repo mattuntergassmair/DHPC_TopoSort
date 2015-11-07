@@ -9,8 +9,10 @@
 #include <numeric>
 #include <memory>
 
+
+
 void DirGraph::topSort() {
-	
+
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {
@@ -27,6 +29,7 @@ void DirGraph::topSort() {
 		currentvalue = parent->getValue();
 		++currentvalue; // increase value for child nodes
 		childcount = parent->getChildCount();
+
 		for(unsigned c=0; c<childcount; ++c) {
 			child = parent->getChild(c);
 			if(child->requestValueUpdate()) { // last parent checking child
@@ -38,6 +41,38 @@ void DirGraph::topSort() {
 		}
 	}
 
+}
+
+void DirGraph::topSortParallel() {
+
+	// Sorting Magic happens here
+	std::list<std::shared_ptr<Node> > currentnodes;
+	for(unsigned i=0; i<N_; ++i) {
+		if(nodes_[i]->getValue() == 1) currentnodes.push_back(nodes_[i]);
+	}
+	std::shared_ptr<Node> parent;
+	std::shared_ptr<Node> child;
+	unsigned childcount = 0;
+	unsigned currentvalue = 0;
+	
+	while(!currentnodes.empty()) { // stop when queue is empty
+		parent = currentnodes.front();
+		currentnodes.pop_front(); // remove current node - already visited
+		currentvalue = parent->getValue();
+		++currentvalue; // increase value for child nodes
+		childcount = parent->getChildCount();
+
+		#pragma omp parallel for
+		for(unsigned c=0; c<childcount; ++c) {
+			child = parent->getChild(c);
+			if(child->requestValueUpdate()) { // last parent checking child
+				currentnodes.push_back(child); // add child node at end of queue
+				child->setValue(currentvalue); // set value of child node to parentvalue+1
+			} else {
+				// do nothing
+			}
+		}
+	}
 }
 
 void DirGraph::connect(unsigned type, double edgeFillDegree) {
@@ -141,4 +176,13 @@ bool DirGraph::checkCorrect() {
 	}
 
 	return correct;
+}
+
+void DirGraph::reset() {
+	for(unsigned i=0; i<N_; ++i) {
+		nodes_[i]->resetParcount();
+		if(nodes_[i]->getValue() != 1) {
+			nodes_[i]->setValue(0);
+		}
+	}
 }

@@ -31,10 +31,11 @@ class DirGraph {
 		void printNodeInfo();
 
 		void topSort();
+		void topSortParallel();
 		void connect(unsigned, double edgeFillDegree = .3);
         bool checkCorrect();
 		void viz(std::string) const;
-
+		void reset(); // resets the graph so it can be sorted again
 
 	private:
 

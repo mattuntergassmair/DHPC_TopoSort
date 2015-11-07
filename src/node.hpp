@@ -7,7 +7,6 @@
 #include <cassert>
 #include <memory>
 
-#include "node.hpp"
 
 class Node {
 
@@ -27,6 +26,8 @@ class Node {
 			// NOTE: value = 1 indicates that a node is a source node
 			// (no other nodes pointing to it)
 			// by default every node that is constructed is a source node
+
+            maxParcount_ = parcount_;
 		}
 
 		void addChild(std::shared_ptr<Node> child);
@@ -59,6 +60,10 @@ class Node {
 			return (parcount_ == 0);
 		}
 
+		void resetParcount() {
+            parcount_ = maxParcount_;
+		}
+
 
 	private:
 
@@ -69,8 +74,11 @@ class Node {
 		
 	protected:
 		unsigned parcount_;
+        unsigned maxParcount_; // maximum parcount, needed for resetting the graph
 
 };
 
-
 #endif // NODE_HPP
+
+
+
