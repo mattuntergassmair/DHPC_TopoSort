@@ -9,7 +9,7 @@ void Timer::stop() {
 }
 
 double Timer::getElapsed() {
-	return double(startTime - stopTime) / CLOCKS_PER_SEC;
+	return double(stopTime - startTime) / CLOCKS_PER_SEC;
 }
 
 void Timer::printElapsed() {
