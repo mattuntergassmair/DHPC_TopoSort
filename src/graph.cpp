@@ -9,10 +9,22 @@
 #include <numeric>
 #include <memory>
 
+using namespace std;
 
+void DirGraph::reset() {
+	for(unsigned i=0; i<N_; ++i) {
+		nodes_[i]->resetParcount();
+		if(nodes_[i]->getValue() != 1) {
+			nodes_[i]->setValue(0);
+		}
+	}
+}
 
 void DirGraph::topSort() {
 
+
+	clock_t begin = clock();
+	
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {
@@ -40,15 +52,19 @@ void DirGraph::topSort() {
 			}
 		}
 	}
+
+	clock_t end = clock();
+  	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+
+	cout << "Time: " << elapsed_secs << endl;
 
 }
 
-
-// TODO: do we really need two sorting functions?
-// if the code is correct, the code should run just fine serially 
-// if we set OMP_NUM_THREADS=1
 void DirGraph::topSortParallel() {
 
+
+	clock_t begin = clock();
+	
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {
@@ -66,7 +82,7 @@ void DirGraph::topSortParallel() {
 		++currentvalue; // increase value for child nodes
 		childcount = parent->getChildCount();
 
-		// #pragma omp parallel for
+		#pragma omp parallel for
 		for(unsigned c=0; c<childcount; ++c) {
 			child = parent->getChild(c);
 			if(child->requestValueUpdate()) { // last parent checking child
@@ -77,6 +93,12 @@ void DirGraph::topSortParallel() {
 			}
 		}
 	}
+
+	clock_t end = clock();
+  	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+
+	cout << "Time: " << elapsed_secs << endl;
+
 }
 
 void DirGraph::connect(unsigned type, double edgeFillDegree) {
@@ -165,15 +187,11 @@ bool DirGraph::checkCorrect() {
 		auto node = nodes_[n];
 		val = node->getValue();
 		childcount = node->getChildCount();
-#if VERBOSE
-		std::cout << "\np: " << val << "\tc: ";
-#endif // VERBOSE
+		// std::cout << "\np: " << val << "\tc: ";
 		for(unsigned c=0; c<childcount; ++c) {
 			auto child = node->getChild(c);
 			if( !(child->getValue()>val) ) correct = false;
-#if VERBOSE
-			std::cout << child->getValue() << " ";
-#endif // VERBOSE
+			// std::cout << child->getValue() << " ";
 		}
 	}
 
@@ -186,11 +204,4 @@ bool DirGraph::checkCorrect() {
 	return correct;
 }
 
-void DirGraph::reset() {
-	for(unsigned i=0; i<N_; ++i) {
-		nodes_[i]->resetParcount();
-		if(nodes_[i]->getValue() != 1) {
-			nodes_[i]->setValue(0);
-		}
-	}
-}
+
