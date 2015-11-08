@@ -43,6 +43,10 @@ void DirGraph::topSort() {
 
 }
 
+
+// TODO: do we really need two sorting functions?
+// if the code is correct, the code should run just fine serially 
+// if we set OMP_NUM_THREADS=1
 void DirGraph::topSortParallel() {
 
 	// Sorting Magic happens here
@@ -62,7 +66,7 @@ void DirGraph::topSortParallel() {
 		++currentvalue; // increase value for child nodes
 		childcount = parent->getChildCount();
 
-		#pragma omp parallel for
+		// #pragma omp parallel for
 		for(unsigned c=0; c<childcount; ++c) {
 			child = parent->getChild(c);
 			if(child->requestValueUpdate()) { // last parent checking child
@@ -161,11 +165,15 @@ bool DirGraph::checkCorrect() {
 		auto node = nodes_[n];
 		val = node->getValue();
 		childcount = node->getChildCount();
-		// std::cout << "\np: " << val << "\tc: ";
+#if VERBOSE
+		std::cout << "\np: " << val << "\tc: ";
+#endif // VERBOSE
 		for(unsigned c=0; c<childcount; ++c) {
 			auto child = node->getChild(c);
 			if( !(child->getValue()>val) ) correct = false;
-			// std::cout << child->getValue() << " ";
+#if VERBOSE
+			std::cout << child->getValue() << " ";
+#endif // VERBOSE
 		}
 	}
 
