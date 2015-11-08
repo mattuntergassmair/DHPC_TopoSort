@@ -21,9 +21,6 @@ void DirGraph::reset() {
 }
 
 void DirGraph::topSort() {
-
-
-	clock_t begin = clock();
 	
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
@@ -53,18 +50,10 @@ void DirGraph::topSort() {
 		}
 	}
 
-	clock_t end = clock();
-  	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-
-	cout << "Time: " << elapsed_secs << endl;
-
 }
 
 void DirGraph::topSortParallel() {
 
-
-	clock_t begin = clock();
-	
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {
@@ -93,11 +82,6 @@ void DirGraph::topSortParallel() {
 			}
 		}
 	}
-
-	clock_t end = clock();
-  	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-
-	cout << "Time: " << elapsed_secs << endl;
 
 }
 
