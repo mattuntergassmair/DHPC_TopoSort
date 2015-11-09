@@ -1,4 +1,5 @@
 #include <iostream>
+#include <omp.h>
 
 #include "graph.hpp"
 #include "Timer.hpp"
@@ -24,7 +25,7 @@ int main() {
     testgraph_paper.printSolution();
 	
 	// Initializing graph with random edges
-	unsigned const N = 3000;
+	unsigned const N = 5000;
 	DirGraph testgraph_random(N);
 	testgraph_random.connect(DirGraph::RANDOM_EDGES, 0.05); // Constructing graph from paper
 
@@ -35,20 +36,6 @@ int main() {
 	testgraph_random.checkCorrect();
 	t.printElapsed();
 	
-	// commented out to avoid creating huge visualization files if not needed.
-	//
-	//testgraph_random.printNodeInfo();
-	//testgraph_random.viz("random20");
-
-	testgraph_random.reset();
-
-	t.start();
-	testgraph_random.topSortParallel();
-	t.stop();
-
-	testgraph_random.checkCorrect();
-	t.printElapsed();
-
 	return 0;
 
 }

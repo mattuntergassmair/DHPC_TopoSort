@@ -31,6 +31,10 @@ void DirGraph::printSolution() {
 
 // Create graphviz file for drawing graph
 void DirGraph::viz(std::string graphfilename) const {
+
+	// Don't create huge graphviz files
+	if(N_>200) return;
+
 	graphfilename.append(".gv");
 
 	FILE* outfile_ptr;

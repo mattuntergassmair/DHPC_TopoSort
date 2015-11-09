@@ -27,10 +27,8 @@ class DirGraph {
 		}
 
 		void topSort();
-		void topSortParallel();
 		void connect(unsigned, double edgeFillDegree = .3);
         bool checkCorrect();
-		void reset(); // resets the graph so it can be sorted again
         solution_type getSolution();
         
         // Print and doc methods (graphdoc.cpp)
