@@ -40,11 +40,12 @@ void DirGraph::topSort() {
 		++currentvalue; // increase value for child nodes
 		childcount = parent->getChildCount();
 
+        solution_.push_back(parent);
 		for(unsigned c=0; c<childcount; ++c) {
 			child = parent->getChild(c);
 			if(child->requestValueUpdate()) { // last parent checking child
 				currentnodes.push_back(child); // add child node at end of queue
-				child->setValue(currentvalue); // set value of child node to parentvalue+1
+				child->setValue(currentvalue); // set value of child node to parentvalue
 			} else {
 				// do nothing
 			}
@@ -165,22 +166,31 @@ bool DirGraph::checkCorrect() {
 	
 	bool correct = true;
 
-	unsigned val, childcount;
-
-	for(unsigned n=0; n<N_; ++n) {
-		auto node = nodes_[n];
-		val = node->getValue();
-		childcount = node->getChildCount();
-		// std::cout << "\np: " << val << "\tc: ";
-		for(unsigned c=0; c<childcount; ++c) {
-			auto child = node->getChild(c);
-			if( !(child->getValue()>val) ) correct = false;
-			// std::cout << child->getValue() << " ";
-		}
-	}
+    // retrieve the order of each node from solution
+    std::vector<size_t> nodeOrders(N_);
+    size_t cnt = 0;
+    for(auto it = solution_.begin(); it != solution_.end(); ++it){
+        size_t nodeId = (*it)->getID();
+        nodeOrders[nodeId] = cnt;
+        ++cnt;
+    }
+    
+    // for each (parent) node, check that each of their children has a higher sorting index
+    for(size_t i = 0; i < N_; ++i){
+        auto parent = nodes_[i];
+        auto parentId = parent->getID();
+        size_t childcount = parent->getChildCount();
+        
+        for(size_t k = 0; k < childcount; ++k){
+            size_t childId = parent->getChild(k)->getID();
+            if(nodeOrders[parentId] > nodeOrders[childId]){
+                correct = false;
+            }
+        }
+    }
 
 	if(correct) {
-		std::cout << "\n\tOK\n";
+		std::cout << "\n\nOK: VALID TOPOLOGICAL SORTING.\n";
 	} else {
 		std::cout << "\n\nERROR: INVALID TOPOLOCIGAL SORTING.\n\n";
 	}

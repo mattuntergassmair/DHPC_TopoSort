@@ -21,6 +21,7 @@ int main() {
 	testgraph_paper.checkCorrect();
 	testgraph_paper.printNodeInfo();
 	testgraph_paper.viz("paper");
+    testgraph_paper.printSolution();
 	
 	// Initializing graph with random edges
 	unsigned const N = 3000;
