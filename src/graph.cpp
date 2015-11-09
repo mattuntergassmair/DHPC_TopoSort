@@ -8,6 +8,7 @@
 #include <functional>
 #include <numeric>
 #include <memory>
+#include <omp.h>
 
 using namespace std;
 
@@ -53,7 +54,6 @@ void DirGraph::topSort() {
 }
 
 void DirGraph::topSortParallel() {
-
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {

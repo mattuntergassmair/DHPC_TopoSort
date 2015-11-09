@@ -5,7 +5,13 @@
 
 
 int main() {
+#ifndef NDEBUG
+    std::cout << "THIS IS THE DEBUG MODE" << std::endl;
 
+    #pragma omp parallel
+    #pragma omp master
+    std::cout << "Number of threads: " << omp_get_num_threads() << std::endl;
+#endif
 	Timer t;
 
 	// Initializing graph
