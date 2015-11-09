@@ -38,7 +38,8 @@ void DirGraph::topSort() {
 			++currentvalue; // increase value for child nodes
 			childcount = parent->getChildCount();
 
-#pragma omp atomic { // IMPORTANT: THIS MUST BE ATOMIC
+#pragma omp critical
+{ // IMPORTANT: THIS MUST BE ATOMIC
 			solution_.push_back(parent);
 }
 
