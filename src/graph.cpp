@@ -8,11 +8,21 @@
 #include <functional>
 #include <numeric>
 #include <memory>
+#include <omp.h>
 
+using namespace std;
 
+void DirGraph::reset() {
+	for(unsigned i=0; i<N_; ++i) {
+		nodes_[i]->resetParcount();
+		if(nodes_[i]->getValue() != 1) {
+			nodes_[i]->setValue(0);
+		}
+	}
+}
 
 void DirGraph::topSort() {
-
+	
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {
@@ -30,11 +40,12 @@ void DirGraph::topSort() {
 		++currentvalue; // increase value for child nodes
 		childcount = parent->getChildCount();
 
+        solution_.push_back(parent);
 		for(unsigned c=0; c<childcount; ++c) {
 			child = parent->getChild(c);
 			if(child->requestValueUpdate()) { // last parent checking child
 				currentnodes.push_back(child); // add child node at end of queue
-				child->setValue(currentvalue); // set value of child node to parentvalue+1
+				child->setValue(currentvalue); // set value of child node to parentvalue
 			} else {
 				// do nothing
 			}
@@ -43,12 +54,7 @@ void DirGraph::topSort() {
 
 }
 
-
-// TODO: do we really need two sorting functions?
-// if the code is correct, the code should run just fine serially 
-// if we set OMP_NUM_THREADS=1
 void DirGraph::topSortParallel() {
-
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;
 	for(unsigned i=0; i<N_; ++i) {
@@ -66,7 +72,7 @@ void DirGraph::topSortParallel() {
 		++currentvalue; // increase value for child nodes
 		childcount = parent->getChildCount();
 
-		// #pragma omp parallel for
+		#pragma omp parallel for
 		for(unsigned c=0; c<childcount; ++c) {
 			child = parent->getChild(c);
 			if(child->requestValueUpdate()) { // last parent checking child
@@ -77,6 +83,7 @@ void DirGraph::topSortParallel() {
 			}
 		}
 	}
+
 }
 
 void DirGraph::connect(unsigned type, double edgeFillDegree) {
@@ -159,26 +166,31 @@ bool DirGraph::checkCorrect() {
 	
 	bool correct = true;
 
-	unsigned val, childcount;
-
-	for(unsigned n=0; n<N_; ++n) {
-		auto node = nodes_[n];
-		val = node->getValue();
-		childcount = node->getChildCount();
-#if VERBOSE
-		std::cout << "\np: " << val << "\tc: ";
-#endif // VERBOSE
-		for(unsigned c=0; c<childcount; ++c) {
-			auto child = node->getChild(c);
-			if( !(child->getValue()>val) ) correct = false;
-#if VERBOSE
-			std::cout << child->getValue() << " ";
-#endif // VERBOSE
-		}
-	}
+    // retrieve the order of each node from solution
+    std::vector<size_t> nodeOrders(N_);
+    size_t cnt = 0;
+    for(auto it = solution_.begin(); it != solution_.end(); ++it){
+        size_t nodeId = (*it)->getID();
+        nodeOrders[nodeId] = cnt;
+        ++cnt;
+    }
+    
+    // for each (parent) node, check that each of their children has a higher sorting index
+    for(size_t i = 0; i < N_; ++i){
+        auto parent = nodes_[i];
+        auto parentId = parent->getID();
+        size_t childcount = parent->getChildCount();
+        
+        for(size_t k = 0; k < childcount; ++k){
+            size_t childId = parent->getChild(k)->getID();
+            if(nodeOrders[parentId] > nodeOrders[childId]){
+                correct = false;
+            }
+        }
+    }
 
 	if(correct) {
-		std::cout << "\n\tOK\n";
+		std::cout << "\n\nOK: VALID TOPOLOGICAL SORTING.\n";
 	} else {
 		std::cout << "\n\nERROR: INVALID TOPOLOCIGAL SORTING.\n\n";
 	}
@@ -186,11 +198,4 @@ bool DirGraph::checkCorrect() {
 	return correct;
 }
 
-void DirGraph::reset() {
-	for(unsigned i=0; i<N_; ++i) {
-		nodes_[i]->resetParcount();
-		if(nodes_[i]->getValue() != 1) {
-			nodes_[i]->setValue(0);
-		}
-	}
-}
+

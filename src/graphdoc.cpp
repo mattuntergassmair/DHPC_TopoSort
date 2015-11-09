@@ -21,6 +21,14 @@ void DirGraph::printNodeInfo() {
 	}
 }
 
+void DirGraph::printSolution() {
+    std::cout << "Solution (Node IDs)" << std::endl;
+    for(auto elem : solution_){
+        std::cout << elem->getID() << " ";
+    }
+    std::cout << std::endl;
+}
+
 // Create graphviz file for drawing graph
 void DirGraph::viz(std::string graphfilename) const {
 	graphfilename.append(".gv");
