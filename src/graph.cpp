@@ -13,59 +13,73 @@
 using namespace std;
 
 void DirGraph::topSort() {
+	
+	// Sorting Magic happens here
+	
+	int syncVal = 0;
 
 	// Spawn OMP threads
-	#pragma omp parallel
+	#pragma omp parallel shared(syncVal)
 	{
+// Output only - remove
+// #pragma omp critical 
+// std::cout << "Hi from thread " << myID << " from " << nThreads << std::endl;
 
-		#pragma omp single
-		{
-			// TODO: PRIORITY consider starting parallel section here so each thread has own list
-			// Sorting Magic happens here
-			std::list<std::shared_ptr<Node> > currentnodes;
-			for(unsigned i=0; i<N_; ++i) { // TODO: OPTIONAL smart way for initial distribution
-				// FOR EXAMPLE: node id % num threads
-				if(nodes_[i]->getValue() == 1) currentnodes.push_back(nodes_[i]);
-			}
-			std::shared_ptr<Node> parent;
-			std::shared_ptr<Node> child;
-			unsigned childcount = 0;
-			unsigned currentvalue = 0;
+		// Declare Thread Private Variables
+		const int nThreads = omp_get_num_threads();
+		const int myID = omp_get_thread_num();
+		std::list<std::shared_ptr<Node> > currentnodes;
 
-			// TODO: OPTIMIZATION handle and redistribute tasks
-		
-			#pragma omp task
-			while(!currentnodes.empty()) { // stop when queue is empty
+#pragma omp single
+		std::cout << "\n--- Running on " << nThreads << " threads\n";
 
-				parent = currentnodes.front();
-				currentnodes.pop_front(); // remove current node - already visited
-				currentvalue = parent->getValue();
-				++currentvalue; // increase value for child nodes
-				childcount = parent->getChildCount();
+		// Distribute Root Nodes among Threads
+		for(unsigned i=0; i<N_; ++i) {
+			// TODO: find smarter way for distributing nodes
+			if(nodes_[i]->getValue()==1 && i%nThreads==myID) currentnodes.push_back(nodes_[i]);
+		}
+		std::shared_ptr<Node> parent;
+		std::shared_ptr<Node> child;
+		unsigned childcount = 0;
+		unsigned currentvalue = 0;
 
-				#pragma omp critical
-				{ // IMPORTANT: THIS MUST BE ATOMIC
-					solution_.push_back(parent);
-				}
+		// TODO: OPTIMIZATION handle and redistribute tasks
+	
+		// #pragma omp task
+		while(!currentnodes.empty()) { // stop when queue is empty
 
-				for(unsigned c=0; c<childcount; ++c) {
-					child = parent->getChild(c);
-					// TODO: PRIORITY requestValueUpdate must be atomic
-					if(child->requestValueUpdate()) { // last parent checking child
-						currentnodes.push_back(child); // add child node at end of queue
-						child->setValue(currentvalue); // set value of child node to parentvalue
-					} else {
-						// do nothing
-					}
-				}
+			parent = currentnodes.front();
+			currentnodes.pop_front(); // remove current node - already visited
+			currentvalue = parent->getValue();
+			++currentvalue; // increase value for child nodes
+			childcount = parent->getChildCount();
 
-				// TODO: synchronization must happen here (or somewhere) ;)
-				// omp barrier				
-				#pragma omp taskwait
-
+			#pragma omp critical
+			{ // IMPORTANT: THIS MUST BE ATOMIC
+				solution_.push_back(parent);
 			}
 
-		} // end of single OMP section
+			bool flag;
+			for(unsigned c=0; c<childcount; ++c) {
+				child = parent->getChild(c);
+
+				// Checking if last parent trying to update
+				// requestValueUpdate() must be atomic!!
+#pragma omp critical
+				flag = child->requestValueUpdate();
+				if(flag) { // last parent checking child
+					currentnodes.push_back(child); // add child node at end of queue
+					child->setValue(currentvalue); // set value of child node to parentvalue
+				} 
+			
+			}
+
+			// TODO: synchronization must happen here (or somewhere) ;)
+			// omp barrier				
+			// #pragma omp taskwait
+
+		}
+
 	} // end parallel OMP section
 }
 
