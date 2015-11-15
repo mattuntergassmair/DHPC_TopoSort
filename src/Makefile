@@ -1,5 +1,7 @@
-COMPILER = g++
-FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1
+COMPILER = g++ # Linux
+# COMPILER = icc # XeonPhi
+FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 # Linux
+# FLAGS = -mmic -fopenmp
 
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
