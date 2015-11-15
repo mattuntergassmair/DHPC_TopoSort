@@ -13,92 +13,60 @@
 using namespace std;
 
 void DirGraph::topSort() {
-	
-	// Sorting Magic happens here
-	
-	unsigned syncVal = 1;
-	unsigned nFinished;
-	std::vector<short> threadFinished;
 
 	// Spawn OMP threads
-	#pragma omp parallel shared(syncVal, nFinished)
+	#pragma omp parallel
 	{
 
-		// Create a Vector entry specifying whether thread is done or not
-		#pragma omp critical
-		threadFinished.push_back(false);
+		#pragma omp single
+		{
+			// TODO: PRIORITY consider starting parallel section here so each thread has own list
+			// Sorting Magic happens here
+			std::list<std::shared_ptr<Node> > currentnodes;
+			for(unsigned i=0; i<N_; ++i) { // TODO: OPTIONAL smart way for initial distribution
+				// FOR EXAMPLE: node id % num threads
+				if(nodes_[i]->getValue() == 1) currentnodes.push_back(nodes_[i]);
+			}
+			std::shared_ptr<Node> parent;
+			std::shared_ptr<Node> child;
+			unsigned childcount = 0;
+			unsigned currentvalue = 0;
 
-		// Declare Thread Private Variables
-		const int nThreads = omp_get_num_threads();
-		const int threadID = omp_get_thread_num();
-		std::list<std::shared_ptr<Node> > currentnodes;
+			// TODO: OPTIMIZATION handle and redistribute tasks
 		
-		std::shared_ptr<Node> parent;
-		std::shared_ptr<Node> child;
-		unsigned childcount = 0;
-		unsigned currentvalue = 0;
-
-		// Distribute Root Nodes among Threads
-		for(unsigned i=0; i<N_; ++i) {
-			// TODO: find smarter way for distributing nodes
-			if(nodes_[i]->getValue()==1 && i%nThreads==threadID) currentnodes.push_back(nodes_[i]);
-		}
-
-		// TODO: OPTIMIZATION handle and redistribute tasks
-	
-		#pragma omp barrier // make sure everything is set up alright
-
-		unsigned i=0;
-		while(i<N_ && nFinished<nThreads) {
-
-			while(!currentnodes.empty()) {
+			#pragma omp task
+			while(!currentnodes.empty()) { // stop when queue is empty
 
 				parent = currentnodes.front();
+				currentnodes.pop_front(); // remove current node - already visited
 				currentvalue = parent->getValue();
-
-				if(currentvalue>syncVal) {
-					assert(currentvalue == syncVal+1);
-					break;
-				} else {
-					#pragma omp critical 
-					{
-						solution_.push_back(parent); // IMPORTANT: this must be atomic
-					}
-					currentnodes.pop_front(); // remove current node - already visited
-				}
-
 				++currentvalue; // increase value for child nodes
 				childcount = parent->getChildCount();
 
-				bool flag;
+				#pragma omp critical
+				{ // IMPORTANT: THIS MUST BE ATOMIC
+					solution_.push_back(parent);
+				}
+
 				for(unsigned c=0; c<childcount; ++c) {
 					child = parent->getChild(c);
-
-					// Checking if last parent trying to update
-					#pragma omp critical
-					{
-						flag = child->requestValueUpdate(); // IMPORTANT: this must be atomic
-					}
-					if(flag) { // last parent checking child
+					// TODO: PRIORITY requestValueUpdate must be atomic
+					if(child->requestValueUpdate()) { // last parent checking child
 						currentnodes.push_back(child); // add child node at end of queue
 						child->setValue(currentvalue); // set value of child node to parentvalue
-					} 
-			
+					} else {
+						// do nothing
+					}
 				}
-			}
-			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
-			
-			#pragma omp single
-			nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
 
-			#pragma omp barrier
-			#pragma omp single
-			std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
-			
-			++i;
-		}
-	
-	} // end of OMP parallel
+				// TODO: synchronization must happen here (or somewhere) ;)
+				// omp barrier				
+				#pragma omp taskwait
+
+			}
+
+		} // end of single OMP section
+	} // end parallel OMP section
 }
 
 

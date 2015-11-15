@@ -16,12 +16,13 @@ void DirGraph::topSort() {
 	
 	// Sorting Magic happens here
 	
-	unsigned syncVal = 1;
-	unsigned nFinished;
-	std::vector<short> threadFinished;
+	int syncVal = 1;
+	bool nFinished = false;
+	std::vector<bool> threadFinished;
 
 	// Spawn OMP threads
-	#pragma omp parallel shared(syncVal, nFinished)
+	#pragma omp parallel shared(syncVal)
+	// TODO: make threadFinished shared??
 	{
 
 		// Create a Vector entry specifying whether thread is done or not
@@ -30,6 +31,7 @@ void DirGraph::topSort() {
 
 		// Declare Thread Private Variables
 		const int nThreads = omp_get_num_threads();
+		// TODO: check whether to use max_threads();
 		const int threadID = omp_get_thread_num();
 		std::list<std::shared_ptr<Node> > currentnodes;
 		
@@ -46,57 +48,80 @@ void DirGraph::topSort() {
 
 		// TODO: OPTIMIZATION handle and redistribute tasks
 	
-		#pragma omp barrier // make sure everything is set up alright
-
-		unsigned i=0;
-		while(i<N_ && nFinished<nThreads) {
-
-			while(!currentnodes.empty()) {
-
-				parent = currentnodes.front();
-				currentvalue = parent->getValue();
-
-				if(currentvalue>syncVal) {
-					assert(currentvalue == syncVal+1);
-					break;
-				} else {
-					#pragma omp critical 
-					{
-						solution_.push_back(parent); // IMPORTANT: this must be atomic
-					}
-					currentnodes.pop_front(); // remove current node - already visited
-				}
-
-				++currentvalue; // increase value for child nodes
-				childcount = parent->getChildCount();
-
-				bool flag;
-				for(unsigned c=0; c<childcount; ++c) {
-					child = parent->getChild(c);
-
-					// Checking if last parent trying to update
-					#pragma omp critical
-					{
-						flag = child->requestValueUpdate(); // IMPORTANT: this must be atomic
-					}
-					if(flag) { // last parent checking child
-						currentnodes.push_back(child); // add child node at end of queue
-						child->setValue(currentvalue); // set value of child node to parentvalue
-					} 
-			
-				}
-			}
-			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
-			
-			#pragma omp single
-			nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
-
-			#pragma omp barrier
-			#pragma omp single
-			std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
-			
-			++i;
+		#pragma omp critical
+		{
+			std::cout << "\nWorking in parallel: thread - " << threadID << "\n";
 		}
+
+		#pragma omp barrier
+		{
+
+			#pragma omp critical 
+			{
+			std::cout << "\nHELLOOOOOOO: Thread " << threadID << " in parallel section" << std::flush;
+			}
+			while(nFinished<nThreads) {
+				
+				#pragma omp single
+				{
+					std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
+				}
+
+				std::cout << "\nThread " << threadID << "Starting" << std::flush;
+			
+				while(!currentnodes.empty()) {
+
+					parent = currentnodes.front();
+					currentvalue = parent->getValue();
+
+					std::cout << "\nTrapped - thread " << threadID << std::flush;
+
+					if(currentvalue>syncVal) {
+						assert(currentvalue == syncVal+1);
+						break;
+					} else {
+						#pragma omp critical 
+						{
+							solution_.push_back(parent); // IMPORTANT: this must be atomic
+						}
+						currentnodes.pop_front(); // remove current node - already visited
+					}
+
+					++currentvalue; // increase value for child nodes
+					childcount = parent->getChildCount();
+
+					bool flag;
+					for(unsigned c=0; c<childcount; ++c) {
+						child = parent->getChild(c);
+
+						// Checking if last parent trying to update
+						#pragma omp critical
+						{
+							flag = child->requestValueUpdate(); // IMPORTANT: this must be atomic
+						}
+						if(flag) { // last parent checking child
+							currentnodes.push_back(child); // add child node at end of queue
+							child->setValue(currentvalue); // set value of child node to parentvalue
+						} 
+				
+					}
+				}
+				threadFinished[threadID] = currentnodes.empty();
+				
+				std::cout << "\nThread " << threadID << " - I'm done" << std::flush;
+				#pragma omp single
+				{
+					nFinished = 0;
+					for(auto f : threadFinished) {
+						if(f) ++nFinished;
+					}
+					// nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
+					std::cout << "\tFinished threads: " << nFinished;
+				}
+
+				#pragma omp barrier
+			}
+		} // end of inner OMP parallel section - why is this even necessary????
 	
 	} // end of OMP parallel
 }
