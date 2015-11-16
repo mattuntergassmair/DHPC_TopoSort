@@ -28,7 +28,7 @@ class DirGraph {
 
 		void topSort();
 		void connect(unsigned, double edgeFillDegree = .3);
-        bool checkCorrect();
+        bool checkCorrect(bool verbose);
         solution_type getSolution();
         
         // Print and doc methods (graphdoc.cpp)

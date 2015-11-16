@@ -146,20 +146,39 @@ void DirGraph::connect(unsigned type, double edgeFillDegree) {
 
 }
 
-bool DirGraph::checkCorrect() {
+bool DirGraph::checkCorrect(bool verbose) {
 	
+    std::cout << "\n>>Begin Check\n\n";
 	bool correct = true;
+
+    // 1. check length of solution
+    if(solution_.size() != nodes_.size()){
+        correct = false;
+        if(verbose)
+            std::cout << "ERROR: Size of solution is " << solution_.size() << ", but should be " << nodes_.size() << "\n";
+    }
 
     // retrieve the order of each node from solution
     std::vector<size_t> nodeOrders(N_);
+    std::vector<size_t> checkNodes(N_, 0);
     size_t cnt = 0;
     for(auto it = solution_.begin(); it != solution_.end(); ++it){
         size_t nodeId = (*it)->getID();
         nodeOrders[nodeId] = cnt;
+        checkNodes[nodeId]++;
         ++cnt;
     }
     
-    // for each (parent) node, check that each of their children has a higher sorting index
+    // 2. check that every node occurs exactly once in the solution
+    for(size_t i = 0; i < N_; ++i){
+        if(checkNodes[i] != 1){
+            correct = false;
+            if(verbose)
+                std::cout << "ERROR: Node #" << nodes_[i]->getID() << " occurs " << checkNodes[i] << " times, but should occur exactly once.\n";
+        }
+    }
+    
+    // 3. for each (parent) node, check that each of their children has a higher sorting index
     for(size_t i = 0; i < N_; ++i){
         auto parent = nodes_[i];
         auto parentId = parent->getID();
@@ -169,15 +188,18 @@ bool DirGraph::checkCorrect() {
             size_t childId = parent->getChild(k)->getID();
             if(nodeOrders[parentId] > nodeOrders[childId]){
                 correct = false;
+                if(verbose)
+                    std::cout << "ERROR: Node #" << parentId << " should have lower index than node #" << childId << "\n";
             }
         }
     }
 
 	if(correct) {
-		std::cout << "\n\nOK: VALID TOPOLOGICAL SORTING.\n";
+		std::cout << "OK: VALID TOPOLOGICAL SORTING.\n";
 	} else {
-		std::cout << "\n\nERROR: INVALID TOPOLOCIGAL SORTING.\n\n";
+		std::cout << "\nERROR: INVALID TOPOLOCIGAL SORTING.\n";
 	}
 
+    std::cout << "\n<<End Check\n\n";
 	return correct;
 }

@@ -19,7 +19,7 @@ int main() {
 	DirGraph testgraph_paper(9);
 	testgraph_paper.connect(DirGraph::PAPER); // Constructing graph from paper
 	testgraph_paper.topSort();
-	testgraph_paper.checkCorrect();
+	testgraph_paper.checkCorrect(true);
 	testgraph_paper.printNodeInfo();
 	testgraph_paper.viz("paper");
     testgraph_paper.printSolution();
@@ -33,7 +33,7 @@ int main() {
 	testgraph_random.topSort();
 	t.stop();
 	
-	testgraph_random.checkCorrect();
+	testgraph_random.checkCorrect(false);
 	t.printElapsed();
 	
 	return 0;
