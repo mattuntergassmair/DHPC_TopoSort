@@ -2,8 +2,8 @@
 #include <omp.h>
 
 #include "graph.hpp"
-#include "Timer.hpp"
-
+//#include "Timer.hpp"
+#include "rdtsc_timer.hpp"
 
 int main() {
 #ifndef NDEBUG
@@ -13,7 +13,7 @@ int main() {
     #pragma omp master
     std::cout << "Number of threads: " << omp_get_num_threads() << std::endl;
 #endif
-	Timer t;
+	util::rdtsc_timer t;
 
 	// Initializing graph
 	DirGraph testgraph_paper(9);
@@ -34,7 +34,8 @@ int main() {
 	t.stop();
 	
 	testgraph_random.checkCorrect(false);
-	t.printElapsed();
+	std::cout << "Elapsed [s]: " << t.sec() << std::endl;
+    std::cout << "Elapsed [cycles]: " << t.cycles() << std::endl;
 	
 	return 0;
 
