@@ -16,7 +16,7 @@ class DirGraph {
 
 		typedef std::vector<std::shared_ptr<Node> > nodearray_type;
         typedef std::list<std::shared_ptr<Node> > solution_type;
-		DirGraph(unsigned N)
+		explicit DirGraph(unsigned N)
 			: N_(N)
 			, nodes_(nodearray_type(N_))
 		{
@@ -25,8 +25,9 @@ class DirGraph {
 				nodes_[i] = std::make_shared<Node>(i);
 			}
 		}
-
-		void topSort();
+        virtual ~DirGraph(){}
+        virtual void topSort() = 0;
+        
 		void connect(unsigned, double edgeFillDegree = .3);
         bool checkCorrect(bool verbose);
         solution_type getSolution();
@@ -36,13 +37,11 @@ class DirGraph {
         void printSolution();
 		void viz(std::string) const;
         
-	private:
+	protected:
 
 		unsigned N_;
 		nodearray_type nodes_;
         solution_type solution_;
-
 };
-
 
 #endif // DIRGRAPH_HPP

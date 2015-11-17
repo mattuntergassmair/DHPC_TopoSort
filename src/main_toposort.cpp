@@ -2,8 +2,12 @@
 #include <omp.h>
 
 #include "graph.hpp"
-//#include "Timer.hpp"
 #include "rdtsc_timer.hpp"
+
+#include "sortversions/graph_tasks.hpp"
+#include "sortversions/graph_syncval.hpp"
+
+typedef GraphSyncval GraphSolver;
 
 int main() {
 #ifndef NDEBUG
@@ -16,7 +20,7 @@ int main() {
 	util::rdtsc_timer t;
 
 	// Initializing graph
-	DirGraph testgraph_paper(9);
+	GraphSolver testgraph_paper(9);
 	testgraph_paper.connect(DirGraph::PAPER); // Constructing graph from paper
 	testgraph_paper.topSort();
 	testgraph_paper.checkCorrect(true);
@@ -26,7 +30,7 @@ int main() {
 	
 	// Initializing graph with random edges
 	unsigned const N = 5000;
-	DirGraph testgraph_random(N);
+	GraphSolver testgraph_random(N);
 	testgraph_random.connect(DirGraph::RANDOM_EDGES, 0.05); // Constructing graph from paper
 
 	t.start();
