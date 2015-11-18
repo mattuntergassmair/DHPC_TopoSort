@@ -7,25 +7,40 @@ GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 
-all: toposort.exe
+all: toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe
 
-toposort.exe: main_toposort.o graph.o graphdoc.o node.o
-	$(COMPILER) $(FLAGS) $^ -o toposort.exe
+toposort_serial.exe: main_toposort.o graph.o graphsort_serial.o graphdoc.o node.o
+	$(COMPILER) $(FLAGS) $^ -o $@
+
+toposort_omp_basic.exe: main_toposort.o graph.o graphsort_omp_basic.o graphdoc.o node.o
+	$(COMPILER) $(FLAGS) $^ -o $@
+
+toposort_omp_tasks.exe: main_toposort.o graph.o graphsort_omp_tasks.o graphdoc.o node.o
+	$(COMPILER) $(FLAGS) $^ -o $@
 
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c $< 
 
-graph.o: graph.cpp graph.hpp node.hpp graphsort_omp_basic.hpp graphsort_omp_tasks.hpp
-	$(COMPILER) $(FLAGS) -c graph.cpp
+graph.o: graph.cpp graph.hpp node.hpp
+	$(COMPILER) $(FLAGS) -c $<
 
-graphdoc.o: graphdoc.cpp graph.hpp
+graphsort_serial.o: graphsort_serial.cpp graph.hpp node.hpp
+	$(COMPILER) $(FLAGS) -c $<
+
+graphsort_omp_basic.o: graphsort_omp_basic.cpp graph.hpp node.hpp
+	$(COMPILER) $(FLAGS) -c $<
+
+graphsort_omp_tasks.o: graphsort_omp_tasks.cpp graph.hpp node.hpp
+	$(COMPILER) $(FLAGS) -c $<
+
+graphdoc.o: graphdoc.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c graphdoc.cpp
 
 node.o: node.cpp node.hpp
 	$(COMPILER) $(FLAGS) -c node.cpp
 
-run: toposort.exe
-	./toposort.exe
+run: toposort_omp_basic.exe
+	./toposort_omp_basic.exe
 
 viz: $(GRAPHIMG_FILES)
 	display *.png;

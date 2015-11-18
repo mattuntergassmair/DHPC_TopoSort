@@ -4,11 +4,9 @@
 #include "graph.hpp"
 #include "rdtsc_timer.hpp"
 
-#include "graphsort_serial.hpp"
-#include "graphsort_omp_tasks.hpp"
-#include "graphsort_omp_basic.hpp"
-
-typedef GraphSort_OMP_Basic GraphSort;
+// #include "graphsort_serial.hpp"
+// #include "graphsort_omp_tasks.hpp"
+// #include "graphsort_omp_basic.hpp"
 
 int main() {
 #ifndef NDEBUG
@@ -21,7 +19,7 @@ int main() {
 	util::rdtsc_timer t;
 
 	// Initializing graph
-	GraphSort testgraph_paper(9);
+	Graph testgraph_paper(9);
 	testgraph_paper.connect(Graph::PAPER); // Constructing graph from paper
 	testgraph_paper.topSort();
 	testgraph_paper.checkCorrect(true);
@@ -31,7 +29,7 @@ int main() {
 	
 	// Initializing graph with random edges
 	unsigned const N = 5000;
-	GraphSort testgraph_random(N);
+	Graph testgraph_random(N);
 	testgraph_random.connect(Graph::RANDOM_EDGES, 0.05); // Constructing graph from paper
 
 	t.start();

@@ -25,8 +25,8 @@ class Graph {
 				nodes_[i] = std::make_shared<Node>(i);
 			}
 		}
-        virtual ~Graph(){}
-        virtual void topSort() = 0;
+        ~Graph(){}
+        void topSort();
         
 		void connect(unsigned, double edgeFillDegree = .3);
         bool checkCorrect(bool verbose);
