@@ -1,10 +1,10 @@
 #ifndef GRAPH_SYNCVAL_HPP
 #define GRAPH_SYNCVAL_HPP
 
-#include "../graph.hpp"
+#include "graph.hpp"
 
-class GraphSyncval : public DirGraph{
-    using DirGraph::DirGraph;
+class GraphSort_OMP_Basic : public Graph {
+    using Graph::Graph;
     public:
     void topSort() {
         

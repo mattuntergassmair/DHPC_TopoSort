@@ -14,7 +14,7 @@ using namespace std;
 
 
 
-void DirGraph::connect(unsigned type, double edgeFillDegree) {
+void Graph::connect(unsigned type, double edgeFillDegree) {
 	
 	std::cout << "\nConnection Mode:\t";
 
@@ -54,10 +54,10 @@ void DirGraph::connect(unsigned type, double edgeFillDegree) {
 			// Prepare the random number generator
 			const int seed = 42;
 			std::mt19937 gen(seed);
-			std::uniform_int_distribution<DirGraph::nodearray_type::size_type> dis(0, N_-1);
+			std::uniform_int_distribution<Graph::nodearray_type::size_type> dis(0, N_-1);
 			auto rnd = std::bind(dis, gen);
 
-			for(DirGraph::nodearray_type::size_type i = 0; i < nEdges; i++){
+			for(Graph::nodearray_type::size_type i = 0; i < nEdges; i++){
 				auto rn0 = rnd();
 				auto rn1 = rnd();
 				
@@ -90,7 +90,7 @@ void DirGraph::connect(unsigned type, double edgeFillDegree) {
 
 }
 
-bool DirGraph::checkCorrect(bool verbose) {
+bool Graph::checkCorrect(bool verbose) {
 	
     std::cout << "\n>>Begin Check\n\n";
 	bool correct = true;

@@ -4,8 +4,8 @@
 #include "graph.hpp"
 #include "rdtsc_timer.hpp"
 
-#include "sortversions/graph_tasks.hpp"
-#include "sortversions/graph_syncval.hpp"
+#include "graphsort_omp_tasks.hpp"
+#include "graphsort_omp_basic.hpp"
 
 typedef GraphSyncval GraphSolver;
 
@@ -21,7 +21,7 @@ int main() {
 
 	// Initializing graph
 	GraphSolver testgraph_paper(9);
-	testgraph_paper.connect(DirGraph::PAPER); // Constructing graph from paper
+	testgraph_paper.connect(Graph::PAPER); // Constructing graph from paper
 	testgraph_paper.topSort();
 	testgraph_paper.checkCorrect(true);
 	testgraph_paper.printNodeInfo();
@@ -31,7 +31,7 @@ int main() {
 	// Initializing graph with random edges
 	unsigned const N = 5000;
 	GraphSolver testgraph_random(N);
-	testgraph_random.connect(DirGraph::RANDOM_EDGES, 0.05); // Constructing graph from paper
+	testgraph_random.connect(Graph::RANDOM_EDGES, 0.05); // Constructing graph from paper
 
 	t.start();
 	testgraph_random.topSort();

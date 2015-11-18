@@ -1,5 +1,5 @@
-#ifndef DIRGRAPH_HPP
-#define DIRGRAPH_HPP
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
 
 #include <iostream>
 #include <vector>
@@ -8,7 +8,7 @@
 
 #include "node.hpp"
 
-class DirGraph {
+class Graph {
 
 	public:
 
@@ -16,7 +16,7 @@ class DirGraph {
 
 		typedef std::vector<std::shared_ptr<Node> > nodearray_type;
         typedef std::list<std::shared_ptr<Node> > solution_type;
-		explicit DirGraph(unsigned N)
+		explicit Graph(unsigned N)
 			: N_(N)
 			, nodes_(nodearray_type(N_))
 		{
@@ -25,7 +25,7 @@ class DirGraph {
 				nodes_[i] = std::make_shared<Node>(i);
 			}
 		}
-        virtual ~DirGraph(){}
+        virtual ~Graph(){}
         virtual void topSort() = 0;
         
 		void connect(unsigned, double edgeFillDegree = .3);
@@ -44,4 +44,4 @@ class DirGraph {
         solution_type solution_;
 };
 
-#endif // DIRGRAPH_HPP
+#endif // GRAPH_HPP

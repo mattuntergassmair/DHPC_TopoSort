@@ -15,7 +15,7 @@ toposort.exe: main_toposort.o graph.o graphdoc.o node.o
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c $< 
 
-graph.o: graph.cpp graph.hpp node.hpp
+graph.o: graph.cpp graph.hpp node.hpp graphsort_omp_basic.hpp graphsort_omp_tasks.hpp
 	$(COMPILER) $(FLAGS) -c graph.cpp
 
 graphdoc.o: graphdoc.cpp graph.hpp

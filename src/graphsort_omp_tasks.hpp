@@ -1,10 +1,10 @@
 #ifndef GRAPH_TASKS_HPP
 #define GRAPH_TASKS_HPP
 
-#include "../graph.hpp"
+#include "graph.hpp"
 
-class GraphTasks : public DirGraph{
-    using DirGraph::DirGraph;
+class GraphSort_OMP_Tasks : public Graph {
+    using Graph::Graph;
     public:
     
     void topSort(){
