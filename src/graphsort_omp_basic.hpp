@@ -1,5 +1,5 @@
-#ifndef GRAPH_SYNCVAL_HPP
-#define GRAPH_SYNCVAL_HPP
+#ifndef GRAPHSORT_OMP_BASIC_HPP
+#define GRAPHSORT_OMP_BASIC_HPP
 
 #include "graph.hpp"
 
@@ -97,4 +97,4 @@ class GraphSort_OMP_Basic : public Graph {
 };
 
 
-#endif
+#endif //  GRAPHSORT_OMP_BASIC_HPP

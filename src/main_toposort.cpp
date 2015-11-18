@@ -4,6 +4,7 @@
 #include "graph.hpp"
 #include "rdtsc_timer.hpp"
 
+#include "graphsort_serial.hpp"
 #include "graphsort_omp_tasks.hpp"
 #include "graphsort_omp_basic.hpp"
 

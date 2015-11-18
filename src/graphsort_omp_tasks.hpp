@@ -1,5 +1,5 @@
-#ifndef GRAPH_TASKS_HPP
-#define GRAPH_TASKS_HPP
+#ifndef GRAPHSORT_OMPTASKS_HPP
+#define GRAPHSORT_OMPTASKS_HPP
 
 #include "graph.hpp"
 
@@ -66,4 +66,4 @@ class GraphSort_OMP_Tasks : public Graph {
 };
 
 
-#endif
+#endif //  GRAPHSORT_OMPTASKS_HPP
