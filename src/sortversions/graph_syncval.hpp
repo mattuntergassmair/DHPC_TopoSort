@@ -11,7 +11,7 @@ class GraphSyncval : public DirGraph{
         // Sorting Magic happens here
         
         unsigned syncVal = 1;
-        unsigned nFinished;
+        unsigned nFinished = 0;
         std::vector<short> threadFinished;
 
         // Spawn OMP threads
