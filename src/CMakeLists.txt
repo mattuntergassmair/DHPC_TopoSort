@@ -33,4 +33,6 @@ set(
   "node.cpp"
 )
 
-add_executable(toposort.exe ${SRC_SOURCES})
+add_executable(topoort_serial.exe ${SRC_SOURCES} graphsort_serial.cpp)
+add_executable(toposort_omp_basic.exe ${SRC_SOURCES} graphsort_omp_basic.cpp)
+add_executable(toposort_omp_tasks.exe ${SRC_SOURCES} graphsort_omp_tasks.cpp)
