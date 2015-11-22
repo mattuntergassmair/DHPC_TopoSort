@@ -40,6 +40,9 @@ int main() {
 	std::cout << "Elapsed [s]: " << t.sec() << std::endl;
     std::cout << "Elapsed [cycles]: " << t.cycles() << std::endl;
 	
+    #ifdef ENABLE_ANALYSIS
+        testgraph_random.analysis_.summary(std::cout);
+    #endif
 	return 0;
 
 }

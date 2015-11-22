@@ -8,6 +8,8 @@ GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 
 all: toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe
+analysis: $(eval FLAGS += -DENABLE_ANALYSIS) all
+
 
 toposort_serial.exe: main_toposort.o graph.o graphsort_serial.o graphdoc.o node.o
 	$(COMPILER) $(FLAGS) $^ -o $@

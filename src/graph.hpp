@@ -8,6 +8,10 @@
 
 #include "node.hpp"
 
+#ifdef ENABLE_ANALYSIS
+#include "analysis.hpp"
+#endif
+
 class Graph {
 
 	public:
@@ -37,6 +41,9 @@ class Graph {
         void printSolution();
 		void viz(std::string) const;
         
+#ifdef ENABLE_ANALYSIS
+        analysis analysis_;
+#endif        
 	protected:
 
 		unsigned N_;
