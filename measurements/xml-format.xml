@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+    <measurement>
+        <date>1448229125</date><!-- Unix timestamp -->
+        <threads>8</threads>
+        <processors>4</processors>
+        <totalTime>0.227136</totalTime><!-- in seconds -->
+        <barrierTime>0.0010912</barrierTime><!-- in seconds -->
+        <criticalPushBackTime>0.0014023</criticalPushBackTime><!-- in seconds -->
+        <criticalRequestValueUpdateTime>0.0890668</criticalRequestValueUpdateTime><!-- in seconds -->
+        <algorithm>Algorithm name</algorithm>
+        <processedNodes>45432520</processedNodes><!-- per thread -->
+    </measurement>
+</measurements>
