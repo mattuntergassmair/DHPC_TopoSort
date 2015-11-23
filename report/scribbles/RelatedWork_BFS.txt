@@ -1,0 +1,22 @@
+=== Difference between Topological sort and BFS ===
+
+Consider this DAG
+
+A -> B
+B -> C
+A -> C
+
+A valid BFS traversal order would be: A, C, B, since B and C are both children of A.
+
+However, this is not a valid topological sorting. Only A, B, C is a valid topological sorting in this example,
+because C must come after B.
+
+Fundamental difference: C cannot "choose" his parent arbitrarily, but it must be the one "who arrives last" (who has travelled the longest path until reaching C)
+Note: It is because of this difference that the bottom up idea of Beamer's BFS is not applicable to TS.
+
+
+=== Relevance of BFS papers for TS ===
+TS and BFS have in common that for every node, all children have to be looked at, i.e. the complexity is in both cases O(V+E)
+We can learn from BFS papers how to parallelize, i.e. how to split nodes, whether to use barriers at the end of a step or use some other synchronization etc.
+
+Parallel BFS papers: \cite{beamer2013direction}, \cite{bulucc2011parallel}
