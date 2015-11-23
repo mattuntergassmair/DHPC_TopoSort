@@ -10,6 +10,11 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{listings}	
+\usepackage{multicol}
+
+
+\newenvironment{invisible}{\par\bigskip\color{gray}}{\par\bigskip}
+
 
 \title{Topological Sorting}
 \subtitle{Design of High Performance Computing Project \\ ETH Zürich, HS2015}
@@ -21,7 +26,20 @@
 
 \maketitle
 
+\begin{multicols}{2}
+
 \abstract{We can already start putting some theory parts in the report right now, so it's easier later to get everything together\ldots \\
 Formatting comes later.}
+
+Blablabla
+
+\begin{invisible}
+	This will not be in final report \\
+	we can put derivations and remarks here
+\end{invisible}
+
+Blablabla
+
+\end{multicols}
 
 \end{document}
