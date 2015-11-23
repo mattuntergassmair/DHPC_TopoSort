@@ -52,11 +52,24 @@ class Node {
 			return childcount_;
 		}
 
+#if OPTIMISTIC == 1
 		inline bool requestValueUpdate() {
+			#pragma omp atomic
 			--parcount_;
 			assert(parcount_>=0);
 			return (parcount_ == 0);
 		}
+#else
+		inline bool requestValueUpdate() {
+			#pragma omp critical
+			{
+			--parcount_;
+			assert(parcount_>=0);
+			bool lastone = (parcount_ == 0);
+			}
+			return lastone;
+		}
+#endif // OPTIMISTIC
 
 
 	private:

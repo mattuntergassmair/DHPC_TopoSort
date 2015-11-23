@@ -1,6 +1,6 @@
 COMPILER = g++ # Linux
 # COMPILER = icc # XeonPhi
-FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 # Linux
+FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 -D OPTIMISTIC=1 # Linux
 # FLAGS = -mmic -fopenmp
 
 GRAPHSRC_FILES := $(wildcard *.gv)
@@ -8,8 +8,8 @@ GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 
 all: toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe
-analysis: $(eval FLAGS += -DENABLE_ANALYSIS) all
 
+analysis: $(eval FLAGS += -DENABLE_ANALYSIS) all
 
 toposort_serial.exe: main_toposort.o graph.o graphsort_serial.o graphdoc.o node.o
 	$(COMPILER) $(FLAGS) $^ -o $@
