@@ -20,6 +20,9 @@ toposort_omp_basic.exe: main_toposort.o graph.o graphsort_omp_basic.o graphdoc.o
 toposort_omp_tasks.exe: main_toposort.o graph.o graphsort_omp_tasks.o graphdoc.o node.o
 	$(COMPILER) $(FLAGS) $^ -o $@
 
+toposort_omp_bitset.exe: main_toposort.o graph.o graphsort_omp_bitset.o graphdoc.o node.o
+	$(COMPILER) $(FLAGS) $^ -o $@
+
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c $< 
 
@@ -33,6 +36,9 @@ graphsort_omp_basic.o: graphsort_omp_basic.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c $<
 
 graphsort_omp_tasks.o: graphsort_omp_tasks.cpp graph.hpp node.hpp
+	$(COMPILER) $(FLAGS) -c $<
+
+graphsort_omp_bitset.o: graphsort_omp_bitset.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c $<
 
 graphdoc.o: graphdoc.cpp graph.hpp node.hpp
