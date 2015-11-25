@@ -3,11 +3,13 @@ COMPILER = g++ # Linux
 FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 -D OPTIMISTIC=1 # Linux
 # FLAGS = -mmic -fopenmp
 
+GENERICDEPENDENCIES = # TODO: fix this
+
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 
-all: prepare toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe
+all: prepare toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe toposort_omp_locallist.exe
 
 prepare:
 	cp graph.hpp graph.analysis.hpp
@@ -16,6 +18,9 @@ toposort_serial.exe: graph.o graphsort_serial.o graphdoc.o graph.analysis.o grap
 	$(COMPILER) $(FLAGS) $^ -o $@
 
 toposort_omp_basic.exe: graph.o graphsort_omp_basic.o graphdoc.o graph.analysis.o graphsort_omp_basic.analysis.o graphdoc.analysis.o node.o main_toposort.o
+	$(COMPILER) $(FLAGS) $^ -o $@
+
+toposort_omp_locallist.exe: graph.o graphsort_omp_locallist.o graphdoc.o graph.analysis.o graphsort_omp_locallist.analysis.o graphdoc.analysis.o node.o main_toposort.o
 	$(COMPILER) $(FLAGS) $^ -o $@
 
 toposort_omp_tasks.exe: graph.o graphsort_omp_tasks.o graphdoc.o graph.analysis.o graphsort_omp_tasks.analysis.o graphdoc.analysis.o node.o main_toposort.o
@@ -44,6 +49,12 @@ graphsort_omp_basic.o: graphsort_omp_basic.cpp graph.hpp node.hpp
 
 graphsort_omp_basic.analysis.o: graphsort_omp_basic.cpp graph.analysis.hpp node.hpp
 	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_omp_basic.analysis.o $<
+
+graphsort_omp_locallist.o: graphsort_omp_locallist.cpp graph.hpp node.hpp timerwrapper.hpp
+	$(COMPILER) $(FLAGS) -c $<
+
+graphsort_omp_locallist.analysis.o: graphsort_omp_locallist.cpp graph.analysis.hpp node.hpp timerwrapper.hpp
+	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_omp_locallist.analysis.o $<
 
 graphsort_omp_tasks.o: graphsort_omp_tasks.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c $<
