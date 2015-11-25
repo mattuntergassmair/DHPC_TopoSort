@@ -32,9 +32,9 @@ struct analysis{
     std::vector<time_t> t_requestValueUpdate;
     
     void summary(std::ostream& out){
-        time_t tt_barrier = std::accumulate(t_barrier.begin(), t_barrier.end(), 0.);
-        time_t tt_solution_pushback = std::accumulate(t_solution_pushback.begin(), t_solution_pushback.end(), 0.);
-        time_t tt_requestValueUpdate = std::accumulate(t_requestValueUpdate.begin(), t_requestValueUpdate.end(), 0.);
+        time_t tt_barrier = *(std::max_element(t_barrier.begin(), t_barrier.end()));
+        time_t tt_solution_pushback = *(std::max_element(t_solution_pushback.begin(), t_solution_pushback.end()));
+        time_t tt_requestValueUpdate = *(std::max_element(t_requestValueUpdate.begin(), t_requestValueUpdate.end()));
         
         out << "=========SUMMARY=========" << "\n";
         out << "# Threads: " << n_threads_ << "\n";
