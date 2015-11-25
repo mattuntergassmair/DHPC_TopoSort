@@ -7,9 +7,6 @@
 
 #include "node.hpp"
 
-#ifdef ENABLE_ANALYSIS
-#include "analysis.hpp"
-#endif
 
 #ifdef ENABLE_ANALYSIS
 class GraphAnalysis
@@ -48,9 +45,6 @@ class Graph
         void printSolution();
 		void viz(std::string) const;
         
-#ifdef ENABLE_ANALYSIS
-        analysis analysis_;
-#endif        
 	protected:
 
 		unsigned N_;

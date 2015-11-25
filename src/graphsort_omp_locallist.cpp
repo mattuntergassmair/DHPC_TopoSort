@@ -12,6 +12,7 @@ typedef Graph GraphType;
 
 void GraphType::topSort() {
 
+	// TODO: make this class member, else it needs to be initialized in topSort
 	timerwrapper A; // A for analysis
 
 	// Sorting Magic happens here
@@ -102,7 +103,7 @@ void GraphType::topSort() {
 			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
 			#ifdef ENABLE_ANALYSIS
             if(threadFinished[threadID] == 1 && hasJustFinished){
-                analysis_.last_syncVal[threadID] = syncVal;
+                A.count_LastSyncVal_[threadID] = syncVal;
                 hasJustFinished = false;
             }
             #endif

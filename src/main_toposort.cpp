@@ -46,9 +46,10 @@ int main() {
 	testgraph_random2.topSort();
     t.stop();
 	testgraph_random2.checkCorrect(false);
-    testgraph_random2.analysis_.t_total = t_total;
-    testgraph_random2.analysis_.t_timing_overhead = t.sec() - t_total;
-    testgraph_random2.analysis_.summary(std::cout);
+	// TODO: discuss if this makes sense
+    // testgraph_random2.analysis_.t_total = t_total;
+    // testgraph_random2.analysis_.t_timing_overhead = t.sec() - t_total;
+    // testgraph_random2.analysis_.summary(std::cout);
 	return 0;
 
 }

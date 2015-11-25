@@ -3,13 +3,14 @@ COMPILER = g++ # Linux
 FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 -D OPTIMISTIC=1 # Linux
 # FLAGS = -mmic -fopenmp
 
-GENERICDEPENDENCIES = # TODO: fix this
+GENERICDEPENDENCIES = graph.o graphdoc.o node.o # TODO: fix this
 
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 
-all: prepare toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe toposort_omp_locallist.exe
+all: prepare toposort_omp_locallist.exe
+	# toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe 
 
 prepare:
 	cp graph.hpp graph.analysis.hpp
