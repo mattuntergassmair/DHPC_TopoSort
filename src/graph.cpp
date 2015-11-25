@@ -12,9 +12,14 @@
 
 using namespace std;
 
+#ifdef ENABLE_ANALYSIS
+typedef GraphAnalysis GraphType;
+#else
+typedef Graph GraphType;
+#endif
 
 
-void Graph::connect(unsigned type, double edgeFillDegree) {
+void GraphType::connect(unsigned type, double edgeFillDegree) {
 	
 	std::cout << "\nConnection Mode:\t";
 
@@ -54,10 +59,10 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 			// Prepare the random number generator
 			const int seed = 42;
 			std::mt19937 gen(seed);
-			std::uniform_int_distribution<Graph::nodearray_type::size_type> dis(0, N_-1);
+			std::uniform_int_distribution<GraphType::nodearray_type::size_type> dis(0, N_-1);
 			auto rnd = std::bind(dis, gen);
 
-			for(Graph::nodearray_type::size_type i = 0; i < nEdges; i++){
+			for(GraphType::nodearray_type::size_type i = 0; i < nEdges; i++){
 				auto rn0 = rnd();
 				auto rn1 = rnd();
 				
@@ -90,7 +95,7 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 
 }
 
-bool Graph::checkCorrect(bool verbose) {
+bool GraphType::checkCorrect(bool verbose) {
 	
     std::cout << "\n>>Begin Check\n\n";
 	bool correct = true;

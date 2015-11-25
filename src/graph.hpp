@@ -12,7 +12,12 @@
 #include "analysis.hpp"
 #endif
 
-class Graph {
+#ifdef ENABLE_ANALYSIS
+class GraphAnalysis
+#else
+class Graph
+#endif
+{
 
 	public:
 
@@ -20,7 +25,11 @@ class Graph {
 
 		typedef std::vector<std::shared_ptr<Node> > nodearray_type;
         typedef std::list<std::shared_ptr<Node> > solution_type;
-		explicit Graph(unsigned N)
+#ifdef ENABLE_ANALYSIS
+		explicit GraphAnalysis(unsigned N)
+#else
+        explicit Graph(unsigned N)
+#endif
 			: N_(N)
 			, nodes_(nodearray_type(N_))
 		{
@@ -29,7 +38,6 @@ class Graph {
 				nodes_[i] = std::make_shared<Node>(i);
 			}
 		}
-        ~Graph(){}
         void topSort();
         
 		void connect(unsigned, double edgeFillDegree = .3);

@@ -8,6 +8,12 @@
 // #include "graphsort_omp_tasks.hpp"
 // #include "graphsort_omp_basic.hpp"
 
+#ifdef ENABLE_ANALYSIS
+typedef GraphAnalysis GraphType;
+#else
+typedef Graph GraphType;
+#endif
+
 int main() {
 #ifndef NDEBUG
     std::cout << "THIS IS THE DEBUG MODE" << std::endl;
@@ -19,8 +25,8 @@ int main() {
 	util::rdtsc_timer t;
 
 	// Initializing graph
-	Graph testgraph_paper(9);
-	testgraph_paper.connect(Graph::PAPER); // Constructing graph from paper
+	GraphType testgraph_paper(9);
+	testgraph_paper.connect(GraphType::PAPER); // Constructing graph from paper
 	testgraph_paper.topSort();
 	testgraph_paper.checkCorrect(true);
 	testgraph_paper.printNodeInfo();
@@ -29,8 +35,8 @@ int main() {
 	
 	// Initializing graph with random edges
 	unsigned const N = 5000;
-	Graph testgraph_random(N);
-	testgraph_random.connect(Graph::RANDOM_EDGES, 0.05); // Constructing graph from paper
+	GraphType testgraph_random(N);
+	testgraph_random.connect(GraphType::RANDOM_EDGES, 0.05); // Constructing graph from paper
 
 	t.start();
 	testgraph_random.topSort();

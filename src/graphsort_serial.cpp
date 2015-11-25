@@ -2,7 +2,13 @@
 
 #include <omp.h>
 
-void Graph::topSort() {
+#ifdef ENABLE_ANALYSIS
+typedef GraphAnalysis GraphType;
+#else
+typedef Graph GraphType;
+#endif
+
+void GraphType::topSort() {
 	
 	// Sorting Magic happens here
 	std::list<std::shared_ptr<Node> > currentnodes;

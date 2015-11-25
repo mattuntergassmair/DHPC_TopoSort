@@ -1,3 +1,6 @@
+#ifndef ANALYSIS_HPP
+#define ANALYSIS_HPP
+
 #include <vector>
 #include <ostream>
 #include <omp.h>
@@ -58,3 +61,6 @@ struct analysis{
         out << "\n";         
     }
 };
+
+
+#endif

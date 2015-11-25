@@ -6,7 +6,14 @@
 #include "rdtsc_timer.hpp"
 #endif
 
-void Graph::topSort() {
+#ifdef ENABLE_ANALYSIS
+typedef GraphAnalysis GraphType;
+#else
+typedef Graph GraphType;
+#endif
+
+
+void GraphType::topSort() {
 
     #ifdef ENABLE_ANALYSIS
     util::rdtsc_timer rt_total;
@@ -21,6 +28,9 @@ void Graph::topSort() {
     nThreads = omp_get_num_threads();
     // Create a Vector entry specifying whether thread is done or not
 	std::vector<bool> threadFinished(nThreads, false);
+    
+    // Indicator vector true if node is a current node (aka frontier node)
+    std::vector<bool> isCurrentNode(2*N_, false);
 
 	// Spawn OMP threads
 	#pragma omp parallel shared(syncVal, nFinished)
@@ -35,24 +45,18 @@ void Graph::topSort() {
 
 		// Declare Thread Private Variables
 		const int threadID = omp_get_thread_num();
-        std::list<std::shared_ptr<Node> > currentnodes;
-
-		std::shared_ptr<Node> parent;
-		std::shared_ptr<Node> child;
 		unsigned childcount = 0;
 		unsigned currentvalue = 0;
 
 		// Distribute Root Nodes among Threads
+        #pragma omp for
 		for(unsigned i=0; i<N_; ++i) {
 			// TODO: find smarter way for distributing nodes
-			if(nodes_[i]->getValue()==1 && i%nThreads==threadID) currentnodes.push_back(nodes_[i]);
+			if(nodes_[i]->getValue()==1)
+                isCurrentNode[i] = true;
 		}
 
-        #ifdef ENABLE_ANALYSIS
-        analysis_.n_initial_currentnodes[threadID] = currentnodes.size();
-        #endif
 		// TODO: OPTIMIZATION handle and redistribute tasks
-	
         #ifdef ENABLE_ANALYSIS
         rt_barrier.start();
         #endif
@@ -62,13 +66,16 @@ void Graph::topSort() {
         analysis_.t_barrier[threadID] += rt_barrier.sec();
         #endif
 		unsigned i=0;
-		while(i<N_ && nFinished<nThreads) {
-
+        #pragma omp for schedule(dynamic, 256)
+        for(size_t i = 0; i < N_; ++i){
+            if(!isCurrentNode[i])
+                continue;
+            
 			while(!currentnodes.empty()) {
                 #ifdef ENABLE_ANALYSIS
                 n_processed_nodes++;
                 #endif
-				parent = currentnodes.front();
+				auto parent = currentnodes.front();
 				currentvalue = parent->getValue();
 
 				if(currentvalue>syncVal) {
@@ -94,7 +101,7 @@ void Graph::topSort() {
 
 				bool flag;
 				for(unsigned c=0; c<childcount; ++c) {
-					child = parent->getChild(c);
+					auto child = parent->getChild(c);
 
 					// Checking if last parent trying to update
                     #ifdef ENABLE_ANALYSIS

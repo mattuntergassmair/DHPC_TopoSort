@@ -13,15 +13,22 @@
 #define CMAKE_SOURCE_DIR "."
 #endif
 
+#ifdef ENABLE_ANALYSIS
+typedef GraphAnalysis GraphType;
+#else
+typedef Graph GraphType;
+#endif
+
+
 // Print Node Info to console
-void Graph::printNodeInfo() {
+void GraphType::printNodeInfo() {
 	for(unsigned i=0; i<N_; ++i) {
 		std::cout << "ID: " << nodes_[i]->getID()
 				<< "\tV: " << nodes_[i]->getValue() << "\n";
 	}
 }
 
-void Graph::printSolution() {
+void GraphType::printSolution() {
     std::cout << "Solution (Node IDs)" << std::endl;
     for(auto elem : solution_){
         std::cout << elem->getID() << " ";
@@ -30,7 +37,7 @@ void Graph::printSolution() {
 }
 
 // Create graphviz file for drawing graph
-void Graph::viz(std::string graphfilename) const {
+void GraphType::viz(std::string graphfilename) const {
 
 	// Don't create huge graphviz files
 	if(N_>200) return;

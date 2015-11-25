@@ -6,7 +6,14 @@
 #include "rdtsc_timer.hpp"
 #endif
 
-void Graph::topSort() {
+#ifdef ENABLE_ANALYSIS
+typedef GraphAnalysis GraphType;
+#else
+typedef Graph GraphType;
+#endif
+
+
+void GraphType::topSort() {
 
     #ifdef ENABLE_ANALYSIS
     util::rdtsc_timer rt_total;
