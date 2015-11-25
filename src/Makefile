@@ -51,10 +51,10 @@ graphsort_omp_basic.o: graphsort_omp_basic.cpp graph.hpp node.hpp
 graphsort_omp_basic.analysis.o: graphsort_omp_basic.cpp graph.analysis.hpp node.hpp
 	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_omp_basic.analysis.o $<
 
-graphsort_omp_locallist.o: graphsort_omp_locallist.cpp graph.hpp node.hpp timerwrapper.hpp
+graphsort_omp_locallist.o: graphsort_omp_locallist.cpp graph.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c $<
 
-graphsort_omp_locallist.analysis.o: graphsort_omp_locallist.cpp graph.analysis.hpp node.hpp timerwrapper.hpp
+graphsort_omp_locallist.analysis.o: graphsort_omp_locallist.cpp graph.analysis.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_omp_locallist.analysis.o $<
 
 graphsort_omp_tasks.o: graphsort_omp_tasks.cpp graph.hpp node.hpp

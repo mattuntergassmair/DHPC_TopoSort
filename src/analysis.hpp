@@ -1,3 +1,6 @@
+// #ifndef ANALYSIS_HPP
+// #define ANALYSIS_HPP
+
 #ifdef ENABLE_ANALYSIS
 #include "rdtsc_timer.hpp"
 #endif
@@ -8,13 +11,10 @@
 
 
 // TODO: check nested include guards
-// #ifndef ANALYSIS_HPP
-// #define ANALYSIS_HPP
-// #endif // ANALYSIS_HPP
 
 
 #ifdef ENABLE_ANALYSIS
-struct timerwrapper {
+struct analysis {
 
 	// TYPES AND VARIABLES
 	
@@ -27,7 +27,7 @@ struct timerwrapper {
 	using type_timingvector = std::vector<type_timingmap>;
 	using type_clockvector = std::vector<util::rdtsc_timer>;
 
-	timerwrapper()
+	analysis()
 		:	count_InitialNodes_()
 		,	count_ProcessedNodes_()
 		,	count_LastSyncVal_()
@@ -110,7 +110,7 @@ struct timerwrapper {
 
 #else // declare empty inline functions - they will disappear
 
-struct timerwrapper {
+struct analysis {
 
 	enum timecat {BARRIER,SOLUTIONPUSHBACK,REQUESTVALUEUPDATE,N_TIMECAT};
 
@@ -124,7 +124,4 @@ struct timerwrapper {
 #endif // ENABLE_ANALYSIS
 
 
-
-
-
-
+// #endif // ANALYSIS_HPP

@@ -1,5 +1,5 @@
 #include "graph.hpp"
-#include "timerwrapper.hpp"
+#include "analysis.hpp"
 #include <omp.h>
 
 
@@ -13,7 +13,7 @@ typedef Graph GraphType;
 void GraphType::topSort() {
 
 	// TODO: make this class member, else it needs to be initialized in topSort
-	timerwrapper A; // A for analysis
+	analysis A; // A for analysis
 
 	// Sorting Magic happens here
 	
@@ -54,9 +54,9 @@ void GraphType::topSort() {
 		
 		// TODO: OPTIMIZATION handle and redistribute tasks
 
-		A.starttiming(timerwrapper::BARRIER);
+		A.starttiming(analysis::BARRIER);
 		#pragma omp barrier // make sure everything is set up alright
-        A.stoptiming(threadID,timerwrapper::BARRIER);
+        A.stoptiming(threadID,analysis::BARRIER);
 		
 		unsigned i=0;
 		while(i<N_ && nFinished<nThreads) {
@@ -72,12 +72,12 @@ void GraphType::topSort() {
 					assert(currentvalue == syncVal+1);
 					break;
 				} else {
-					A.starttiming(timerwrapper::SOLUTIONPUSHBACK);
+					A.starttiming(analysis::SOLUTIONPUSHBACK);
 					#pragma omp critical 
 					{
 						solution_.push_back(parent); // IMPORTANT: this must be atomic
 					}
-					A.stoptiming(threadID,timerwrapper::SOLUTIONPUSHBACK);
+					A.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
 					currentnodes.pop_front(); // remove current node - already visited
 				}
 
@@ -89,9 +89,9 @@ void GraphType::topSort() {
 					child = parent->getChild(c);
 
 					// Checking if last parent trying to update
-                    A.starttiming(timerwrapper::REQUESTVALUEUPDATE);
+                    A.starttiming(analysis::REQUESTVALUEUPDATE);
 					flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
-                    A.stoptiming(threadID,timerwrapper::REQUESTVALUEUPDATE);
+                    A.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
                     
                     if(flag) { // last parent checking child
 						currentnodes.push_back(child); // add child node at end of queue
@@ -112,9 +112,9 @@ void GraphType::topSort() {
 			#pragma omp single
 			nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
 
-			A.starttiming(timerwrapper::BARRIER);
+			A.starttiming(analysis::BARRIER);
 			#pragma omp barrier // make sure everything is set up alright
-			A.stoptiming(threadID,timerwrapper::BARRIER);
+			A.stoptiming(threadID,analysis::BARRIER);
 			
 			#pragma omp single
             ++syncVal;
