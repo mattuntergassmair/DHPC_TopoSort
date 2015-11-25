@@ -30,6 +30,7 @@ struct analysis{
     std::vector<size_t> n_initial_currentnodes;
     
     time_t t_total;
+    time_t t_timing_overhead;
     std::vector<time_t> t_barrier;
     std::vector<time_t> t_solution_pushback;
     std::vector<time_t> t_requestValueUpdate;

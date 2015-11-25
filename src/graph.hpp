@@ -1,5 +1,4 @@
-#ifndef GRAPH_HPP
-#define GRAPH_HPP
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -58,5 +57,3 @@ class Graph
 		nodearray_type nodes_;
         solution_type solution_;
 };
-
-#endif // GRAPH_HPP

@@ -15,10 +15,6 @@ typedef Graph GraphType;
 
 void GraphType::topSort() {
 
-    #ifdef ENABLE_ANALYSIS
-    util::rdtsc_timer rt_total;
-    rt_total.start();
-    #endif
 	// Sorting Magic happens here
 	
 	unsigned syncVal = 1;
@@ -153,9 +149,4 @@ void GraphType::topSort() {
             analysis_.n_processed_nodes[threadID] = n_processed_nodes;
         #endif
 	} // end of OMP parallel
-    
-#ifdef ENABLE_ANALYSIS
-    rt_total.stop();
-    analysis_.t_total = rt_total.sec();
-#endif
 }
