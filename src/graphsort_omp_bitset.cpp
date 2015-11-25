@@ -25,13 +25,17 @@ void GraphType::topSort() {
 	unsigned nFinished = 0;
     int nThreads;
     #pragma omp parallel
-    nThreads = omp_get_num_threads();
+    {
+        nThreads = omp_get_num_threads();
+    }
     // Create a Vector entry specifying whether thread is done or not
 	std::vector<bool> threadFinished(nThreads, false);
     
     // Indicator vector true if node is a current node (aka frontier node)
     std::vector<bool> isCurrentNode(2*N_, false);
-
+    std::vector<bool> newChildrenPerThread(nThreads, true);
+    bool newChildren = true;
+    int shift = 0;
 	// Spawn OMP threads
 	#pragma omp parallel shared(syncVal, nFinished)
 	{
@@ -65,35 +69,40 @@ void GraphType::topSort() {
         rt_barrier.stop();
         analysis_.t_barrier[threadID] += rt_barrier.sec();
         #endif
-		unsigned i=0;
-        #pragma omp for schedule(dynamic, 256)
-        for(size_t i = 0; i < N_; ++i){
-            if(!isCurrentNode[i])
-                continue;
+        
+        while(newChildren){
+            newChildrenPerThread[threadID] = false;
+            #pragma omp for schedule(dynamic, 256)
+            for(size_t i = 0; i < N_; ++i){
+                int idx = shift * N_ + i;
+                if(!isCurrentNode[idx])
+                    continue;
             
-			while(!currentnodes.empty()) {
                 #ifdef ENABLE_ANALYSIS
                 n_processed_nodes++;
                 #endif
-				auto parent = currentnodes.front();
+				auto parent = nodes_[i];
 				currentvalue = parent->getValue();
 
 				if(currentvalue>syncVal) {
 					assert(currentvalue == syncVal+1);
-					break;
+                    newChildrenPerThread[threadID] = true;
+                    isCurrentNode[idx] = false;
+                    isCurrentNode[((shift+1)%2) * N_ + i] = true;
+                    continue;
 				} else {
                     #ifdef ENABLE_ANALYSIS
                     rt_solution_pushback.start();
                     #endif
-					#pragma omp critical 
-					{
-						solution_.push_back(parent); // IMPORTANT: this must be atomic
-					}
+                    #pragma omp critical
+                    {
+                        solution_.push_back(parent); // IMPORTANT: this must be atomic
+                    }
                     #ifdef ENABLE_ANALYSIS
                     rt_solution_pushback.stop();
                     analysis_.t_solution_pushback[threadID] += rt_solution_pushback.sec();
                     #endif
-					currentnodes.pop_front(); // remove current node - already visited
+                    isCurrentNode[idx] = false;// remove current node - already visited
 				}
 
 				++currentvalue; // increase value for child nodes
@@ -117,38 +126,20 @@ void GraphType::topSort() {
                     analysis_.t_requestValueUpdate[threadID] += rt_requestValueUpdate.sec();
                     #endif
                     if(flag) { // last parent checking child
-						currentnodes.push_back(child); // add child node at end of queue
+                        newChildrenPerThread[threadID] = true;
+                        isCurrentNode[((shift+1)%2) * N_ + child->getID()] = true;// mark child as queued
 						child->setValue(currentvalue); // set value of child node to parentvalue
 					} 
-			
 				}
-			}
-			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
-			#ifdef ENABLE_ANALYSIS
-            if(threadFinished[threadID] == 1 && hasJustFinished){
-                analysis_.last_syncVal[threadID] = syncVal;
-                hasJustFinished = false;
+			}// end for => one frontier completed
+			#pragma omp single
+            {
+                ++syncVal;
+                //std::cout << "\nCurrent Depth = " << syncVal << std::flush;
+                shift = (shift+1)%2;
+                newChildren = std::find(newChildrenPerThread.begin(), newChildrenPerThread.end(), true) != newChildrenPerThread.end();
             }
-            #endif
-            
-            
-			#pragma omp single
-			nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
-
-            #ifdef ENABLE_ANALYSIS
-            rt_barrier.start();
-            #endif
-			#pragma omp barrier
-            #ifdef ENABLE_ANALYSIS
-            rt_barrier.stop();
-            analysis_.t_barrier[threadID] += rt_barrier.sec();
-            #endif
-			#pragma omp single
-            ++syncVal;
-			//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
-			
-			++i;
-		}
+        }
         #ifdef ENABLE_ANALYSIS
             analysis_.n_processed_nodes[threadID] = n_processed_nodes;
         #endif
