@@ -1,19 +1,10 @@
-#include "graph.hpp"
-
 #include <omp.h>
 
-#ifdef ENABLE_ANALYSIS
-#include "rdtsc_timer.hpp"
-#endif
-
-#ifdef ENABLE_ANALYSIS
-typedef GraphAnalysis GraphType;
-#else
-typedef Graph GraphType;
-#endif
+#include "graph.hpp"
+#include "analysis.hpp"
 
 
-void GraphType::topSort() {
+void Graph::topSort() {
 
     #ifdef ENABLE_ANALYSIS
     util::rdtsc_timer rt_total;

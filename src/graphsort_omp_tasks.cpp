@@ -1,16 +1,11 @@
-#include "graph.hpp"
-
 #include <omp.h>
 
-#ifdef ENABLE_ANALYSIS
-typedef GraphAnalysis GraphType;
-#else
-typedef Graph GraphType;
-#endif
+#include "graph.hpp"
+#include "analysis.hpp"
 
 
-void GraphType::topSort(){
-// Spawn OMP threads
+void Graph::topSort(){
+
 #pragma omp parallel
 {
 

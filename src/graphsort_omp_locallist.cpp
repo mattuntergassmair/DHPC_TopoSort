@@ -6,9 +6,6 @@
 
 void Graph::topSort() {
 
-	// TODO: make this class member, else it needs to be initialized in topSort
-	analysis A_; // A for analysis
-
 	// Sorting Magic happens here
 	
 	unsigned syncVal = 1;

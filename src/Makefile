@@ -3,70 +3,41 @@ COMPILER = g++ # Linux
 FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 -D OPTIMISTIC=1 # Linux
 # FLAGS = -mmic -fopenmp
 
+
+ALGORITHMS = serial omp_basic omp_tasks omp_locallist omp_bitset # --> serial
+EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
+OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
+
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 
-all: prepare toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe
+all: $(EXECUTABLES)
 
-prepare:
-	cp graph.hpp graph.analysis.hpp
 
-toposort_serial.exe: graph.o graphsort_serial.o graphdoc.o graph.analysis.o graphsort_serial.analysis.o graphdoc.analysis.o node.o main_toposort.o 
+$(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o
 	$(COMPILER) $(FLAGS) $^ -o $@
 
-toposort_omp_basic.exe: graph.o graphsort_omp_basic.o graphdoc.o graph.analysis.o graphsort_omp_basic.analysis.o graphdoc.analysis.o node.o main_toposort.o
-	$(COMPILER) $(FLAGS) $^ -o $@
 
-toposort_omp_tasks.exe: graph.o graphsort_omp_tasks.o graphdoc.o graph.analysis.o graphsort_omp_tasks.analysis.o graphdoc.analysis.o node.o main_toposort.o
-	$(COMPILER) $(FLAGS) $^ -o $@
-
-toposort_omp_bitset.exe: graph.o graphsort_omp_bitset.o graphdoc.o graph.analysis.o graphsort_omp_bitset.analysis.o graphdoc.analysis.o node.o main_toposort.o
-	$(COMPILER) $(FLAGS) $^ -o $@
-
-main_toposort.o: main_toposort.cpp graph.hpp node.hpp
+main_toposort.o: main_toposort.cpp graph.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c $< 
 
-graph.o: graph.cpp graph.hpp node.hpp
+graph.o: graph.cpp graph.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c $<
 
-graph.analysis.o: graph.cpp graph.analysis.hpp node.hpp
-	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graph.analysis.o $<
 
-graphsort_serial.o: graphsort_serial.cpp graph.hpp node.hpp
+$(OBJECTS): %.o: %.cpp graph.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c $<
 
-graphsort_serial.analysis.o: graphsort_serial.cpp graph.analysis.hpp node.hpp
-	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_serial.analysis.o $<
-
-graphsort_omp_basic.o: graphsort_omp_basic.cpp graph.hpp node.hpp
-	$(COMPILER) $(FLAGS) -c $<
-
-graphsort_omp_basic.analysis.o: graphsort_omp_basic.cpp graph.analysis.hpp node.hpp
-	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_omp_basic.analysis.o $<
-
-graphsort_omp_tasks.o: graphsort_omp_tasks.cpp graph.hpp node.hpp
-	$(COMPILER) $(FLAGS) -c $<
-
-graphsort_omp_tasks.analysis.o: graphsort_omp_tasks.cpp graph.analysis.hpp node.hpp
-	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_omp_tasks.analysis.o $<
-
-graphsort_omp_bitset.o: graphsort_omp_bitset.cpp graph.hpp node.hpp
-	$(COMPILER) $(FLAGS) -c $<
-
-graphsort_omp_bitset.analysis.o: graphsort_omp_bitset.cpp graph.analysis.hpp node.hpp
-	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphsort_omp_bitset.analysis.o $<
 
 graphdoc.o: graphdoc.cpp graph.hpp node.hpp
 	$(COMPILER) $(FLAGS) -c graphdoc.cpp
 
-graphdoc.analysis.o: graphdoc.cpp graph.analysis.hpp node.hpp
-	$(COMPILER) $(FLAGS) -DENABLE_ANALYSIS -c -o graphdoc.analysis.o graphdoc.cpp
-
 node.o: node.cpp node.hpp
 	$(COMPILER) $(FLAGS) -c node.cpp
 
-run: toposort_omp_basic.exe
+
+run: all
 	./toposort_omp_basic.exe
 
 viz: $(GRAPHIMG_FILES)
@@ -77,4 +48,4 @@ viz: $(GRAPHIMG_FILES)
 	dot -Tpng $< -o $@
 
 clean:
-	rm -rf *.exe *.o *.analysis.cpp *.analysis.hpp
+	rm -rf $(EXECUTABLES) *.o

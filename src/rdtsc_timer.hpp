@@ -66,6 +66,6 @@ namespace util {
         os << "time measured with high res clock: " << arg.sec() << " seconds";
         return os;
     }
-}//end namespace util
+} // end namespace util
 
-#endif //UTIL_RDTSC_TIMER_HEADER
+#endif // UTIL_RDTSC_TIMER_HEADER

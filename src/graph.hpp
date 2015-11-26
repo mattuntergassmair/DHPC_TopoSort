@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
 
 #include <iostream>
 #include <vector>
@@ -6,17 +7,10 @@
 #include <memory>
 
 #include "node.hpp"
-
-#ifdef ENABLE_ANALYSIS
 #include "analysis.hpp"
-#endif
 
-#ifdef ENABLE_ANALYSIS
-class GraphAnalysis
-#else
-class Graph
-#endif
-{
+
+class Graph {
 
 	public:
 
@@ -24,13 +18,11 @@ class Graph
 
 		typedef std::vector<std::shared_ptr<Node> > nodearray_type;
         typedef std::list<std::shared_ptr<Node> > solution_type;
-#ifdef ENABLE_ANALYSIS
-		explicit GraphAnalysis(unsigned N)
-#else
+        
         explicit Graph(unsigned N)
-#endif
-			: N_(N)
-			, nodes_(nodearray_type(N_))
+			:	N_(N)
+			,	nodes_(nodearray_type(N_))
+			,	A_()
 		{
 			std::cout << "Initialized graph of size " << N_ << "\n";
 			for(unsigned i=0; i<N_; ++i) {
@@ -48,12 +40,14 @@ class Graph
         void printSolution();
 		void viz(std::string) const;
         
-#ifdef ENABLE_ANALYSIS
-        analysis analysis_;
-#endif        
 	protected:
 
 		unsigned N_;
 		nodearray_type nodes_;
         solution_type solution_;
+        analysis A_;
+
 };
+
+
+#endif // GRAPH_HPP
