@@ -1,19 +1,13 @@
-#include "graph.hpp"
-
 #include <omp.h>
 
-#ifdef ENABLE_ANALYSIS
-#include "rdtsc_timer.hpp"
-#endif
-
-#ifdef ENABLE_ANALYSIS
-typedef GraphAnalysis GraphType;
-#else
-typedef Graph GraphType;
-#endif
+#include "graph.hpp"
+#include "analysis.hpp"
 
 
-void GraphType::topSort() {
+void Graph::topSort() {
+
+	// TODO: make this class member, else it needs to be initialized in topSort
+	analysis A; // A for analysis
 
 	// Sorting Magic happens here
 	
@@ -24,16 +18,15 @@ void GraphType::topSort() {
 	// Spawn OMP threads
 	#pragma omp parallel shared(syncVal, nFinished)
 	{
-        #ifdef ENABLE_ANALYSIS
-        util::rdtsc_timer rt_barrier;
-        util::rdtsc_timer rt_solution_pushback;
-        util::rdtsc_timer rt_requestValueUpdate;
-        size_t n_processed_nodes = 0;
-        bool hasJustFinished = true;
-        #endif
 		// Create a Vector entry specifying whether thread is done or not
 		#pragma omp critical
 		threadFinished.push_back(false);
+
+		// TODO: make even nicer
+		// #ifdef ENABLE_ANALYSIS
+		size_t n_processed_nodes = 0;
+		bool hasJustFinished = true;
+		// #endif
 
 		// Declare Thread Private Variables
 		const int nThreads = omp_get_num_threads();
@@ -51,25 +44,20 @@ void GraphType::topSort() {
 			if(nodes_[i]->getValue()==1 && i%nThreads==threadID) currentnodes.push_back(nodes_[i]);
 		}
 
-        #ifdef ENABLE_ANALYSIS
-        analysis_.n_initial_currentnodes[threadID] = currentnodes.size();
-        #endif
+		A.initialnodes(threadID,currentnodes.size());
+		
 		// TODO: OPTIMIZATION handle and redistribute tasks
-	
-        #ifdef ENABLE_ANALYSIS
-        rt_barrier.start();
-        #endif
+
+		A.starttiming(analysis::BARRIER);
 		#pragma omp barrier // make sure everything is set up alright
-        #ifdef ENABLE_ANALYSIS
-        rt_barrier.stop();
-        analysis_.t_barrier[threadID] += rt_barrier.sec();
-        #endif
+        A.stoptiming(threadID,analysis::BARRIER);
+		
 		unsigned i=0;
 		while(i<N_ && nFinished<nThreads) {
 
 			while(!currentnodes.empty()) {
                 #ifdef ENABLE_ANALYSIS
-                n_processed_nodes++;
+                n_processed_nodes++; // TODO: can remove ifdef here - we are not compute bound anyways
                 #endif
 				parent = currentnodes.front();
 				currentvalue = parent->getValue();
@@ -78,17 +66,12 @@ void GraphType::topSort() {
 					assert(currentvalue == syncVal+1);
 					break;
 				} else {
-                    #ifdef ENABLE_ANALYSIS
-                    rt_solution_pushback.start();
-                    #endif
+					A.starttiming(analysis::SOLUTIONPUSHBACK);
 					#pragma omp critical 
 					{
 						solution_.push_back(parent); // IMPORTANT: this must be atomic
 					}
-                    #ifdef ENABLE_ANALYSIS
-                    rt_solution_pushback.stop();
-                    analysis_.t_solution_pushback[threadID] += rt_solution_pushback.sec();
-                    #endif
+					A.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
 					currentnodes.pop_front(); // remove current node - already visited
 				}
 
@@ -100,18 +83,10 @@ void GraphType::topSort() {
 					child = parent->getChild(c);
 
 					// Checking if last parent trying to update
-                    #ifdef ENABLE_ANALYSIS
-                    rt_requestValueUpdate.start();
-                    #endif
-                        
-                    #pragma omp critical
-                    {
-						flag = child->requestValueUpdate(); // IMPORTANT: this must be atomic
-					}
-                    #ifdef ENABLE_ANALYSIS
-                    rt_requestValueUpdate.stop();
-                    analysis_.t_requestValueUpdate[threadID] += rt_requestValueUpdate.sec();
-                    #endif
+                    A.starttiming(analysis::REQUESTVALUEUPDATE);
+					flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
+                    A.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
+                    
                     if(flag) { // last parent checking child
 						currentnodes.push_back(child); // add child node at end of queue
 						child->setValue(currentvalue); // set value of child node to parentvalue
@@ -122,7 +97,7 @@ void GraphType::topSort() {
 			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
 			#ifdef ENABLE_ANALYSIS
             if(threadFinished[threadID] == 1 && hasJustFinished){
-                analysis_.last_syncVal[threadID] = syncVal;
+                A.count_LastSyncVal_[threadID] = syncVal;
                 hasJustFinished = false;
             }
             #endif
@@ -131,22 +106,17 @@ void GraphType::topSort() {
 			#pragma omp single
 			nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
 
-            #ifdef ENABLE_ANALYSIS
-            rt_barrier.start();
-            #endif
-			#pragma omp barrier
-            #ifdef ENABLE_ANALYSIS
-            rt_barrier.stop();
-            analysis_.t_barrier[threadID] += rt_barrier.sec();
-            #endif
+			A.starttiming(analysis::BARRIER);
+			#pragma omp barrier // make sure everything is set up alright
+			A.stoptiming(threadID,analysis::BARRIER);
+			
 			#pragma omp single
             ++syncVal;
 			//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
 			
 			++i;
 		}
-        #ifdef ENABLE_ANALYSIS
-            analysis_.n_processed_nodes[threadID] = n_processed_nodes;
-        #endif
+		A.processednodes(threadID,n_processed_nodes);
+	
 	} // end of OMP parallel
 }

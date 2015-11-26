@@ -37,7 +37,7 @@ struct analysis {
 	type_timingvector timings_;
 	type_time time_Total_;
 	unsigned nThreads_;
-	type_clockvector clocks_; // (10); // N_TIMECAT); // TODO: check
+	type_clockvector clocks_;
 
 
 	// FUNCTIONS
@@ -69,6 +69,8 @@ struct analysis {
     void printAnalysis(std::ostream& out){
        
        	// TODO: discuss - maybe better to sum over all elements, not take maximum
+       	// TODO: maybe not necessary to extract maximum/average
+       	//		we can write the timings of all threads to the database instead
        	// NOTE: max_element returns pointer to maximum element over all threads
        	// second extracts the timing value from the key-value pair
         type_time tmax_barrier = (std::max_element(timings_[BARRIER].begin(), timings_[BARRIER].end()))->second;
