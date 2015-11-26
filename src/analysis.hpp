@@ -1,19 +1,13 @@
 // #ifndef ANALYSIS_HPP
 // #define ANALYSIS_HPP
 
+
 #ifdef ENABLE_ANALYSIS
 #include "rdtsc_timer.hpp"
-#endif
-
 #include <vector>
 #include <map>
 #include <ostream>
 
-
-// TODO: check nested include guards
-
-
-#ifdef ENABLE_ANALYSIS
 struct analysis {
 
 	// TYPES AND VARIABLES
