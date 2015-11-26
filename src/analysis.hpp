@@ -1,5 +1,5 @@
-// #ifndef ANALYSIS_HPP
-// #define ANALYSIS_HPP
+#ifndef ANALYSIS_HPP
+#define ANALYSIS_HPP
 
 
 #ifdef ENABLE_ANALYSIS
@@ -120,4 +120,4 @@ struct analysis {
 #endif // ENABLE_ANALYSIS
 
 
-// #endif // ANALYSIS_HPP
+#endif // ANALYSIS_HPP

@@ -1,4 +1,5 @@
-// #pragma once // TODO: check why
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
 
 #include <iostream>
 #include <vector>
@@ -6,6 +7,7 @@
 #include <memory>
 
 #include "node.hpp"
+#include "analysis.hpp"
 
 
 class Graph {
@@ -18,8 +20,9 @@ class Graph {
         typedef std::list<std::shared_ptr<Node> > solution_type;
         
         explicit Graph(unsigned N)
-			: N_(N)
-			, nodes_(nodearray_type(N_))
+			:	N_(N)
+			,	nodes_(nodearray_type(N_))
+			,	A_()
 		{
 			std::cout << "Initialized graph of size " << N_ << "\n";
 			for(unsigned i=0; i<N_; ++i) {
@@ -42,4 +45,9 @@ class Graph {
 		unsigned N_;
 		nodearray_type nodes_;
         solution_type solution_;
+        analysis A_;
+
 };
+
+
+#endif // GRAPH_HPP

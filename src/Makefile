@@ -3,20 +3,19 @@ COMPILER = g++ # Linux
 FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 -D OPTIMISTIC=1 # Linux
 # FLAGS = -mmic -fopenmp
 
-GENERICDEPENDENCIES = main_toposort.o graph.o graphdoc.o node.o
+
+ALGORITHMS = serial omp_basic omp_tasks omp_locallist omp_bitset # --> serial
+EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
+OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
-
-ALGORITHMS = omp_locallist # serial omp_basic omp_tasks omp_locallist omp_bitset # --> serial
-EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
-OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 
 
 all: $(EXECUTABLES)
 
 
-$(EXECUTABLES): toposort_%.exe: graphsort_%.o $(GENERICDEPENDENCIES)
+$(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o
 	$(COMPILER) $(FLAGS) $^ -o $@
 
 
@@ -49,4 +48,4 @@ viz: $(GRAPHIMG_FILES)
 	dot -Tpng $< -o $@
 
 clean:
-	rm -rf $(EXECUTABLES) $(OBJECTS)
+	rm -rf $(EXECUTABLES) *.o

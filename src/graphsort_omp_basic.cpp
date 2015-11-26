@@ -7,7 +7,7 @@
 void Graph::topSort() {
 
 	// TODO: make this class member, else it needs to be initialized in topSort
-	analysis A; // A for analysis
+	analysis A_; // A for analysis
 
 	// Sorting Magic happens here
 	
@@ -44,13 +44,13 @@ void Graph::topSort() {
 			if(nodes_[i]->getValue()==1 && i%nThreads==threadID) currentnodes.push_back(nodes_[i]);
 		}
 
-		A.initialnodes(threadID,currentnodes.size());
+		A_.initialnodes(threadID,currentnodes.size());
 		
 		// TODO: OPTIMIZATION handle and redistribute tasks
 
-		A.starttiming(analysis::BARRIER);
+		A_.starttiming(analysis::BARRIER);
 		#pragma omp barrier // make sure everything is set up alright
-        A.stoptiming(threadID,analysis::BARRIER);
+        A_.stoptiming(threadID,analysis::BARRIER);
 		
 		unsigned i=0;
 		while(i<N_ && nFinished<nThreads) {
@@ -66,12 +66,12 @@ void Graph::topSort() {
 					assert(currentvalue == syncVal+1);
 					break;
 				} else {
-					A.starttiming(analysis::SOLUTIONPUSHBACK);
+					A_.starttiming(analysis::SOLUTIONPUSHBACK);
 					#pragma omp critical 
 					{
 						solution_.push_back(parent); // IMPORTANT: this must be atomic
 					}
-					A.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
+					A_.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
 					currentnodes.pop_front(); // remove current node - already visited
 				}
 
@@ -83,9 +83,9 @@ void Graph::topSort() {
 					child = parent->getChild(c);
 
 					// Checking if last parent trying to update
-                    A.starttiming(analysis::REQUESTVALUEUPDATE);
+                    A_.starttiming(analysis::REQUESTVALUEUPDATE);
 					flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
-                    A.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
+                    A_.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
                     
                     if(flag) { // last parent checking child
 						currentnodes.push_back(child); // add child node at end of queue
@@ -97,7 +97,7 @@ void Graph::topSort() {
 			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
 			#ifdef ENABLE_ANALYSIS
             if(threadFinished[threadID] == 1 && hasJustFinished){
-                A.count_LastSyncVal_[threadID] = syncVal;
+                A_.count_LastSyncVal_[threadID] = syncVal;
                 hasJustFinished = false;
             }
             #endif
@@ -106,9 +106,9 @@ void Graph::topSort() {
 			#pragma omp single
 			nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
 
-			A.starttiming(analysis::BARRIER);
+			A_.starttiming(analysis::BARRIER);
 			#pragma omp barrier // make sure everything is set up alright
-			A.stoptiming(threadID,analysis::BARRIER);
+			A_.stoptiming(threadID,analysis::BARRIER);
 			
 			#pragma omp single
             ++syncVal;
@@ -116,7 +116,7 @@ void Graph::topSort() {
 			
 			++i;
 		}
-		A.processednodes(threadID,n_processed_nodes);
+		A_.processednodes(threadID,n_processed_nodes);
 	
 	} // end of OMP parallel
 }

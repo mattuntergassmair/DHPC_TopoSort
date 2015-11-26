@@ -4,9 +4,8 @@
 #include "analysis.hpp"
 
 
-
 void Graph::topSort(){
-// Spawn OMP threads
+
 #pragma omp parallel
 {
 
