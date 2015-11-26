@@ -37,7 +37,7 @@ node.o: node.cpp node.hpp
 	$(COMPILER) $(FLAGS) -c node.cpp
 
 
-run: toposort_omp_basic.exe
+run: all
 	./toposort_omp_basic.exe
 
 viz: $(GRAPHIMG_FILES)
