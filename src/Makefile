@@ -3,36 +3,24 @@ COMPILER = g++ # Linux
 FLAGS = -O0 -std=c++11 -fopenmp -D VERBOSE=1 -D OPTIMISTIC=1 # Linux
 # FLAGS = -mmic -fopenmp
 
-GENERICDEPENDENCIES = main_toposort.o graph.o graphdoc.o node.o # TODO: fix this
+GENERICDEPENDENCIES = main_toposort.o graph.o graphdoc.o node.o
 
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
-
-OBJECTS =  graphsort_serial.o graphsort_omp_basic.o graphsort_omp_tasks.o graphsort_omp_locallist.o graphsort_omp_bitset.o 
-
-
-all: toposort_omp_locallist.exe
-	# toposort_serial.exe toposort_omp_basic.exe toposort_omp_tasks.exe 
+ALGORITHMS = omp_locallist # serial omp_basic omp_tasks omp_locallist omp_bitset # --> serial
+EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
+OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 
 
-toposort_serial.exe: graphsort_serial.o $(GENERICDEPENDENCIES) 
-	$(COMPILER) $(FLAGS) $^ -o $@
+all: $(EXECUTABLES)
 
-toposort_omp_basic.exe: graphsort_omp_basic.o $(GENERICDEPENDENCIES)
-	$(COMPILER) $(FLAGS) $^ -o $@
 
-toposort_omp_tasks.exe: graphsort_omp_tasks.o $(GENERICDEPENDENCIES)
-	$(COMPILER) $(FLAGS) $^ -o $@
-
-toposort_omp_locallist.exe: graphsort_omp_locallist.o $(GENERICDEPENDENCIES)
-	$(COMPILER) $(FLAGS) $^ -o $@
-
-toposort_omp_bitset.exe: graphsort_omp_bitset.o $(GENERICDEPENDENCIES)
+$(EXECUTABLES): toposort_%.exe: graphsort_%.o $(GENERICDEPENDENCIES)
 	$(COMPILER) $(FLAGS) $^ -o $@
 
 
-main_toposort.o: main_toposort.cpp graph.hpp node.hpp
+main_toposort.o: main_toposort.cpp graph.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c $< 
 
 graph.o: graph.cpp graph.hpp node.hpp analysis.hpp
@@ -61,4 +49,4 @@ viz: $(GRAPHIMG_FILES)
 	dot -Tpng $< -o $@
 
 clean:
-	rm -rf *.exe *.o
+	rm -rf $(EXECUTABLES) $(OBJECTS)

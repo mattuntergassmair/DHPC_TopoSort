@@ -1,4 +1,4 @@
-#pragma once
+// #pragma once // TODO: check why
 
 #include <iostream>
 #include <vector>
@@ -8,12 +8,7 @@
 #include "node.hpp"
 
 
-#ifdef ENABLE_ANALYSIS
-class GraphAnalysis
-#else
-class Graph
-#endif
-{
+class Graph {
 
 	public:
 
@@ -21,11 +16,8 @@ class Graph
 
 		typedef std::vector<std::shared_ptr<Node> > nodearray_type;
         typedef std::list<std::shared_ptr<Node> > solution_type;
-#ifdef ENABLE_ANALYSIS
-		explicit GraphAnalysis(unsigned N)
-#else
+        
         explicit Graph(unsigned N)
-#endif
 			: N_(N)
 			, nodes_(nodearray_type(N_))
 		{
