@@ -61,11 +61,12 @@ class Node {
 		}
 #else
 		inline bool requestValueUpdate() {
+			bool lastone;
 			#pragma omp critical
 			{
 			--parcount_;
 			assert(parcount_>=0);
-			bool lastone = (parcount_ == 0);
+			lastone = (parcount_ == 0);
 			}
 			return lastone;
 		}
@@ -85,6 +86,3 @@ class Node {
 };
 
 #endif // NODE_HPP
-
-
-
