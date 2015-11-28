@@ -1,7 +1,7 @@
 #include "node.hpp"
 
-typedef Node::value_type value_type;
-typedef Node::nodecontainer_type nodecontainer_type;
+using type_value = Node::type_value;
+using type_nodecontainer = Node::type_nodecontainer;
 
 
 void Node::addChild(std::shared_ptr<Node> child) {

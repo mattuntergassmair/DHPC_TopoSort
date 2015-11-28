@@ -12,16 +12,16 @@ class Node {
 
 	public:
 
-		typedef unsigned index_type;
-		typedef unsigned value_type;
-		typedef std::vector<std::shared_ptr<Node> > nodecontainer_type;
+		using type_index = unsigned;
+		using type_value = unsigned;
+		using type_nodecontainer = std::vector<std::shared_ptr<Node> >;
 
-		Node(index_type id)
+		Node(type_index id)
 			: id_(id)
 			, v_(1) // value = 1 by default
 			, childcount_(0)
 			, parcount_(0)
-			, childnodes_(nodecontainer_type(childcount_))
+			, childnodes_(type_nodecontainer(childcount_))
 		{
 			// NOTE: value = 1 indicates that a node is a source node
 			// (no other nodes pointing to it)
@@ -31,19 +31,19 @@ class Node {
 		void addChild(std::shared_ptr<Node> child);
 		bool hasChild(std::shared_ptr<Node> childCandidate);
 
-		inline value_type getValue() const {
+		inline type_value getValue() const {
 			return v_;
 		}
 		
-		inline value_type getID() const {
+		inline type_value getID() const {
 			return id_;
 		}
 
-		inline void setValue(value_type r) {
+		inline void setValue(type_value r) {
 			v_ = r;
 		}
 
-		inline std::shared_ptr<Node> getChild(index_type i) {
+		inline std::shared_ptr<Node> getChild(type_index i) {
 			assert(i<childcount_);
 			return childnodes_[i];
 		}
@@ -74,10 +74,10 @@ class Node {
 
 	private:
 
-		const index_type id_;
+		const type_index id_;
 		unsigned childcount_;
-		value_type v_;
-		nodecontainer_type childnodes_;
+		type_value v_;
+		type_nodecontainer childnodes_;
 		
 	protected:
 		unsigned parcount_;

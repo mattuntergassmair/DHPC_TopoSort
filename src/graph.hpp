@@ -16,12 +16,15 @@ class Graph {
 
 		enum GRAPH_TYPE {PAPER, RANDOM_EDGES};
 
-		typedef std::vector<std::shared_ptr<Node> > nodearray_type;
-        typedef std::list<std::shared_ptr<Node> > solution_type;
+		using type_nodeptr = std::shared_ptr<Node>;
+		using type_nodearray = std::vector<type_nodeptr>;
+        using type_nodelist = std::list<type_nodeptr>;
+        using type_solution = type_nodelist; // NB: I would prefer type_nodelist over type_solution - more generic (not all nodelists are solutions, for example currentnodes)
+        using type_size = analysis::type_size;
         
         explicit Graph(unsigned N)
 			:	N_(N)
-			,	nodes_(nodearray_type(N_))
+			,	nodes_(type_nodearray(N_))
 			,	A_()
 		{
 			std::cout << "Initialized graph of size " << N_ << "\n";
@@ -33,7 +36,7 @@ class Graph {
         
 		void connect(unsigned, double edgeFillDegree = .3);
         bool checkCorrect(bool verbose);
-        solution_type getSolution();
+        type_solution getSolution();
         
         // Print and doc methods (graphdoc.cpp)
 		void printNodeInfo();
@@ -43,8 +46,8 @@ class Graph {
 	protected:
 
 		unsigned N_;
-		nodearray_type nodes_;
-        solution_type solution_;
+		type_nodearray nodes_;
+        type_solution solution_;
         analysis A_;
 
 };

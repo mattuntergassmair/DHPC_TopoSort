@@ -3,117 +3,138 @@
 #include "graph.hpp"
 #include "analysis.hpp"
 
+using type_threadcount = analysis::type_time;
+
+// // TODO: template might be an overkill here
+// template<typename T>
+// void gatherlist(std::list<T> locallist, std::list<T> globallist, analysis::type_threadcount id) {
+// 	#pragma omp critical
+// 	{
+// 		globallist.splice(globallist.end(),locallist);
+// 	}
+// }
+
+// template<typename T>
+// void scatterlist(std::list<T> locallist, std::list<T> globallist, analysis::type_threadcount n) {
+// 	#pragma omp critical
+// 	{
+// 		analysis::type_size len = globallist.size();
+// 		n = std::min(n,len);
+// 		assert(locallist.empty());
+// 		// include assertion making sure that all values in currentnodes are the same; // TODO:
+// 		locallist.splice(locallist.end(),globallist,globallist.begin(),globallist.begin()+n);
+// 	}
+// }
+
+
+// TODO: improve analysis functionality - exclude all ifdefs form graphsort
+
 
 void Graph::topSort() {
 
-	// Sorting Magic happens here
-	
-	unsigned syncVal = 1;
-	unsigned nFinished = 0;
-	std::vector<short> threadFinished;
+	// // Sorting Magic happens here
 
-	// Spawn OMP threads
-	#pragma omp parallel shared(syncVal, nFinished)
-	{
-		// Create a Vector entry specifying whether thread is done or not
-		#pragma omp critical
-		threadFinished.push_back(false);
+	// // SHARED VARIABLES
+	// type_size syncVal = 1;
+	// type_threadcount nFinished = 0;
+	// type_size nCurrentNodes = 0;
+	// std::vector<type_threadcount> threadFinished;
+	// type_nodelist currentnodes;
 
-		// TODO: make even nicer
-		// #ifdef ENABLE_ANALYSIS
-		size_t n_processed_nodes = 0;
-		bool hasJustFinished = true;
-		// #endif
+	// // Start: currentnodes = root nodes 
+	// for(type_size i=0; i<N_; ++i) {
+	// 	if(nodes_[i]->getValue()==1) currentnodes.push_back(nodes_[i]);
+	// }
+	// nCurrentNodes = currentnodes.size();
 
-		// Declare Thread Private Variables
-		const int nThreads = omp_get_num_threads();
-		const int threadID = omp_get_thread_num();
-		std::list<std::shared_ptr<Node> > currentnodes;
+	// // TODO: check - can you make currentnodes shared? do you even need to?
+	// // make threadFinished shared (this could have been problem of implementation)
+	// // this might be the root of all evil
+
+	// // Spawn OMP threads
+	// #pragma omp parallel shared(syncVal, nFinished, nCurrentNodes)
+	// {
+	// 	// Create a Vector entry specifying whether thread is done or not
+	// 	#pragma omp critical
+	// 	threadFinished.push_back(false);
+
+	// 	// THREAD PRIVATE VARIABLES
+	// 	const int nThreads = omp_get_num_threads();
+	// 	const int threadID = omp_get_thread_num();
+	// 	type_nodelist currentnodes_local;
+	// 	type_nodelist solution_local;
 		
-		std::shared_ptr<Node> parent;
-		std::shared_ptr<Node> child;
-		unsigned childcount = 0;
-		unsigned currentvalue = 0;
+	// 	type_nodeptr parent;
+	// 	type_nodeptr child;
+	// 	type_size childcount = 0;
+	// 	type_size currentvalue = 0;
 
-		// Distribute Root Nodes among Threads
-		for(unsigned i=0; i<N_; ++i) {
-			// TODO: find smarter way for distributing nodes
-			if(nodes_[i]->getValue()==1 && i%nThreads==threadID) currentnodes.push_back(nodes_[i]);
-		}
-
-		A_.initialnodes(threadID,currentnodes.size());
+	// 	A_.initialnodes(threadID,currentnodes.size());
 		
-		// TODO: OPTIMIZATION handle and redistribute tasks
+	// 	// TODO: OPTIMIZATION handle and redistribute tasks
 
-		A_.starttiming(analysis::BARRIER);
-		#pragma omp barrier // make sure everything is set up alright
-        A_.stoptiming(threadID,analysis::BARRIER);
+	// 	A_.starttiming(analysis::BARRIER);
+	// 	#pragma omp barrier // make sure everything is set up alright
+        // A_.stoptiming(threadID,analysis::BARRIER);
 		
-		unsigned i=0;
-		while(i<N_ && nFinished<nThreads) {
+	// 	type_size i=0;
+	// 	while(i<N_ && nFinished<nThreads) {
 
-			while(!currentnodes.empty()) {
-                #ifdef ENABLE_ANALYSIS
-                n_processed_nodes++; // TODO: can remove ifdef here - we are not compute bound anyways
-                #endif
-				parent = currentnodes.front();
-				currentvalue = parent->getValue();
+	// 		while(!currentnodes.empty()) {
+                
+                // A_.incrementProcessedNodes(threadID);
+				
+	// 			parent = currentnodes.front();
+	// 			currentvalue = parent->getValue();
 
-				if(currentvalue>syncVal) {
-					assert(currentvalue == syncVal+1);
-					break;
-				} else {
-					A_.starttiming(analysis::SOLUTIONPUSHBACK);
-					#pragma omp critical 
-					{
-						solution_.push_back(parent); // IMPORTANT: this must be atomic
-					}
-					A_.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
-					currentnodes.pop_front(); // remove current node - already visited
-				}
+	// 			if(currentvalue>syncVal) {
+	// 				assert(currentvalue == syncVal+1);
+	// 				break;
+	// 			} else {
+	// 				A_.starttiming(analysis::SOLUTIONPUSHBACK);
+	// 				#pragma omp critical 
+	// 				{
+	// 					solution_.push_back(parent); // IMPORTANT: this must be atomic
+	// 				}
+	// 				A_.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
+	// 				currentnodes.pop_front(); // remove current node - already visited
+	// 			}
 
-				++currentvalue; // increase value for child nodes
-				childcount = parent->getChildCount();
+	// 			++currentvalue; // increase value for child nodes
+	// 			childcount = parent->getChildCount();
 
-				bool flag;
-				for(unsigned c=0; c<childcount; ++c) {
-					child = parent->getChild(c);
+	// 			bool flag;
+	// 			for(type_size c=0; c<childcount; ++c) {
+	// 				child = parent->getChild(c);
 
-					// Checking if last parent trying to update
-                    A_.starttiming(analysis::REQUESTVALUEUPDATE);
-					flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
-                    A_.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
+	// 				// Checking if last parent trying to update
+                    // A_.starttiming(analysis::REQUESTVALUEUPDATE);
+	// 				flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
+                    // A_.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
                     
-                    if(flag) { // last parent checking child
-						currentnodes.push_back(child); // add child node at end of queue
-						child->setValue(currentvalue); // set value of child node to parentvalue
-					} 
+                    // if(flag) { // last parent checking child
+	// 					currentnodes.push_back(child); // add child node at end of queue
+	// 					child->setValue(currentvalue); // set value of child node to parentvalue
+	// 				} 
 			
-				}
-			}
-			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
-			#ifdef ENABLE_ANALYSIS
-            if(threadFinished[threadID] == 1 && hasJustFinished){
-                A_.count_LastSyncVal_[threadID] = syncVal;
-                hasJustFinished = false;
-            }
-            #endif
+	// 			}
+	// 		}
+	// 		threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
             
             
-			#pragma omp single
-			nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),unsigned(0));
+	// 		#pragma omp single
+	// 		nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),type_threadcount(0));
 
-			A_.starttiming(analysis::BARRIER);
-			#pragma omp barrier // make sure everything is set up alright
-			A_.stoptiming(threadID,analysis::BARRIER);
+	// 		A_.starttiming(analysis::BARRIER);
+	// 		#pragma omp barrier // make sure everything is set up alright
+	// 		A_.stoptiming(threadID,analysis::BARRIER);
 			
-			#pragma omp single
-            ++syncVal;
-			//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
+	// 		#pragma omp single
+            // ++syncVal;
+	// 		//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
 			
-			++i;
-		}
-		A_.processednodes(threadID,n_processed_nodes);
+	// 		++i;
+	// 	}
 	
-	} // end of OMP parallel
+	// } // end of OMP parallel
 }

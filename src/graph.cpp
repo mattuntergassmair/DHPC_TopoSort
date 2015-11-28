@@ -11,7 +11,7 @@
 #include <omp.h>
 
 using namespace std; // TODO: remove
-
+using type_size = Graph::type_size;
 
 void Graph::connect(unsigned type, double edgeFillDegree) {
 	
@@ -53,10 +53,10 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 			// Prepare the random number generator
 			const int seed = 42;
 			std::mt19937 gen(seed);
-			std::uniform_int_distribution<Graph::nodearray_type::size_type> dis(0, N_-1);
+			std::uniform_int_distribution<type_size> dis(0, N_-1);
 			auto rnd = std::bind(dis, gen);
 
-			for(Graph::nodearray_type::size_type i = 0; i < nEdges; i++){
+			for(type_size i = 0; i < nEdges; i++){
 				auto rn0 = rnd();
 				auto rn1 = rnd();
 				

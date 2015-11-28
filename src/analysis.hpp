@@ -11,13 +11,12 @@
 struct analysis {
 
 	// TYPES AND VARIABLES
-	
 	enum timecat {BARRIER,SOLUTIONPUSHBACK,REQUESTVALUEUPDATE,N_TIMECAT};
-
 	using type_time = double;
 	using type_size = unsigned;
-	using type_countmap = std::map<unsigned,type_size>;
-	using type_timingmap = std::map<unsigned,type_time>;
+	using type_threadcount = short;
+	using type_countmap = std::map<type_threadcount , type_size>;
+	using type_timingmap = std::map<type_threadcount ,type_time>;
 	using type_timingvector = std::vector<type_timingmap>;
 	using type_clockvector = std::vector<util::rdtsc_timer>;
 
@@ -36,39 +35,42 @@ struct analysis {
 	type_countmap count_LastSyncVal_;		// keeps track of the last sync value of each thread
 	type_timingvector timings_;
 	type_time time_Total_;
-	unsigned nThreads_;
+	type_threadcount nThreads_;
 	type_clockvector clocks_;
 
 
 	// FUNCTIONS
 	
-	inline void initialnodes(unsigned tid, unsigned nNodes) {
+	inline void initialnodes(type_threadcount tid, type_size nNodes) {
 		count_InitialNodes_[tid] = nNodes;
-	};
+	}
 	
-	inline void processednodes(unsigned tid, unsigned nNodes) {
+	inline void processednodes(type_threadcount tid, type_size nNodes) {
 		count_ProcessedNodes_[tid] = nNodes;
-	};
+	}
+	
+	inline void incrementProcessedNodes(type_threadcount tid) { // TODO: check if this can be used instead of processednodes (performance??)
+		++count_ProcessedNodes_[tid];
+	}
 
 	inline void starttiming(timecat c) {
 		clocks_[c].start();
 	}
 
-	inline void stoptiming(unsigned tid, timecat c) {
+	inline void stoptiming(type_threadcount tid, timecat c) {
 		// c stands for the index of the time category we are measuring
 		// tid is the thread id
 		clocks_[c].stop(); // stop timing
 		timings_[c][tid] += clocks_[c].sec(); // get time in seconds and add to total (for given thread)
 	}
 
-	inline void threadcount(unsigned n) {
+	inline void threadcount(type_threadcount n) {
 		nThreads_ = n;
 	}
 
 
     void printAnalysis(std::ostream& out){
        
-       	// TODO: discuss - maybe better to sum over all elements, not take maximum
        	// TODO: maybe not necessary to extract maximum/average
        	//		we can write the timings of all threads to the database instead
        	// NOTE: max_element returns pointer to maximum element over all threads
@@ -109,11 +111,19 @@ struct analysis {
 struct analysis {
 
 	enum timecat {BARRIER,SOLUTIONPUSHBACK,REQUESTVALUEUPDATE,N_TIMECAT};
+	using type_time = double;
+	using type_size = unsigned;
+	using type_threadcount = short;
 
-	inline void initialnodes(unsigned tid, unsigned nNodes) { };
-	inline void processednodes(unsigned tid, unsigned nNodes) { };
-	inline void starttiming(timecat c) { }
-	inline void stoptiming(unsigned tid, timecat c) { }
+	analysis() {}
+	inline void initialnodes(type_threadcount tid, type_size nNodes) {}
+	inline void processednodes(type_threadcount tid, type_size nNodes) {}
+	inline void incrementProcessedNodes(type_threadcount tid) {} // TODO: check if this can be used instead of processednodes (performance??)
+	inline void starttiming(timecat c) {}
+	inline void stoptiming(type_threadcount tid, timecat c) {}
+	inline void threadcount(type_threadcount n) {}
+    void printAnalysis(std::ostream& out){}
+
 
 };
 
