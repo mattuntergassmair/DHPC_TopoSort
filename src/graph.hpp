@@ -27,7 +27,7 @@ class Graph {
 			,	nodes_(type_nodearray(N_))
 			,	A_()
 		{
-			std::cout << "Initialized graph of size " << N_ << "\n";
+			std::cout << "Initializing graph of size " << N_ << "...\n";
 			for(unsigned i=0; i<N_; ++i) {
 				nodes_[i] = std::make_shared<Node>(i);
 			}

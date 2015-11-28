@@ -11,7 +11,7 @@
 struct analysis {
 
 	// TYPES AND VARIABLES
-	enum timecat {BARRIER,SOLUTIONPUSHBACK,REQUESTVALUEUPDATE,N_TIMECAT};
+	enum timecat {TOTAL,BARRIER,SOLUTIONPUSHBACK,REQUESTVALUEUPDATE,CURRENTGATHER,CURRENTSCATTER,N_TIMECAT};
 	using type_time = double;
 	using type_size = unsigned;
 	using type_threadcount = short;
@@ -110,7 +110,7 @@ struct analysis {
 
 struct analysis {
 
-	enum timecat {BARRIER,SOLUTIONPUSHBACK,REQUESTVALUEUPDATE,N_TIMECAT};
+	enum timecat {TOTAL,BARRIER,SOLUTIONPUSHBACK,REQUESTVALUEUPDATE,CURRENTGATHER,CURRENTSCATTER,N_TIMECAT};
 	using type_time = double;
 	using type_size = unsigned;
 	using type_threadcount = short;

@@ -15,7 +15,7 @@ int main() {
 #endif
 	// util::rdtsc_timer t; // TODO: access timing from graph
 
-	// Initializing graph
+	// PAPER GRAPH - Testing
 	Graph testgraph_paper(9);
 	testgraph_paper.connect(Graph::PAPER); // Constructing graph from paper
 	testgraph_paper.topSort();
@@ -23,15 +23,13 @@ int main() {
 	testgraph_paper.printNodeInfo();
 	testgraph_paper.viz("paper");
     testgraph_paper.printSolution();
-	
+
+
+	// RANDOM GRAPH
 	unsigned const N = 5000;
-	// Initializing graph with random edges
 	Graph testgraph_random(N);
 	testgraph_random.connect(Graph::RANDOM_EDGES, 0.05);
-
-	// t.start();
 	testgraph_random.topSort();
-	// t.stop();
 
     // double t_total = t.sec();
 	testgraph_random.checkCorrect(false);

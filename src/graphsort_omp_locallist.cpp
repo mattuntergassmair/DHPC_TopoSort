@@ -1,140 +1,168 @@
 #include <omp.h>
+#include <algorithm>
 
 #include "graph.hpp"
 #include "analysis.hpp"
 
 using type_threadcount = analysis::type_time;
 
-// // TODO: template might be an overkill here
-// template<typename T>
-// void gatherlist(std::list<T> locallist, std::list<T> globallist, analysis::type_threadcount id) {
-// 	#pragma omp critical
-// 	{
-// 		globallist.splice(globallist.end(),locallist);
-// 	}
-// }
+template<typename T>
+inline void gatherlist(std::list<T> globallist, std::list<T> locallist, analysis::type_threadcount id) {
+	#pragma omp critical
+	{
+		globallist.splice(globallist.end(),locallist);
+	}
+}
 
-// template<typename T>
-// void scatterlist(std::list<T> locallist, std::list<T> globallist, analysis::type_threadcount n) {
-// 	#pragma omp critical
-// 	{
-// 		analysis::type_size len = globallist.size();
-// 		n = std::min(n,len);
-// 		assert(locallist.empty());
-// 		// include assertion making sure that all values in currentnodes are the same; // TODO:
-// 		locallist.splice(locallist.end(),globallist,globallist.begin(),globallist.begin()+n);
-// 	}
-// }
+template<typename T>
+inline void scatterlist(std::list<T> globallist, std::list<T> locallist, Graph::type_size n, analysis::type_threadcount id) {
+
+	#if VERBOSE >= 2
+		#pragma omp critical
+		{
+			std::cout << "SCAT - TID:" << id;
+		}
+	#endif // VERBOSE >= 2
+
+	#pragma omp critical
+	{
+		Graph::type_size len = globallist.size();
+		n = std::min(n,len); // make sure that we do not take more nodes than present
+		typename std::list<T>::const_iterator start, end;
+		start = globallist.begin();
+		end = globallist.begin();
+		std::advance(end,n);;
+		assert(locallist.empty());
+		// include assertion making sure that all values in currentnodes are the same; // TODO:
+		// NB: this is checked by correctness check anyways
+		locallist.splice(locallist.end(),globallist,start,end);
+	}
+}
+
+// PRE: 
+// POST: returns unsigned(ceil(n/d)), i.e. round-up division
+inline unsigned roundupdiv(unsigned n, unsigned d) {
+	return (1 + (n-1)/d);
+}
 
 
-// TODO: improve analysis functionality - exclude all ifdefs form graphsort
 
 
 void Graph::topSort() {
 
-	// // Sorting Magic happens here
+	// Sorting Magic happens here
 
-	// // SHARED VARIABLES
-	// type_size syncVal = 1;
-	// type_threadcount nFinished = 0;
-	// type_size nCurrentNodes = 0;
-	// std::vector<type_threadcount> threadFinished;
-	// type_nodelist currentnodes;
+	// SHARED VARIABLES
+	type_size syncVal = 1;
+	type_size nCurrentNodes = 0;
+	type_nodelist currentnodes;
 
-	// // Start: currentnodes = root nodes 
-	// for(type_size i=0; i<N_; ++i) {
-	// 	if(nodes_[i]->getValue()==1) currentnodes.push_back(nodes_[i]);
-	// }
-	// nCurrentNodes = currentnodes.size();
+	// Start: currentnodes = root nodes 
+	for(type_size i=0; i<N_; ++i) {
+		if(nodes_[i]->getValue()==1) currentnodes.push_back(nodes_[i]);
+	}
+	nCurrentNodes = currentnodes.size();
 
-	// // TODO: check - can you make currentnodes shared? do you even need to?
-	// // make threadFinished shared (this could have been problem of implementation)
-	// // this might be the root of all evil
-
-	// // Spawn OMP threads
-	// #pragma omp parallel shared(syncVal, nFinished, nCurrentNodes)
-	// {
-	// 	// Create a Vector entry specifying whether thread is done or not
-	// 	#pragma omp critical
-	// 	threadFinished.push_back(false);
-
-	// 	// THREAD PRIVATE VARIABLES
-	// 	const int nThreads = omp_get_num_threads();
-	// 	const int threadID = omp_get_thread_num();
-	// 	type_nodelist currentnodes_local;
-	// 	type_nodelist solution_local;
+	// Spawn OMP threads
+	#pragma omp parallel shared(syncVal, nCurrentNodes, currentnodes)
+	{
 		
-	// 	type_nodeptr parent;
-	// 	type_nodeptr child;
-	// 	type_size childcount = 0;
-	// 	type_size currentvalue = 0;
-
-	// 	A_.initialnodes(threadID,currentnodes.size());
+		// THREAD PRIVATE VARIABLES
+		const int nThreads = omp_get_num_threads();
+		const int threadID = omp_get_thread_num();
+		type_nodelist currentnodes_local;
+		type_nodelist solution_local;
 		
-	// 	// TODO: OPTIMIZATION handle and redistribute tasks
+		type_nodeptr parent;
+		type_nodeptr child;
+		type_size childcount = 0;
+		type_size currentvalue = 0;
 
-	// 	A_.starttiming(analysis::BARRIER);
-	// 	#pragma omp barrier // make sure everything is set up alright
-        // A_.stoptiming(threadID,analysis::BARRIER);
+		A_.starttiming(analysis::CURRENTSCATTER);
+		scatterlist<type_nodeptr>(currentnodes,currentnodes_local,roundupdiv(nCurrentNodes,nThreads), threadID);
+		A_.stoptiming(threadID,analysis::CURRENTSCATTER);
+
+		A_.initialnodes(threadID,currentnodes_local.size());
 		
-	// 	type_size i=0;
-	// 	while(i<N_ && nFinished<nThreads) {
+		A_.starttiming(analysis::BARRIER);
+		#pragma omp barrier // make sure everything is set up alright
+        A_.stoptiming(threadID,analysis::BARRIER);
+		
+		type_size i=0;
 
-	// 		while(!currentnodes.empty()) {
+		while(i<N_ && !currentnodes.empty()) {
+
+			#pragma omp single
+			{
+				nCurrentNodes = currentnodes.size();
+			}
+			A_.starttiming(analysis::BARRIER);
+			#pragma omp barrier // make sure that nCurrentNodes is set
+			A_.stoptiming(threadID,analysis::BARRIER);
+		
+			A_.starttiming(analysis::CURRENTSCATTER);
+			scatterlist<type_nodeptr>(currentnodes,currentnodes_local,roundupdiv(nCurrentNodes,nThreads), threadID);
+			A_.stoptiming(threadID,analysis::CURRENTSCATTER);
+
+			while(!currentnodes_local.empty()) {
                 
-                // A_.incrementProcessedNodes(threadID);
+                A_.incrementProcessedNodes(threadID);
 				
-	// 			parent = currentnodes.front();
-	// 			currentvalue = parent->getValue();
+				parent = currentnodes_local.front();
+				currentvalue = parent->getValue();
 
-	// 			if(currentvalue>syncVal) {
-	// 				assert(currentvalue == syncVal+1);
-	// 				break;
-	// 			} else {
-	// 				A_.starttiming(analysis::SOLUTIONPUSHBACK);
-	// 				#pragma omp critical 
-	// 				{
-	// 					solution_.push_back(parent); // IMPORTANT: this must be atomic
-	// 				}
-	// 				A_.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
-	// 				currentnodes.pop_front(); // remove current node - already visited
-	// 			}
+				if(currentvalue>syncVal) {
+					assert(currentvalue == syncVal+1);
+					break;
+				} else {
+					solution_local.push_back(parent); // put node in solution
+					currentnodes_local.pop_front(); // remove current node - already visited
+				}
 
-	// 			++currentvalue; // increase value for child nodes
-	// 			childcount = parent->getChildCount();
+				++currentvalue; // increase value for child nodes
+				childcount = parent->getChildCount();
 
-	// 			bool flag;
-	// 			for(type_size c=0; c<childcount; ++c) {
-	// 				child = parent->getChild(c);
+				bool flag;
+				for(type_size c=0; c<childcount; ++c) {
+					child = parent->getChild(c);
 
-	// 				// Checking if last parent trying to update
-                    // A_.starttiming(analysis::REQUESTVALUEUPDATE);
-	// 				flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
-                    // A_.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
+					// Checking if last parent trying to update
+                    A_.starttiming(analysis::REQUESTVALUEUPDATE);
+					flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
+                    A_.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
                     
-                    // if(flag) { // last parent checking child
-	// 					currentnodes.push_back(child); // add child node at end of queue
-	// 					child->setValue(currentvalue); // set value of child node to parentvalue
-	// 				} 
+                    if(flag) { // last parent checking child
+						currentnodes_local.push_back(child); // add child node at end of queue
+						child->setValue(currentvalue); // set value of child node to parentvalue
+					} 
 			
-	// 			}
-	// 		}
-	// 		threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
-            
-            
-	// 		#pragma omp single
-	// 		nFinished = std::accumulate(threadFinished.begin(),threadFinished.end(),type_threadcount(0));
+				}
+			}
 
-	// 		A_.starttiming(analysis::BARRIER);
-	// 		#pragma omp barrier // make sure everything is set up alright
-	// 		A_.stoptiming(threadID,analysis::BARRIER);
+			// Collect local lists in global list
+			// TODO: implement timing
+
+			A_.starttiming(analysis::CURRENTGATHER);
+			gatherlist<type_nodeptr>(currentnodes,currentnodes_local,threadID);
+			A_.stoptiming(threadID,analysis::CURRENTGATHER);
 			
-	// 		#pragma omp single
-            // ++syncVal;
-	// 		//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
+			// TODO: nowait
+			A_.starttiming(analysis::SOLUTIONPUSHBACK);
+			gatherlist<type_nodeptr>(solution_,solution_local,threadID);
+			A_.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
+
+			A_.starttiming(analysis::BARRIER);
+			#pragma omp barrier // make sure everything is set up alright
+			A_.stoptiming(threadID,analysis::BARRIER);
 			
-	// 		++i;
-	// 	}
+			#pragma omp single
+            ++syncVal;
+            // TODO: implement with verbosity
+			//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
+			
+			++i; // TODO: finally remove i counter when stable
+		}
 	
-	// } // end of OMP parallel
+	} // end of OMP parallel
+
 }

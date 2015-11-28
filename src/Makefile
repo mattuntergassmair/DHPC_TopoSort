@@ -38,7 +38,7 @@ node.o: node.cpp node.hpp
 
 
 run: all
-	./toposort_omp_basic.exe
+	./toposort_omp_locallist.exe
 
 viz: $(GRAPHIMG_FILES)
 	display *.png;
