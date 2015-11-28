@@ -32,6 +32,13 @@ class Graph {
 				nodes_[i] = std::make_shared<Node>(i);
 			}
 		}
+		analysis::type_time time_topSort() {
+			A_.starttotaltiming();
+			this->topSort();
+			A_.stoptotaltiming();
+			std::cout << "\nSorting completed in:\t" << A_.time_Total_ << " sec\n\n";
+			return A_.time_Total_;
+		}
         void topSort();
         
 		void connect(unsigned, double edgeFillDegree = .3);
