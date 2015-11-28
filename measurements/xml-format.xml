@@ -10,10 +10,6 @@
             <timing name="criticalPushBack">0.0014023</timing>
             <timing name="criticalRequestValueUpdate">0.0890668</timing>
         </timings>
-        <totalTime>0.227136</totalTime><!-- in seconds -->
-        <barrierTime>0.0010912</barrierTime><!-- in seconds -->
-        <criticalPushBackTime>0.0014023</criticalPushBackTime><!-- in seconds -->
-        <criticalRequestValueUpdateTime>0.0890668</criticalRequestValueUpdateTime><!-- in seconds -->
         <algorithm>Algorithm name</algorithm>
         <threads>
             <thread>
