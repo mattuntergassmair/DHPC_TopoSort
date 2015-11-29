@@ -90,3 +90,7 @@ void Graph::viz(std::string graphfilename) const {
 	fclose(outfile_ptr);
 	std::cout << "\n\nGraph file created as " << graphfilename << std::endl;
 }
+
+void Graph::dumpXmlAnalysis(std::string relativeDir){
+    A_.xmlAnalysis(relativeDir);
+}

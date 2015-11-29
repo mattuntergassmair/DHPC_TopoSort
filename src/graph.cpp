@@ -13,7 +13,7 @@
 using namespace std; // TODO: remove
 using type_size = Graph::type_size;
 
-void Graph::connect(unsigned type, double edgeFillDegree) {
+void Graph::connect(GRAPH_TYPE type, double edgeFillDegree) {
 	
 	std::cout << "\nConnection Mode:\t";
 
@@ -33,6 +33,7 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 			nodes_[1]->addChild(nodes_[7]);
 			nodes_[8]->addChild(nodes_[1]);
 			nodes_[8]->addChild(nodes_[4]);
+            graphName_ = "PAPER";
 			std::cout << "PAPER";
 			break;
 
@@ -76,6 +77,7 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 					++nEffectiveEdges;
 				}
 			}
+            graphName_ = "RANDOM";            
 			std::cout << "RANDOM (fill degree: " << edgeFillDegree << ")";
 			break;
 		}
@@ -85,18 +87,19 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 
 	}
 
-	countEdges();
+	nEdges_ = countEdges();
 
 	std::cout << "\n(Nodes: " << N_ << ", Edges: " << nEdges_ << ")";
 	std::cout << "\n";
 
 }
 
-void Graph::countEdges() {
-	nEdges_ = 0;
+type_size Graph::countEdges() {
+    type_size nEdges;
 	for(auto ndptr : nodes_) {
-		nEdges_ += ndptr->getChildCount();
+		nEdges += ndptr->getChildCount();
 	}
+    return nEdges;
 }
 
 bool Graph::checkCorrect(bool verbose) {

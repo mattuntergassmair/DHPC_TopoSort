@@ -35,12 +35,17 @@ struct analysis {
 	type_countmap count_ProcessedNodes_;	// counts how many nodes each thread has processed in total
 	type_countmap count_LastSyncVal_;		// keeps track of the last sync value of each thread
 	type_time time_Total_;
-	type_threadcount nThreads_;
 	type_clockvector clocks_;
 	type_clock totalclock_;
 	type_timingvector timings_;
-
-
+    
+    type_threadcount nThreads_;
+    type_threadcount nProcs_;
+    std::string algorithmName_;
+    type_size nNodes_;
+    type_size nEdges_;
+    std::string graphName_;
+    
 	// FUNCTIONS
 	
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {
@@ -70,46 +75,11 @@ struct analysis {
 		clocks_[c].stop(); // stop timing
 		timings_[c][tid] += clocks_[c].sec(); // get time in seconds and add to total (for given thread)
 	}
-	
-	inline void threadcount(type_threadcount n) {
-		nThreads_ = n;
-	}
 
-
-    void printAnalysis(std::ostream& out){
-       
-       	// TODO: maybe not necessary to extract maximum/average
-       	//		we can write the timings of all threads to the database instead
-       	// NOTE: max_element returns pointer to maximum element over all threads
-       	// second extracts the timing value from the key-value pair
-        type_time tmax_barrier = (std::max_element(timings_[BARRIER].begin(), timings_[BARRIER].end()))->second;
-        type_time tmax_solutionPushback = (std::max_element(timings_[SOLUTIONPUSHBACK].begin(), timings_[SOLUTIONPUSHBACK].end()))->second;
-        type_time tmax_requestValueUpdate = (std::max_element(timings_[REQUESTVALUEUPDATE].begin(), timings_[REQUESTVALUEUPDATE].end()))->second;
-        
-    	/*
-        out << "=========SUMMARY=========" << "\n";
-        out << "# Threads: " << n_threads_ << "\n";
-        out << "Total time[s]: " << t_total << " (100%)\n";
-        out << "\t- Barriers[s]: " << tt_barrier << "(" << tt_barrier / t_total * 100 << "%)\n";
-        out << "\t- Critical at solution.push_back[s]: " << tt_solution_pushback << "(" << tt_solution_pushback / t_total * 100 << "%)\n";
-        out << "\t- Critical at child->requestValueUpdate[s]: " << tt_requestValueUpdate << "(" << tt_requestValueUpdate / t_total * 100 << "%) \n";
-        
-        out << "\n\n";
-        
-        out << "# Processed nodes (per thread)\n";
-        std::for_each(n_processed_nodes.begin(), n_processed_nodes.end(), [&out](size_t& n){out << n << "\t";});
-        out << "\n";
-    
-        out << "Last Syncval before finishing (per thread)\n";
-        std::for_each(last_syncVal.begin(), last_syncVal.end(), [&out](size_t& n){out << n << "\t";});
-        out << "\n";   
-        
-        out << "# initial nodes (per thread)\n";
-        std::for_each(n_initial_currentnodes.begin(), n_initial_currentnodes.end(), [&out](size_t& n){out << n << "\t";});
-        out << "\n";         
-        */
-    }
-
+    void printAnalysis(std::ostream& out);
+    bool xmlAnalysis(std::string relativeDir);
+private:
+    std::string suggestBaseFilename();
 
 };
 
@@ -137,6 +107,7 @@ struct analysis {
 	inline void stoptiming(type_threadcount tid, timecat c) {}
 	inline void threadcount(type_threadcount n) {}
     void printAnalysis(std::ostream& out){}
+    bool xmlAnalysis(std::string relativeDir){}
 
 };
 
