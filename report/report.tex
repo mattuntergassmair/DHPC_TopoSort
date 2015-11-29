@@ -11,9 +11,13 @@
 \usepackage{amssymb}
 \usepackage{listings}	
 \usepackage{multicol}
+\usepackage{ifthen}
 
 
-\newenvironment{invisible}{\par\bigskip\color{gray}}{\par\bigskip}
+\ifthenelse{\boolean{true}}% TODO: change to false to hide invisible notes
+{ \newenvironment{invisible}{\par\bigskip\color{gray}}{\par\bigskip} }%
+{ \newenvironment{invisible}{\expandafter\comment}{\expandafter\endcomment} }
+
 
 
 \title{Topological Sorting}
