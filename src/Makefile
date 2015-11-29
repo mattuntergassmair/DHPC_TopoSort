@@ -1,10 +1,10 @@
 COMPILER = g++ # Linux
 # COMPILER = icc # XeonPhi
-FLAGS = -O0 -std=c++11 -fopenmp -D DEBUG=0 -D VERBOSE=0 -D OPTIMISTIC=0 # Linux
+FLAGS = -O0 -std=c++11 -fopenmp -D DEBUG=0 -D VERBOSE=0 -D OPTIMISTIC=0 -D ENABLE_ANALYSIS=1 # Linux
 # FLAGS = -mmic -fopenmp
 
 
-ALGORITHMS = serial omp_basic omp_tasks omp_locallist omp_bitset # --> serial
+ALGORITHMS = serial omp_basic omp_tasks omp_locallist # omp_bitset # --> serial
 EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
 OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 
