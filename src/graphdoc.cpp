@@ -16,14 +16,14 @@
 
 // Print Node Info to console
 void Graph::printNodeInfo() {
-	for(unsigned i=0; i<N_; ++i) {
-		std::cout << "ID: " << nodes_[i]->getID()
-				<< "\tV: " << nodes_[i]->getValue() << "\n";
+	for(auto ndptr : nodes_) {
+		std::cout << "ID: " << ndptr->getID() << "\tV: " << ndptr->getValue() << "\n";
 	}
+	std::cout << "\n";
 }
 
 void Graph::printSolution() {
-    std::cout << "Solution (Node IDs)" << std::endl;
+    std::cout << "\nSolution (Node IDs)" << std::endl;
     for(auto elem : solution_){
         std::cout << elem->getID() << " ";
     }

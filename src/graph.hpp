@@ -2,6 +2,7 @@
 #define GRAPH_HPP
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 #include <memory>
@@ -24,9 +25,12 @@ class Graph {
         
         explicit Graph(unsigned N)
 			:	N_(N)
+			,	maxDiam_(0)
+			,	nEdges_(0)
 			,	nodes_(type_nodearray(N_))
 			,	A_()
 		{
+			std::cout << "DEBUG = " << DEBUG << "\tVERBOSE = " << VERBOSE << "\tOPTIMISTIC = " << OPTIMISTIC << "\n\n";
 			std::cout << "Initializing graph of size " << N_ << "...\n";
 			for(unsigned i=0; i<N_; ++i) {
 				nodes_[i] = std::make_shared<Node>(i);
@@ -36,12 +40,14 @@ class Graph {
 			A_.starttotaltiming();
 			this->topSort();
 			A_.stoptotaltiming();
-			std::cout << "\nSorting completed in:\t" << A_.time_Total_ << " sec\n\n";
+			std::cout << "\n\nMaximum Diameter: " << maxDiam_;
+			std::cout << "\n\n\tSorting completed in:\t" << std::setprecision(8) << std::fixed << A_.time_Total_ << " sec\n\n";
 			return A_.time_Total_;
 		}
         void topSort();
         
 		void connect(unsigned, double edgeFillDegree = .3);
+		void countEdges();
         bool checkCorrect(bool verbose);
         type_solution getSolution();
         
@@ -52,7 +58,9 @@ class Graph {
         
 	protected:
 
-		unsigned N_;
+		type_size N_; // size of graph
+		type_size nEdges_; // number of edges
+		type_size maxDiam_; // maximal diameter
 		type_nodearray nodes_;
         type_solution solution_;
         analysis A_;

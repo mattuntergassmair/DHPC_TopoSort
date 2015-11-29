@@ -33,7 +33,7 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 			nodes_[1]->addChild(nodes_[7]);
 			nodes_[8]->addChild(nodes_[1]);
 			nodes_[8]->addChild(nodes_[4]);
-			std::cout << "Paper";
+			std::cout << "PAPER";
 			break;
 
 		case RANDOM_EDGES:
@@ -76,7 +76,7 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 					++nEffectiveEdges;
 				}
 			}
-			std::cout << "Created Graph with " << nEffectiveEdges << " edges." << std::endl;
+			std::cout << "RANDOM (fill degree: " << edgeFillDegree << ")";
 			break;
 		}
 
@@ -85,13 +85,23 @@ void Graph::connect(unsigned type, double edgeFillDegree) {
 
 	}
 
+	countEdges();
+
+	std::cout << "\n(Nodes: " << N_ << ", Edges: " << nEdges_ << ")";
 	std::cout << "\n";
 
 }
 
+void Graph::countEdges() {
+	nEdges_ = 0;
+	for(auto ndptr : nodes_) {
+		nEdges_ += ndptr->getChildCount();
+	}
+}
+
 bool Graph::checkCorrect(bool verbose) {
 	
-    std::cout << "\n>>Begin Check\n\n";
+    std::cout << "\nChecking solution correctness...\n";
 	bool correct = true;
 
     // 1. check length of solution
@@ -138,12 +148,17 @@ bool Graph::checkCorrect(bool verbose) {
     }
 
 	if(correct) {
-		std::cout << "OK: VALID TOPOLOGICAL SORTING.\n";
+		std::cout << "\n\033[1;32mOK\033[0m: VALID TOPOLOGICAL SORTING.\n\n";
 	} else {
-		std::cout << "\nERROR: INVALID TOPOLOCIGAL SORTING.\n";
+		std::cout << "\n\033[1;31mERROR: INVALID TOPOLOCIGAL SORTING!\033[0m\n\n";
 	}
 
-    std::cout << "\n<<End Check\n\n";
+	#if VERBOSE>=2
+	if(N_<=400) printNodeInfo();
+	#elif VERBOSE>0
+	if(N_<=1000) printSolution();
+	#endif
+
 	return correct;
 }
 

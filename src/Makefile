@@ -1,6 +1,6 @@
 COMPILER = g++ # Linux
 # COMPILER = icc # XeonPhi
-FLAGS = -O0 -std=c++11 -fopenmp -D DEBUG=0 -D VERBOSE=2 -D OPTIMISTIC=0 # Linux
+FLAGS = -O0 -std=c++11 -fopenmp -D DEBUG=0 -D VERBOSE=0 -D OPTIMISTIC=0 # Linux
 # FLAGS = -mmic -fopenmp
 
 

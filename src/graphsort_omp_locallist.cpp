@@ -6,6 +6,8 @@
 
 using type_threadcount = analysis::type_time;
 
+// PRE:		
+// POST:	locallist is appended to globallist, locallist is empty
 inline void gatherlist(Graph::type_nodelist& globallist, Graph::type_nodelist& locallist, analysis::type_threadcount id) {
 	#if DEBUG >= 2
 		#pragma omp single
@@ -21,12 +23,15 @@ inline void gatherlist(Graph::type_nodelist& globallist, Graph::type_nodelist& l
 		globallist.splice(globallist.end(),locallist);
 	}
 	assert(locallist.empty());
+
 	#if DEBUG >= 2
 		#pragma omp single
 		std::cout << "\nAFTERGATHER -\tglobal:" << globallist;
 	#endif // DEBUG >= 2
 }
 
+// PRE:		globallist has all nodes that need to be distributed, locallist is empty
+// POST:	locallist holds a maximum of n elements that were previously in globallist
 inline void scatterlist( Graph::type_nodelist& globallist, Graph::type_nodelist& locallist, Graph::type_size n, analysis::type_threadcount id) {
 
 	#if DEBUG >= 1
@@ -60,7 +65,7 @@ inline void scatterlist( Graph::type_nodelist& globallist, Graph::type_nodelist&
 }
 
 // PRE: 
-// POST: returns unsigned(ceil(n/d)), i.e. round-up division
+// POST:	returns unsigned(ceil(n/d)), i.e. round-up division
 inline unsigned roundupdiv(unsigned n, unsigned d) {
 	return (1 + (n-1)/d);
 }
@@ -71,7 +76,7 @@ void Graph::topSort() {
 	// Sorting Magic happens here
 
 	// SHARED VARIABLES
-	type_size syncVal = 1;
+	type_size syncVal = 0;
 	type_size nCurrentNodes = 0;
 	type_nodelist currentnodes;
 
@@ -104,10 +109,13 @@ void Graph::topSort() {
 		
 		while(!currentnodes.empty()) {
 
-			#if VERBOSE>1
+			#pragma omp single
+			++syncVal;
+
+			#if VERBOSE>=2
 			#pragma omp single
 			std::cout << "\nCurrent syncVal = " << syncVal;
-			#endif // VERBOSE>1
+			#endif // VERBOSE>=2
 			
 			#pragma omp single
 			{
@@ -120,7 +128,6 @@ void Graph::topSort() {
 			A_.starttiming(analysis::CURRENTSCATTER);
 			scatterlist(currentnodes,currentnodes_local,roundupdiv(nCurrentNodes,nThreads), threadID);
 			A_.stoptiming(threadID,analysis::CURRENTSCATTER);
-
 
 			while(!currentnodes_local.empty()) {
 				
@@ -169,11 +176,10 @@ void Graph::topSort() {
 			#pragma omp barrier
 			A_.stoptiming(threadID,analysis::BARRIER);
 			
-			#pragma omp single
-			++syncVal;
-			
 		}
 	
 	} // end of OMP parallel
+
+	maxDiam_ = syncVal;
 
 }
