@@ -1,6 +1,18 @@
+## Example invocations. If you change between debug and release, don't forget to make clean
+#make release OPT=1
+#make debug DBG=1 OPT=1
+
+## Variables from command line
+OPT=0 #-DOPTIMISTIC
+DBG=2 #-DDEBUG
+VERB=1 #-DVERBOSE
+AN=1 #-DENABLE_ANALYSIS
+
+
+## Compiler and standard flags
 COMPILER = g++ # Linux
 # COMPILER = icc # XeonPhi
-FLAGS = -O0 -std=c++11 -fopenmp -D DEBUG=0 -D VERBOSE=0 -D OPTIMISTIC=0 -D ENABLE_ANALYSIS=1 # Linux
+FLAGS = -O0 -std=c++11 -fopenmp # Linux
 # FLAGS = -mmic -fopenmp
 
 
@@ -11,9 +23,18 @@ OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsor
 GRAPHSRC_FILES := $(wildcard *.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
+debug: FLAGS += -g -O0
+debug: DBG=2
+debug: VERB=1
+debug: all
 
+release: FLAGS += -O3
+release: DBG=0
+release: VERB=0
+release: all
+
+all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
 all: $(EXECUTABLES)
-
 
 $(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o
 	$(COMPILER) $(FLAGS) $^ -o $@
