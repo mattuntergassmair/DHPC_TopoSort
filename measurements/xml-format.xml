@@ -2,7 +2,7 @@
 <measurements>
     <measurement>
         <date>1448229125</date><!-- Unix timestamp -->
-        <threads>8</threads>
+        <numberOfThreads>8</numberOfThreads>
         <processors>4</processors>
         <totalTime>0.227136</totalTime><!-- in seconds -->
         <algorithm>Algorithm name</algorithm>
