@@ -1,36 +1,73 @@
-\documentclass[fontsize=11pt]{scrartcl}
+% Template from the DPHPC course website
+
+% IEEE standard conference template; to be used with:
+%   spconf.sty  - LaTeX style file, and
+%   IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+
+\documentclass[letterpaper]{article}
+\usepackage{spconf,amsmath,amssymb,graphicx}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{verbatim}		
-\usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage[font=footnotesize]{caption}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{hyperref}
-\usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{listings}	
 \usepackage{multicol}
 \usepackage{ifthen}
+
+% Example definitions.
+% --------------------
+% nice symbols for real and complex numbers
+\newcommand{\R}[0]{\mathbb{R}}
+\newcommand{\C}[0]{\mathbb{C}}
+
+% bold paragraph titles
+\newcommand{\mypar}[1]{{\bf #1.}}
+
+% For example:
+% ------------
+%\address{School\\
+%		 Department\\
+%		 Address}
+%
+% Two addresses (uncomment and modify for two-address case).
+% ----------------------------------------------------------
+%\twoauthors
+%  {A. Author-one, B. Author-two\sthanks{Thanks to XYZ agency for funding.}}
+%		 {School A-B\\
+%		 Department A-B\\
+%		 Address A-B}
+%  {C. Author-three, D. Author-four\sthanks{The fourth author performed the work
+%		 while at ...}}
+%		 {School C-D\\
+%		 Department C-D\\
+%		 Address C-D}
+%
 
 
 \ifthenelse{\boolean{true}}% TODO: change to false to hide invisible notes
 { \newenvironment{invisible}{\par\bigskip\color{gray}}{\par\bigskip} }%
 { \newenvironment{invisible}{\expandafter\comment}{\expandafter\endcomment} }
 
+\title{Topological Sorting: A Parallel Implementation}
+
+\name{J. Baum, K. Wallimann, M. Untergassmair}%
+\address{ETH Zürich, HS 2015 \\
+	Design of Parallel and High Performance Computing \\
+	Zürich, Switzerland}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\title{Topological Sorting}
-\subtitle{Design of High Performance Computing Project \\ ETH Zürich, HS2015}
-\author{Kevin Wallimann \quad Johannes Baum \quad Matthias Untergassmair}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+	
+	
+	
 \begin{document}
 
 \maketitle
-
-\begin{multicols}{2}
 
 \abstract{We can already start putting some theory parts in the report right now, so it's easier later to get everything together\ldots \\
 Formatting comes later.}
@@ -44,6 +81,5 @@ Blablabla
 
 Blablabla
 
-\end{multicols}
 
 \end{document}
