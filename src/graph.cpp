@@ -146,3 +146,17 @@ bool Graph::checkCorrect(bool verbose) {
     std::cout << "\n<<End Check\n\n";
 	return correct;
 }
+
+
+#if DEBUG>0 || VERBOSE>0
+// Overloading output operator of nodelist
+// Can be useful for debugging
+std::ostream& operator<<(std::ostream& os, Graph::type_nodelist& ls) {
+	os << "\n[ ";
+	for(auto ndptr : ls) {
+		os << ndptr->getID() << "(" << ndptr->getValue() << ")" << " ";
+	}
+	os << "]\n";
+	return os;
+}
+#endif // DEBUG>0 || VERBOSE>0

@@ -27,13 +27,19 @@ int main() {
     testgraph_paper.printSolution();
 
 
-	// RANDOM GRAPH
-	unsigned const N = 5000;
-	Graph testgraph_random(N);
+	// RANDOM GRAPH - SMALL
+	Graph testgraph_random(40);
 	testgraph_random.connect(Graph::RANDOM_EDGES, 0.05);
 	testgraph_random.time_topSort();
 	testgraph_random.checkCorrect(false);
 	
+	// RANDOM GRAPH - MEDIUM
+	// unsigned const N = 5000;
+	// Graph testgraph_random(N);
+	// testgraph_random.connect(Graph::RANDOM_EDGES, 0.05);
+	// testgraph_random.time_topSort();
+	// testgraph_random.checkCorrect(false);
+
 	return 0;
 
 }

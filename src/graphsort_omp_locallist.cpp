@@ -6,37 +6,57 @@
 
 using type_threadcount = analysis::type_time;
 
-template<typename T>
-inline void gatherlist(std::list<T> globallist, std::list<T> locallist, analysis::type_threadcount id) {
+inline void gatherlist(Graph::type_nodelist& globallist, Graph::type_nodelist& locallist, analysis::type_threadcount id) {
+	#if DEBUG >= 2
+		#pragma omp single
+		std::cout << "\nBEFOREGATHER -\tglobal:" << globallist;
+		#pragma omp barrier
+		#pragma omp critical
+		std::cout << "\nBEFOREGATHER -\tthread " << id << " :" << locallist;
+		#pragma omp barrier
+	#endif // DEBUG >= 2
+	
 	#pragma omp critical
 	{
 		globallist.splice(globallist.end(),locallist);
 	}
+	assert(locallist.empty());
+	#if DEBUG >= 2
+		#pragma omp single
+		std::cout << "\nAFTERGATHER -\tglobal:" << globallist;
+	#endif // DEBUG >= 2
 }
 
-template<typename T>
-inline void scatterlist(std::list<T> globallist, std::list<T> locallist, Graph::type_size n, analysis::type_threadcount id) {
+inline void scatterlist( Graph::type_nodelist& globallist, Graph::type_nodelist& locallist, Graph::type_size n, analysis::type_threadcount id) {
 
-	#if VERBOSE >= 2
-		#pragma omp critical
-		{
-			std::cout << "SCAT - TID:" << id;
-		}
-	#endif // VERBOSE >= 2
+	#if DEBUG >= 1
+		#pragma omp single
+		std::cout << "\nBEFORESCATTER -\tglobal:" << globallist;
+	#endif // DEBUG >= 1
 
+	Graph::type_nodelist::const_iterator start, end;
 	#pragma omp critical
 	{
+		assert(locallist.empty());
 		Graph::type_size len = globallist.size();
 		n = std::min(n,len); // make sure that we do not take more nodes than present
-		typename std::list<T>::const_iterator start, end;
 		start = globallist.begin();
 		end = globallist.begin();
-		std::advance(end,n);;
-		assert(locallist.empty());
-		// include assertion making sure that all values in currentnodes are the same; // TODO:
-		// NB: this is checked by correctness check anyways
+		std::advance(end,n);
 		locallist.splice(locallist.end(),globallist,start,end);
 	}
+	
+	#if DEBUG >= 2
+		#pragma omp single
+		std::cout << "\nAFTERSCATTER -\tglobal:" << globallist;
+	#endif // DEBUG >= 2
+	#if DEBUG >= 1
+		#pragma omp barrier
+		#pragma omp critical
+		std::cout << "\nAFTERSCATTER -\tthread " << id << " :" << locallist;
+		#pragma omp barrier
+	#endif // DEBUG >= 1
+
 }
 
 // PRE: 
@@ -44,8 +64,6 @@ inline void scatterlist(std::list<T> globallist, std::list<T> locallist, Graph::
 inline unsigned roundupdiv(unsigned n, unsigned d) {
 	return (1 + (n-1)/d);
 }
-
-
 
 
 void Graph::topSort() {
@@ -62,7 +80,7 @@ void Graph::topSort() {
 		if(nodes_[i]->getValue()==1) currentnodes.push_back(nodes_[i]);
 	}
 	nCurrentNodes = currentnodes.size();
-
+	
 	// Spawn OMP threads
 	#pragma omp parallel shared(syncVal, nCurrentNodes, currentnodes)
 	{
@@ -78,20 +96,19 @@ void Graph::topSort() {
 		type_size childcount = 0;
 		type_size currentvalue = 0;
 
-		A_.starttiming(analysis::CURRENTSCATTER);
-		scatterlist<type_nodeptr>(currentnodes,currentnodes_local,roundupdiv(nCurrentNodes,nThreads), threadID);
-		A_.stoptiming(threadID,analysis::CURRENTSCATTER);
-
 		A_.initialnodes(threadID,currentnodes_local.size());
 		
 		A_.starttiming(analysis::BARRIER);
 		#pragma omp barrier // make sure everything is set up alright
-        A_.stoptiming(threadID,analysis::BARRIER);
+		A_.stoptiming(threadID,analysis::BARRIER);
 		
-		type_size i=0;
+		while(!currentnodes.empty()) {
 
-		while(i<N_ && !currentnodes.empty()) {
-
+			#if VERBOSE>1
+			#pragma omp single
+			std::cout << "\nCurrent syncVal = " << syncVal;
+			#endif // VERBOSE>1
+			
 			#pragma omp single
 			{
 				nCurrentNodes = currentnodes.size();
@@ -101,12 +118,13 @@ void Graph::topSort() {
 			A_.stoptiming(threadID,analysis::BARRIER);
 		
 			A_.starttiming(analysis::CURRENTSCATTER);
-			scatterlist<type_nodeptr>(currentnodes,currentnodes_local,roundupdiv(nCurrentNodes,nThreads), threadID);
+			scatterlist(currentnodes,currentnodes_local,roundupdiv(nCurrentNodes,nThreads), threadID);
 			A_.stoptiming(threadID,analysis::CURRENTSCATTER);
 
+
 			while(!currentnodes_local.empty()) {
-                
-                A_.incrementProcessedNodes(threadID);
+				
+				A_.incrementProcessedNodes(threadID);
 				
 				parent = currentnodes_local.front();
 				currentvalue = parent->getValue();
@@ -127,11 +145,11 @@ void Graph::topSort() {
 					child = parent->getChild(c);
 
 					// Checking if last parent trying to update
-                    A_.starttiming(analysis::REQUESTVALUEUPDATE);
+					A_.starttiming(analysis::REQUESTVALUEUPDATE);
 					flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
-                    A_.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
-                    
-                    if(flag) { // last parent checking child
+					A_.stoptiming(threadID,analysis::REQUESTVALUEUPDATE);
+					
+					if(flag) { // last parent checking child
 						currentnodes_local.push_back(child); // add child node at end of queue
 						child->setValue(currentvalue); // set value of child node to parentvalue
 					} 
@@ -140,27 +158,20 @@ void Graph::topSort() {
 			}
 
 			// Collect local lists in global list
-			// TODO: implement timing
-
 			A_.starttiming(analysis::CURRENTGATHER);
-			gatherlist<type_nodeptr>(currentnodes,currentnodes_local,threadID);
+			gatherlist(currentnodes,currentnodes_local,threadID);
 			A_.stoptiming(threadID,analysis::CURRENTGATHER);
-			
-			// TODO: nowait
 			A_.starttiming(analysis::SOLUTIONPUSHBACK);
-			gatherlist<type_nodeptr>(solution_,solution_local,threadID);
+			gatherlist(solution_,solution_local,threadID);
 			A_.stoptiming(threadID,analysis::SOLUTIONPUSHBACK);
-
+			
 			A_.starttiming(analysis::BARRIER);
-			#pragma omp barrier // make sure everything is set up alright
+			#pragma omp barrier
 			A_.stoptiming(threadID,analysis::BARRIER);
 			
 			#pragma omp single
-            ++syncVal;
-            // TODO: implement with verbosity
-			//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
+			++syncVal;
 			
-			++i; // TODO: finally remove i counter when stable
 		}
 	
 	} // end of OMP parallel

@@ -60,4 +60,11 @@ class Graph {
 };
 
 
+#if DEBUG>0 || VERBOSE>0
+// Overloading output operator of nodelist
+// Can be useful for debugging
+std::ostream& operator<<(std::ostream& os, Graph::type_nodelist& ls);
+#endif // DEBUG>0 || VERBOSE>0
+
+
 #endif // GRAPH_HPP
