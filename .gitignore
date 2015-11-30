@@ -45,7 +45,14 @@ CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 
-# Java Files from XML-parser
-TopoSortParser/bin/
-TopoSortParser/measurements.db
-TopoSortParser/results
+
+# Java executables
+measurements/TopoSortParser/bin
+measurements/TopoSortParser/
+*.jar
+
+
+# Ignore xml files (for now)
+*.xml
+*.db
+*.pdf
