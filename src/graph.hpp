@@ -17,7 +17,7 @@ class Graph {
 
 	public:
 
-		enum GRAPH_TYPE {PAPER, RANDOM_EDGES};
+		enum GRAPH_TYPE {PAPER, RANDOM_EDGES, SOFTWARE};
 
 		using type_nodeptr = std::shared_ptr<Node>;
 		using type_nodearray = std::vector<type_nodeptr>;
@@ -63,7 +63,7 @@ class Graph {
 		}
         void topSort();
         std::string getName();
-		void connect(GRAPH_TYPE, double edgeFillDegree = .3);
+		void connect(GRAPH_TYPE, double edgeFillDegree = .3, double p = .5, double q = .7);
 		type_size countEdges();
         bool checkCorrect(bool verbose);
         type_solution getSolution();
