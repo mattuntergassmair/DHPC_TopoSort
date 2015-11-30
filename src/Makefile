@@ -20,7 +20,8 @@ ALGORITHMS = serial omp_basic omp_tasks omp_locallist # omp_bitset # --> serial
 EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
 OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 
-GRAPHSRC_FILES := $(wildcard *.gv)
+GRAPHSRC_DIR := graph_output
+GRAPHSRC_FILES := $(wildcard $(GRAPHSRC_DIR)/*.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
 debug: FLAGS += -g -O0
@@ -64,7 +65,7 @@ run: all
 	./toposort_omp_locallist.exe
 
 viz: $(GRAPHIMG_FILES)
-	display *.png;
+	display $(GRAPHIMG_FILES);
 
 %.png: %.gv
 	# circo -Tpng $< -o $@

@@ -10,10 +10,9 @@
 #include <memory>
 #include <omp.h>
 
-using namespace std; // TODO: remove
 using type_size = Graph::type_size;
 
-void Graph::connect(GRAPH_TYPE type, double edgeFillDegree) {
+void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q) {
 	
 	std::cout << "\nConnection Mode:\t";
 
@@ -42,7 +41,6 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree) {
 			assert(edgeFillDegree > 0. && edgeFillDegree <= 1.);
 			// Specify (roughly) number of edges
 			const int nEdges = N_ * (N_ - 1) * 0.5 * edgeFillDegree;
-			int nEffectiveEdges = 0;
 
 			// Create random order of nodes
 			std::vector<unsigned> order(N_);
@@ -74,22 +72,75 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree) {
 
 				if(!nodes_[pointerNode]->hasChild(nodes_[pointeeNode])){
 					nodes_[pointerNode]->addChild(nodes_[pointeeNode]);
-					++nEffectiveEdges;
 				}
 			}
             graphName_ = "RANDOM";            
-			std::cout << "RANDOM (fill degree: " << edgeFillDegree << ")";
+			std::cout << "RANDOM (target fill degree: " << edgeFillDegree << ")";
 			break;
 		}
 
+        case SOFTWARE:
+        {
+            // See Musco 2014, A Generative Model of Software Dependency Graphs to Better Understand Software Evolution
+			assert(p >= 0. && p <= 1.);
+            assert(q >= 0. && q <= 1.);
+           
+			// Prepare the random number generator
+			const int seed = 42;
+			std::mt19937 gen(seed);
+			std::uniform_real_distribution<double> dis(0, 1);
+			auto rnd = std::bind(dis, gen);
+
+			for(type_size i = 1; i < N_; i++){
+                int n_insertedNodes = i;
+                // choose a random node, which has already been inserted
+                auto r_node = static_cast<int>(std::round(rnd() * (n_insertedNodes-1)));
+                
+                // with probability p attach current to node random node and all of its children
+                auto r_p = rnd();
+                if(r_p < p){
+                    nodes_[i]->addChild(nodes_[r_node]);
+                    
+                    for(size_t c = 0; c < nodes_[r_node]->getChildCount(); ++c){
+                        nodes_[i]->addChild(nodes_[r_node]->getChild(c));
+                    }
+                    
+                    // with probability q attach another random node
+                    auto r_q = rnd();
+                    if(r_q < q){ 
+                        auto r_node2 = static_cast<int>(std::round(rnd() * (n_insertedNodes-1)));
+                        if(r_node != r_node2){
+                            if(!nodes_[i]->hasChild(nodes_[r_node2])){
+                                nodes_[i]->addChild(nodes_[r_node2]);
+                            }
+                            for(size_t c = 0; c < nodes_[r_node2]->getChildCount(); ++c){
+                                if(!nodes_[i]->hasChild(nodes_[r_node2])){
+                                    nodes_[i]->addChild(nodes_[r_node2]->getChild(c));
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                // with probability 1-p attach random node to current node
+                else{ 
+                    nodes_[r_node]->addChild(nodes_[i]);
+                }
+            }
+            graphName_ = "SOFTWARE";            
+			std::cout << "SOFTWARE (attach probability (p): " << p << " attached probability (1-p): " << 1-p << ", double attach probability (q|p=true): " << q << ", )";
+			break;
+        }
 		default:
 			std::cout << "\nERROR:\tInvalid connection index - no connections added\n";
 
 	}
 
+
+    assert(graphName_ != "");
 	nEdges_ = countEdges();
 
-	std::cout << "\n(Nodes: " << N_ << ", Edges: " << nEdges_ << ")";
+	std::cout << "\n(Nodes: " << N_ << ", Edges: " << nEdges_ << ", FillDegree: " << static_cast<double>(nEdges_) / (0.5 * N_ * (N_-1)) << ")";
 	std::cout << "\n";
 
 }
