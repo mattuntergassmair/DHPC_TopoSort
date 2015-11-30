@@ -1,6 +1,7 @@
 package toposortparser;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
@@ -65,13 +66,19 @@ public class XmlParser {
                             measurement.setOptimistic(Boolean.parseBoolean(node.getTextContent()));
                             break;
                         case "enableAnalysis":
-                            measurement.setOptimistic(Boolean.parseBoolean(node.getTextContent()));
+                            measurement.setEnableAnalysis(Boolean.parseBoolean(node.getTextContent()));
+                            break;
+                        case "verbose":
+                            measurement.setVerbose(Boolean.parseBoolean(node.getTextContent()));
+                            break;
+                        case "debug":
+                            measurement.setDebug(Boolean.parseBoolean(node.getTextContent()));
                             break;
                     }
 
                 }
 
-                //System.out.println(measurement);
+                System.out.println(measurement);
 
             }
         } catch (Exception e) {
@@ -142,7 +149,7 @@ public class XmlParser {
                     graph.setNumberOfNodes(Integer.parseInt(nNode.getTextContent()));
                     break;
                 case "numberOfEdges":
-                    graph.setNumberOfEdges(Integer.parseInt(nNode.getTextContent()));
+                    graph.setNumberOfEdges(new BigInteger(nNode.getTextContent()));
                     break;
             }
         }

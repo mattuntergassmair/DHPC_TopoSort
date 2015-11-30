@@ -29,7 +29,7 @@ public class TopoSortParser {
         
         for (String filename : files) {
             System.out.println(filename);
-            for (Measurement temp : xmlParser.parseXml("results/" + filename)) {
+            for (Measurement temp : xmlParser.parseXml("../data/" + filename)) {
                 dbManager.insertMeasurement(temp);
             }
         }
@@ -40,7 +40,7 @@ public class TopoSortParser {
     
     private static void initFileList() {
         
-        File folder = new File("results/");
+        File folder = new File("../data/");
         File[] listOfFiles = folder.listFiles();
         files = new ArrayList<>();
 
