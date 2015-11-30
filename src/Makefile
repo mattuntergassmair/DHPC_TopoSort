@@ -36,7 +36,7 @@ release: all
 all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
 all: $(EXECUTABLES)
 
-$(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o
+$(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
 	$(COMPILER) $(FLAGS) $^ -o $@
 
 
@@ -57,6 +57,8 @@ graphdoc.o: graphdoc.cpp graph.hpp node.hpp
 node.o: node.cpp node.hpp
 	$(COMPILER) $(FLAGS) -c node.cpp
 
+analysis.o: analysis.cpp analysis.hpp
+	$(COMPILER) $(FLAGS) -c analysis.cpp
 
 run: all
 	./toposort_omp_locallist.exe

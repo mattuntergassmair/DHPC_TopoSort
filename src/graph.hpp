@@ -6,6 +6,8 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
+#include <string>
+#include <omp.h>
 
 #include "node.hpp"
 #include "analysis.hpp"
@@ -37,6 +39,21 @@ class Graph {
 			}
 		}
 		analysis::type_time time_topSort() {
+            // Store Meta-information for analysis
+            analysis::type_threadcount nthr, nprocs;
+            #pragma omp parallel
+            {
+                nthr = omp_get_num_threads();
+                nprocs = omp_get_num_procs();
+            }
+            A_.nThreads_ = nthr;
+            A_.nProcs_ = nprocs;
+            A_.algorithmName_ = getName();
+            A_.nNodes_ = N_;
+            A_.nEdges_ = nEdges_;
+            A_.graphName_ = graphName_;
+            
+            // Start topological sorting
 			A_.starttotaltiming();
 			this->topSort();
 			A_.stoptotaltiming();
@@ -45,9 +62,9 @@ class Graph {
 			return A_.time_Total_;
 		}
         void topSort();
-        
-		void connect(unsigned, double edgeFillDegree = .3);
-		void countEdges();
+        std::string getName();
+		void connect(GRAPH_TYPE, double edgeFillDegree = .3);
+		type_size countEdges();
         bool checkCorrect(bool verbose);
         type_solution getSolution();
         
@@ -55,12 +72,14 @@ class Graph {
 		void printNodeInfo();
         void printSolution();
 		void viz(std::string) const;
+        void dumpXmlAnalysis(std::string relativeDir);
         
 	protected:
 
 		type_size N_; // size of graph
 		type_size nEdges_; // number of edges
 		type_size maxDiam_; // maximal diameter
+        std::string graphName_;
 		type_nodearray nodes_;
         type_solution solution_;
         analysis A_;

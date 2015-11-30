@@ -3,6 +3,9 @@
 #include "graph.hpp"
 #include "analysis.hpp"
 
+std::string Graph::getName(){
+    return "tasks";
+}
 
 void Graph::topSort(){
 

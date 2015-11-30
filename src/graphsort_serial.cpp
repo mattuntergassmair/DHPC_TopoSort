@@ -3,7 +3,9 @@
 #include "graph.hpp"
 #include "analysis.hpp"
 
-
+std::string Graph::getName(){
+    return "serial";
+}
 
 void Graph::topSort() {
 	

@@ -6,6 +6,10 @@
 
 using type_threadcount = analysis::type_time;
 
+std::string Graph::getName(){
+    return "locallist";
+}
+
 // PRE:		
 // POST:	locallist is appended to globallist, locallist is empty
 inline void gatherlist(Graph::type_nodelist& globallist, Graph::type_nodelist& locallist, analysis::type_threadcount id) {
