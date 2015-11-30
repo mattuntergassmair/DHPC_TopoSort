@@ -87,6 +87,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
         output << "\t\t\t\t<timing name=\"criticalRequestValueUpdate\">" << timings_[REQUESTVALUEUPDATE][i] << "</timing>\n";
         output << "\t\t\t</timings>\n";
         output << "\t\t\t<processedNodes>" << count_ProcessedNodes_[i] << "</processedNodes>\n";
+        output << "\t\t\t</thread>\n";
     }
     output << "\t\t</threads>\n";
     output << "\t\t<graph>\n";
