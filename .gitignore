@@ -45,3 +45,5 @@ CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 
+# Java Files from XML-parser
+TopoSortParser

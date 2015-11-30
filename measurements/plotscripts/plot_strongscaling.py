@@ -21,10 +21,10 @@ def getAvgAndVariance(field,wherestring,otherfields=""):
 	return np.array(data)
 
 
-query.execute("SELECT threads FROM measurements GROUP BY threads")
-threads = np.array(query.fetchall())
+query.execute("SELECT number_of_threads FROM measurements GROUP BY number_of_threads")
+number_of_threads = np.array(query.fetchall())
 
-print "Threads:\n", threads
+print "Threads:\n", number_of_threads
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -35,8 +35,8 @@ color_cnt=0
 for s in sizes:
 	t = []
 	var_t = []
-	for nt in threads:
-		where = ("threads=%i" % (nt))
+	for nt in number_of_threads:
+		where = ("number_of_threads=%i" % (nt))
 		d = getAvgAndVariance("total_time",where)
 		t.append(d[:,0])
 		var_t.append(d[:,1])
@@ -45,15 +45,18 @@ for s in sizes:
 		# stdev_speedup = np.sqrt(np.array(var_t[0]) * np.power((1./np.array(t)),2) + var_t * np.power((-t[0]/np.power(t,2)),2))
 
 	# compute 'real' runtime
-	# t = t/threads
-	# var_t = var_t/threads
+	# t = t/number_of_threads
+	# var_t = var_t/number_of_threads
 	speedup = t[0]/t;
+	print t[0]
+	print t
+	print speedup
 
-	ax.plot(threads,speedup,'*-',markersize=10,linewidth=2.0)
-	# ax.errorbar(threads,speedup,yerr=stdev_speedup,fmt='d-',markersize=3)
+	ax.plot(number_of_threads,speedup,'*-',markersize=10,linewidth=2.0)
+	# ax.errorbar(number_of_threads,speedup,yerr=stdev_speedup,fmt='d-',markersize=3)
 	color_cnt+=1
 
-perfectspeedup = np.linspace(1,max(threads))
+perfectspeedup = np.linspace(1,max(number_of_threads))
 ax.plot(perfectspeedup,perfectspeedup,'r--',label='perfectspeedup')
 
 fontsize_title=12
@@ -61,7 +64,7 @@ fontsize_label=14
 
 ax.set_title('Strong scaling', fontsize=fontsize_title)
 ax.set_ylabel('Speedup', fontsize=fontsize_label)
-ax.set_xlabel('OMP threads', fontsize=fontsize_label)
+ax.set_xlabel('OMP number_of_threads', fontsize=fontsize_label)
 ax.legend(sizes,loc=2,title='Graph size')
 ax.tick_params(top='off', right='off', length=4, width=1)
 

@@ -4,8 +4,8 @@
 
 ## Variables from command line
 OPT=0 #-DOPTIMISTIC
-DBG=2 #-DDEBUG
-VERB=1 #-DVERBOSE
+DBG=0 #-DDEBUG
+VERB=0 #-DVERBOSE
 AN=1 #-DENABLE_ANALYSIS
 
 
