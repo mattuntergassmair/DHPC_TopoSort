@@ -1,45 +1,12 @@
 #include "analysis.hpp"
 
 
-#ifdef ENABLE_ANALYSIS
 #include <ctime>
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <random>
-
-void analysis::printAnalysis(std::ostream& out){
-   
-    // TODO: maybe not necessary to extract maximum/average
-    //		we can write the timings of all threads to the database instead
-    // NOTE: max_element returns pointer to maximum element over all threads
-    // second extracts the timing value from the key-value pair
-
-    
-    /*
-    out << "=========SUMMARY=========" << "\n";
-    out << "# Threads: " << n_threads_ << "\n";
-    out << "Total time[s]: " << t_total << " (100%)\n";
-    out << "\t- Barriers[s]: " << tt_barrier << "(" << tt_barrier / t_total * 100 << "%)\n";
-    out << "\t- Critical at solution.push_back[s]: " << tt_solution_pushback << "(" << tt_solution_pushback / t_total * 100 << "%)\n";
-    out << "\t- Critical at child->requestValueUpdate[s]: " << tt_requestValueUpdate << "(" << tt_requestValueUpdate / t_total * 100 << "%) \n";
-    
-    out << "\n\n";
-    
-    out << "# Processed nodes (per thread)\n";
-    std::for_each(n_processed_nodes.begin(), n_processed_nodes.end(), [&out](size_t& n){out << n << "\t";});
-    out << "\n";
-
-    out << "Last Syncval before finishing (per thread)\n";
-    std::for_each(last_syncVal.begin(), last_syncVal.end(), [&out](size_t& n){out << n << "\t";});
-    out << "\n";   
-    
-    out << "# initial nodes (per thread)\n";
-    std::for_each(n_initial_currentnodes.begin(), n_initial_currentnodes.end(), [&out](size_t& n){out << n << "\t";});
-    out << "\n";         
-    */
-}
 
 std::string analysis::suggestBaseFilename(){
     std::string sep = "_";
@@ -77,6 +44,9 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     output << "\t\t<processors>" << nProcs_ << "</processors>\n";
     output << "\t\t<totalTime>" << time_Total_ << "</totalTime>\n";
     output << "\t\t<algorithm>" << algorithmName_ << "</algorithm>\n";
+    
+    #if ENABLE_ANALYSIS == 1
+    // in-depth analysis
     output << "\t\t<threads>\n";
     for(size_t i = 0; i < nThreads_; ++i){
         output << "\t\t\t<thread>\n";
@@ -90,6 +60,8 @@ bool analysis::xmlAnalysis(std::string relativeDir){
         output << "\t\t\t</thread>\n";
     }
     output << "\t\t</threads>\n";
+    #endif
+    
     output << "\t\t<graph>\n";
     output << "\t\t\t<type>" << graphName_ << "</type>\n";
     output << "\t\t\t<numberOfNodes>" << nNodes_ << "</numberOfNodes>\n";
@@ -122,12 +94,16 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     std::string filename = baseFilename + ".xml";  
     
     std::random_device rd;
-    //std::mt19937 gen(rd());
-    std::mt19937 gen(42);
+    std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 999);
 
-    //Check if file exists 
-    while(std::ifstream(filename)){
+    //Check if file exists
+    while(true){
+        std::ifstream infile(filename);
+        bool exists = infile.is_open();
+        if(!exists)
+            break;
+        infile.close();
         std::string rn = std::to_string(dis(gen));
         filename = baseFilename + "." + rn + ".xml";
     }
@@ -144,5 +120,3 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     std::cout << "Analysis written to: " << filename << std::endl;
     return true;
 }
-
-#endif
