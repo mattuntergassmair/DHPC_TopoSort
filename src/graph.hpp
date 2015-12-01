@@ -17,7 +17,7 @@ class Graph {
 
 	public:
 
-		enum GRAPH_TYPE {PAPER, RANDOM_EDGES, SOFTWARE};
+		enum GRAPH_TYPE {PAPER, RANDOM_LIN, RANDOM_QUAD, SOFTWARE};
 
 		using type_nodeptr = std::shared_ptr<Node>;
 		using type_nodearray = std::vector<type_nodeptr>;
@@ -63,6 +63,13 @@ class Graph {
 		}
         void topSort();
         std::string getName();
+        
+        /** \brief Connects nodes (= creates edges) according to a GRAPH_TYPE.
+         *  \param edgeFillDegree  For GRAPH_TYPE=RANDOM_LIN, edgeFillDegree = 1 creates exactly as many edges as nodes.
+         *                         For GRAPH_TYPE=RANDOM_QUAD, edgeFillDegree = 1 creates all possible edges.
+         *  \param p  \in[0,1] For GRAPH_TYPE=SOFTWARE. Details see Musco et al.
+         *  \param q  \in[0,1] For GRAPH_TYPE=SOFTWARE. Details see Musco et al.
+         */
 		void connect(GRAPH_TYPE, double edgeFillDegree = .3, double p = .5, double q = .7);
 		type_size countEdges();
         bool checkCorrect(bool verbose);
@@ -76,6 +83,7 @@ class Graph {
         
 	protected:
 
+        void connectRandom(int nEdges);
 		type_size N_; // size of graph
 		type_size nEdges_; // number of edges
 		type_size maxDiam_; // maximal diameter

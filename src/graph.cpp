@@ -36,46 +36,24 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q) 
 			std::cout << "PAPER";
 			break;
 
-		case RANDOM_EDGES:
+        case RANDOM_LIN:
+        {
+			// Specify (roughly) number of edges            
+            int nEdges = N_ * edgeFillDegree;
+            connectRandom(nEdges);
+            graphName_ = "RANDOMLIN";
+            std::cout << "RANDOM_LIN (target fill degree: " << static_cast<double>(nEdges) / (0.5 * N_ * (N_-1)) << ")";
+
+            break;
+        }
+        
+		case RANDOM_QUAD:
 		{
-			assert(edgeFillDegree > 0. && edgeFillDegree <= 1.);
 			// Specify (roughly) number of edges
-			const int nEdges = N_ * (N_ - 1) * 0.5 * edgeFillDegree;
-
-			// Create random order of nodes
-			std::vector<unsigned> order(N_);
-			std::iota(order.begin(), order.end(), 0);
-			const int seed2 = 55;
-			std::mt19937 gen2(seed2);
-			std::shuffle(order.begin(), order.end(), gen2);
-
-			// Prepare the random number generator
-			const int seed = 42;
-			std::mt19937 gen(seed);
-			std::uniform_int_distribution<type_size> dis(0, N_-1);
-			auto rnd = std::bind(dis, gen);
-
-			for(type_size i = 0; i < nEdges; i++){
-				auto rn0 = rnd();
-				auto rn1 = rnd();
-				
-				if(rn0 == rn1)
-					continue;
-
-				// Node with lower order always points to node with higher order so as to avoid circles
-				auto pointerNode = rn0;
-				auto pointeeNode = rn1;
-				if(order[rn0] > order[rn1]){
-					pointerNode = rn1;
-					pointeeNode = rn0;
-				}
-
-				if(!nodes_[pointerNode]->hasChild(nodes_[pointeeNode])){
-					nodes_[pointerNode]->addChild(nodes_[pointeeNode]);
-				}
-			}
-            graphName_ = "RANDOM";            
-			std::cout << "RANDOM (target fill degree: " << edgeFillDegree << ")";
+            int nEdges = N_ * (N_ - 1) * 0.5 * edgeFillDegree;
+            connectRandom(nEdges);
+            graphName_ = "RANDOMQUAD";
+			std::cout << "RANDOM_QUAD (target fill degree: " << edgeFillDegree << ")";
 			break;
 		}
 
@@ -143,6 +121,42 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q) 
 	std::cout << "\n(Nodes: " << N_ << ", Edges: " << nEdges_ << ", FillDegree: " << static_cast<double>(nEdges_) / (0.5 * N_ * (N_-1)) << ")";
 	std::cout << "\n";
 
+}
+
+void Graph::connectRandom(int nEdges){
+    assert(nEdges <= N_ * (N_ - 1) * 0.5);
+    // Create random order of nodes
+    std::vector<unsigned> order(N_);
+    std::iota(order.begin(), order.end(), 0);
+    const int seed2 = 55;
+    std::mt19937 gen2(seed2);
+    std::shuffle(order.begin(), order.end(), gen2);
+
+    // Prepare the random number generator
+    const int seed = 42;
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<type_size> dis(0, N_-1);
+    auto rnd = std::bind(dis, gen);
+
+    for(type_size i = 0; i < nEdges; i++){
+        auto rn0 = rnd();
+        auto rn1 = rnd();
+        
+        if(rn0 == rn1)
+            continue;
+
+        // Node with lower order always points to node with higher order so as to avoid circles
+        auto pointerNode = rn0;
+        auto pointeeNode = rn1;
+        if(order[rn0] > order[rn1]){
+            pointerNode = rn1;
+            pointeeNode = rn0;
+        }
+
+        if(!nodes_[pointerNode]->hasChild(nodes_[pointeeNode])){
+            nodes_[pointerNode]->addChild(nodes_[pointeeNode]);
+        }
+    }
 }
 
 type_size Graph::countEdges() {
