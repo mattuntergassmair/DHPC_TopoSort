@@ -160,7 +160,7 @@ void Graph::connectRandom(int nEdges){
 }
 
 type_size Graph::countEdges() {
-    type_size nEdges;
+    type_size nEdges = 0;
 	for(auto ndptr : nodes_) {
 		nEdges += ndptr->getChildCount();
 	}
