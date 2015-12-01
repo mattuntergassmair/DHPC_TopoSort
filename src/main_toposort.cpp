@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 	testgraph_random.connect(Graph::RANDOM_LIN, edgeFillDegree);
 	testgraph_random.time_topSort();
 	if(testgraph_random.checkCorrect(false)){
-        testgraph_random.dumpXmlAnalysis("../measurements/data/");
+        testgraph_random.dumpXmlAnalysis("results/");
     }
     
     // SOFTWARE GRAPH - MEDIUM
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 	softwaregraph.connect(Graph::SOFTWARE, 0., p, q);
 	softwaregraph.time_topSort();
 	if(softwaregraph.checkCorrect(false)){
-        softwaregraph.dumpXmlAnalysis("../measurements/data/");
+        softwaregraph.dumpXmlAnalysis("results/");
     }
 
 	std::cout << visualbarrier;
