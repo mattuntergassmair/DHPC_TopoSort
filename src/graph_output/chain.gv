@@ -1,0 +1,31 @@
+# Visualization of Graph ./graph_output/chain.gv, size=10
+
+digraph g {
+
+	#TITLE
+	labelloc="t";
+	label="type=chain.gv, size=10;"
+
+	# NODES
+	N00 [ label=" 1"color="#000000", fillcolor="#000019", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N01 [ label=" 2"color="#000000", fillcolor="#00002f", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N02 [ label=" 3"color="#000000", fillcolor="#000045", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N03 [ label=" 4"color="#000000", fillcolor="#00005b", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N04 [ label=" 5"color="#000000", fillcolor="#000071", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N05 [ label=" 6"color="#000000", fillcolor="#000087", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N06 [ label=" 7"color="#000000", fillcolor="#00009d", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N07 [ label=" 8"color="#000000", fillcolor="#0000b3", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N08 [ label=" 9"color="#000000", fillcolor="#0000c9", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+	N09 [ label="10"color="#000000", fillcolor="#0000df", fontcolor=white, fontname="Courier:italic", shape="circle", style="filled,solid" ];
+
+	# EDGES
+	N00 -> N01 [ penwidth=2, style="solid", color="#000000" ];
+	N01 -> N02 [ penwidth=2, style="solid", color="#000000" ];
+	N02 -> N03 [ penwidth=2, style="solid", color="#000000" ];
+	N03 -> N04 [ penwidth=2, style="solid", color="#000000" ];
+	N04 -> N05 [ penwidth=2, style="solid", color="#000000" ];
+	N05 -> N06 [ penwidth=2, style="solid", color="#000000" ];
+	N06 -> N07 [ penwidth=2, style="solid", color="#000000" ];
+	N07 -> N08 [ penwidth=2, style="solid", color="#000000" ];
+	N08 -> N09 [ penwidth=2, style="solid", color="#000000" ];
+}
