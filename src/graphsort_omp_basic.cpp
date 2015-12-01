@@ -22,12 +22,6 @@ void Graph::topSort() {
 		#pragma omp critical
 		threadFinished.push_back(false);
 
-		// TODO: make even nicer
-		// #ifdef ENABLE_ANALYSIS
-		size_t n_processed_nodes = 0;
-		bool hasJustFinished = true;
-		// #endif
-
 		// Declare Thread Private Variables
 		const int nThreads = omp_get_num_threads();
 		const int threadID = omp_get_thread_num();
@@ -56,9 +50,7 @@ void Graph::topSort() {
 		while(i<N_ && nFinished<nThreads) {
 
 			while(!currentnodes.empty()) {
-                #ifdef ENABLE_ANALYSIS
-                n_processed_nodes++; // TODO: can remove ifdef here - we are not compute bound anyways
-                #endif
+                A_.incrementProcessedNodes(threadID);
 				parent = currentnodes.front();
 				currentvalue = parent->getValue();
 
@@ -95,12 +87,6 @@ void Graph::topSort() {
 				}
 			}
 			threadFinished[threadID] = (currentnodes.empty() ? 1 : 0);
-			#ifdef ENABLE_ANALYSIS
-            if(threadFinished[threadID] == 1 && hasJustFinished){
-                A_.count_LastSyncVal_[threadID] = syncVal;
-                hasJustFinished = false;
-            }
-            #endif
             
             
 			#pragma omp single
@@ -115,8 +101,6 @@ void Graph::topSort() {
 			//std::cout << "\nCurrent Depth = " << ++syncVal << std::flush;
 			
 			++i;
-		}
-		A_.processednodes(threadID,n_processed_nodes);
-	
+		}	
 	} // end of OMP parallel
 }
