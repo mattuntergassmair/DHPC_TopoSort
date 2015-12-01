@@ -12,7 +12,7 @@
 
 using type_size = Graph::type_size;
 
-void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q) {
+void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, int nChains) {
 	
 	std::cout << "\nConnection Mode:\t";
 
@@ -109,6 +109,30 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q) 
 			std::cout << "SOFTWARE (attach probability (p): " << p << " attached probability (1-p): " << 1-p << ", double attach probability (q|p=true): " << q << ", )";
 			break;
         }
+        
+        case CHAIN:
+        {
+            for(int i = 0; i < N_ -1; ++i){
+                nodes_[i]->addChild(nodes_[i+1]);
+            }
+            graphName_ = "CHAIN";
+            std::cout << "CHAIN\n";
+            break;
+        }
+        
+        case MULTICHAIN:
+        {
+            assert(nChains <= N_);
+            for(int i = 0; i < N_ - 1; ++i){
+                if((i+1) % (N_ / nChains) == 0)
+                    continue;
+                nodes_[i]->addChild(nodes_[i+1]);
+            }
+            graphName_ = "MULTICHAIN";
+            std::cout << "MULTICHAIN (number of chains: " << nChains << ")";
+            break;
+        }
+        
 		default:
 			std::cout << "\nERROR:\tInvalid connection index - no connections added\n";
 

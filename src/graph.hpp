@@ -17,7 +17,7 @@ class Graph {
 
 	public:
 
-		enum GRAPH_TYPE {PAPER, RANDOM_LIN, RANDOM_QUAD, SOFTWARE};
+		enum GRAPH_TYPE {PAPER, RANDOM_LIN, RANDOM_QUAD, SOFTWARE, CHAIN, MULTICHAIN};
 
 		using type_nodeptr = std::shared_ptr<Node>;
 		using type_nodearray = std::vector<type_nodeptr>;
@@ -69,8 +69,9 @@ class Graph {
          *                         For GRAPH_TYPE=RANDOM_QUAD, edgeFillDegree = 1 creates all possible edges.
          *  \param p  \in[0,1] For GRAPH_TYPE=SOFTWARE. Details see Musco et al.
          *  \param q  \in[0,1] For GRAPH_TYPE=SOFTWARE. Details see Musco et al.
+         *  \param nChains  For GRAPH_TYPE=MULTICHAINS. Creates nChains many chains. nChains must be lower than number of nodes.
          */
-		void connect(GRAPH_TYPE, double edgeFillDegree = .3, double p = .5, double q = .7);
+		void connect(GRAPH_TYPE, double edgeFillDegree = .3, double p = .5, double q = .7, int nChains = 100);
 		type_size countEdges();
         bool checkCorrect(bool verbose);
         type_solution getSolution();

@@ -61,6 +61,30 @@ int main(int argc, char* argv[]) {
 	if(softwaregraph.checkCorrect(false)){
         softwaregraph.dumpXmlAnalysis("results/");
     }
+/*
+	// CHAIN GRAPH - MEDIUM
+	std::cout << visualbarrier;
+	Graph testgraph_chain(N);
+	testgraph_chain.connect(Graph::CHAIN);
+	testgraph_chain.time_topSort();
+	if(testgraph_chain.checkCorrect(false)){
+        testgraph_chain.dumpXmlAnalysis("results/");
+    }
+    
+	// MULTICHAIN GRAPH - MEDIUM
+	std::cout << visualbarrier;
+    int nThreads;
+    #pragma omp parallel
+    {
+        nThreads = omp_get_num_threads();
+    }
+	Graph testgraph_multichain(N);
+	testgraph_multichain.connect(Graph::MULTICHAIN, 0., 0., 0., nThreads);
+	testgraph_multichain.time_topSort();
+	if(testgraph_multichain.checkCorrect(false)){
+        testgraph_multichain.dumpXmlAnalysis("results/");
+    }
+*/
 
 	std::cout << visualbarrier;
     
