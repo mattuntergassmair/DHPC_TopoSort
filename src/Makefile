@@ -12,7 +12,7 @@ AN=1 #-DENABLE_ANALYSIS
 ## Compiler and standard flags
 COMPILER = g++ # Linux
 # COMPILER = icc # XeonPhi
-FLAGS = -O0 -std=c++11 -fopenmp # Linux
+FLAGS = -std=c++11 -fopenmp # Linux
 # FLAGS = -mmic -fopenmp
 
 
@@ -28,6 +28,9 @@ debug: FLAGS += -g -O0
 debug: DBG=2
 debug: VERB=1
 debug: all
+
+relwithdebinfo: FLAGS+= -g
+relwithdebinfo: release
 
 release: FLAGS += -O3
 release: DBG=0
