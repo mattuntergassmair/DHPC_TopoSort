@@ -30,24 +30,25 @@ class Graph {
 			,	maxDiam_(0)
 			,	nEdges_(0)
 			,	nodes_(type_nodearray(N_))
-			,	A_()
 		{
 			std::cout << "DEBUG = " << DEBUG << "\tVERBOSE = " << VERBOSE << "\tOPTIMISTIC = " << OPTIMISTIC << "\tENABLE_ANALYSIS = " << ENABLE_ANALYSIS << "\n\n";
 			std::cout << "Initializing graph of size " << N_ << "...\n";
 			for(unsigned i=0; i<N_; ++i) {
 				nodes_[i] = std::make_shared<Node>(i);
 			}
-		}
-		analysis::type_time time_topSort() {
-            // Store Meta-information for analysis
+            
             analysis::type_threadcount nthr, nprocs;
             #pragma omp parallel
             {
                 nthr = omp_get_num_threads();
                 nprocs = omp_get_num_procs();
             }
-            A_.nThreads_ = nthr;
+			A_ = analysis(nthr);
             A_.nProcs_ = nprocs;
+		}
+		analysis::type_time time_topSort() {
+            
+            // Store Meta-information for analysis
             A_.algorithmName_ = getName();
             A_.nNodes_ = N_;
             A_.nEdges_ = nEdges_;
