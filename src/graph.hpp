@@ -30,7 +30,7 @@ class Graph {
 			,	maxDiam_(0)
 			,	nEdges_(0)
 			,	nodes_(type_nodearray(N_))
-			,	A_(10) // TODO: must be known here
+			,	A_(100) // TODO: nthreads must be known here - this is just a workaround
 		{
 			std::cout << "DEBUG = " << DEBUG << "\tVERBOSE = " << VERBOSE << "\tOPTIMISTIC = " << OPTIMISTIC << "\tENABLE_ANALYSIS = " << ENABLE_ANALYSIS << "\n\n";
 			std::cout << "Initializing graph of size " << N_ << "...\n";

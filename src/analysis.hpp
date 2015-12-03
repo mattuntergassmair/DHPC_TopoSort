@@ -31,6 +31,7 @@ struct analysis {
 		,	clocks_(N_TIMECAT)
 		,	timings_(N_TIMECAT,type_timingmap())
 	{}
+	// TODO: implement setMaxThreads()
 
 	type_countmap count_InitialNodes_;		// counts how many nodes each thread has initially
 	type_countmap count_ProcessedNodes_;	// counts how many nodes each thread has processed in total
