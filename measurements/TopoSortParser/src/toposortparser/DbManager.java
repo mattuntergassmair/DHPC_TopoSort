@@ -25,14 +25,14 @@ public class DbManager {
 
     public void openConnection(boolean deleteDatabase) {
         if (deleteDatabase) {
-            File file = new File("measurements.db");
+            File file = new File("../measurements.db");
             file.delete();
         }
         
         
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:measurements.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:../measurements.db");
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -63,7 +63,8 @@ public class DbManager {
             stmt = connection.createStatement();
             String sql = "INSERT INTO measurements ("
                     + "date,number_of_threads,processors,comment,total_time,"
-                    + "algorithm,graph_type,graph_num_nodes,graph_num_edges) "
+                    + "algorithm,graph_type,graph_num_nodes,graph_num_edges,"
+                    + "optimistic,enable_analysis,verbose,debug) "
                     + "VALUES ("
                     + measurement.getDate() + ", "
                     + measurement.getNumberOfThreads() + ", "
@@ -73,7 +74,11 @@ public class DbManager {
                     + "'" + measurement.getAlgorithm() + "'" + ", "
                     + "'" + measurement.getGraph().getType() + "'" + ", "
                     + measurement.getGraph().getNumberOfNodes() + ", "
-                    + measurement.getGraph().getNumberOfEdges()
+                    + measurement.getGraph().getNumberOfEdges() + ", "
+                    + boolToInt(measurement.isOptimistic()) + ", "
+                    + boolToInt(measurement.isEnableAnalysis()) + ", "
+                    + boolToInt(measurement.isVerbose()) + ", "
+                    + boolToInt(measurement.isDebug()) 
                     + ");";
             stmt.executeUpdate(sql);
             
@@ -97,6 +102,10 @@ public class DbManager {
             System.exit(0);
         }
         System.out.println("Measurement inserted successfully");
+    }
+    
+    private int boolToInt(boolean input) {
+        return (input) ? 1 : 0;
     }
     
     private void insertThread(Thread thread, int measurementId) {

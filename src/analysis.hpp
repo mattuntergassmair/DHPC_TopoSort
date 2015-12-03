@@ -3,7 +3,7 @@
 
 #include "rdtsc_timer.hpp"
 
-#ifdef ENABLE_ANALYSIS
+#if ENABLE_ANALYSIS == 1
 #include <vector>
 #include <map>
 #include <ostream>
@@ -76,7 +76,6 @@ struct analysis {
 		timings_[c][tid] += clocks_[c].sec(); // get time in seconds and add to total (for given thread)
 	}
 
-    void printAnalysis(std::ostream& out);
     bool xmlAnalysis(std::string relativeDir);
 private:
     std::string suggestBaseFilename();
@@ -96,6 +95,13 @@ struct analysis {
 	type_time time_Total_;
 	type_clock totalclock_;
 
+    type_threadcount nThreads_;
+    type_threadcount nProcs_;
+    std::string algorithmName_;
+    type_size nNodes_;
+    type_size nEdges_;
+    std::string graphName_;
+
 	analysis() {}
 
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {}
@@ -106,12 +112,12 @@ struct analysis {
 	inline void stoptotaltiming();
 	inline void stoptiming(type_threadcount tid, timecat c) {}
 	inline void threadcount(type_threadcount n) {}
-    void printAnalysis(std::ostream& out){}
-    bool xmlAnalysis(std::string relativeDir){}
-
+    bool xmlAnalysis(std::string relativeDir);
+private:
+    std::string suggestBaseFilename();
 };
 
-#endif // ENABLE_ANALYSIS
+#endif // ENABLE_ANALYSIS==0
 
 
 inline void analysis::starttotaltiming() {

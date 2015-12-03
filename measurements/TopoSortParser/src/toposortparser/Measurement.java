@@ -19,6 +19,8 @@ public class Measurement {
     private Graph graph;
     private boolean optimistic;
     private boolean enableAnalysis;
+    private boolean verbose;
+    private boolean debug;
 
     public Measurement() {
 
@@ -97,6 +99,22 @@ public class Measurement {
         this.graph = graph;
     }
 
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
     @Override
     public String toString() {
         String output = "";
@@ -124,8 +142,9 @@ public class Measurement {
         output += "\t numberOfEdges: " + this.graph.getNumberOfEdges() + "\n";
 
         output += "optimistic: " + this.optimistic + "\n";
-
         output += "enableAnalysis: " + this.enableAnalysis + "\n";
+        output += "verbose: " + this.verbose + "\n";
+        output += "debug: " + this.debug + "\n";
 
         return output;
     }

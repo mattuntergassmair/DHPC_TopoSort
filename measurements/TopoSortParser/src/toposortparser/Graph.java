@@ -1,5 +1,7 @@
 package toposortparser;
 
+import java.math.BigInteger;
+
 /**
  *
  * @author J. Baum
@@ -8,7 +10,7 @@ public class Graph {
 
     private String type;
     private int numberOfNodes;
-    private int numberOfEdges;
+    private BigInteger numberOfEdges;
 
 
     public String getType() {
@@ -19,11 +21,11 @@ public class Graph {
         this.type = type;
     }
 
-    public int getNumberOfEdges() {
+    public BigInteger getNumberOfEdges() {
         return numberOfEdges;
     }
 
-    public void setNumberOfEdges(int numberOfEdges) {
+    public void setNumberOfEdges(BigInteger numberOfEdges) {
         this.numberOfEdges = numberOfEdges;
     }
 
