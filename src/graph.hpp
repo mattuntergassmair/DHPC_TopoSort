@@ -76,9 +76,9 @@ class Graph {
         
 	protected:
 
-		type_size N_; // size of graph
+		type_size N_; // size of graph, == W
 		type_size nEdges_; // number of edges
-		type_size maxDiam_; // maximal diameter
+		type_size maxDiam_; // maximal diameter, != D
         std::string graphName_;
 		type_nodearray nodes_;
         type_solution solution_;
