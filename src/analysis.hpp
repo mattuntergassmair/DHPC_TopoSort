@@ -4,6 +4,7 @@
 #include "rdtsc_timer.hpp"
 
 #if ENABLE_ANALYSIS == 1
+
 #include <vector>
 #include <map>
 #include <ostream>
@@ -15,20 +16,20 @@ struct analysis {
 	using type_time = double;
 	using type_size = unsigned;
 	using type_threadcount = short;
-	using type_countmap = std::vector<type_threadcount , type_size>;
-	using type_timingmap = std::vector<type_threadcount ,type_time>;
+	using type_countmap = std::vector<type_size>;
+	using type_timingmap = std::vector<type_time>;
 	using type_timingvector = std::vector<type_timingmap>;
 	using type_clock = util::rdtsc_timer;
 	using type_clockvector = std::vector<type_clock>;
 
 	analysis(unsigned nThreads)
-		:	count_InitialNodes_(type_countmap(nThreads,0))
-		,	count_ProcessedNodes_(type_countmap(nThreads,0))
-		,	count_LastSyncVal_(type_countmap(nThreads,0))
+		:	count_InitialNodes_(type_countmap())
+		,	count_ProcessedNodes_(type_countmap())
+		,	count_LastSyncVal_(type_countmap())
 		,	time_Total_(0)
 		,	nThreads_(nThreads)
 		,	clocks_(N_TIMECAT)
-		,	timings_(N_TIMECAT,type_timingmap(nThreads,0))
+		,	timings_(N_TIMECAT,type_timingmap())
 	{}
 
 	type_countmap count_InitialNodes_;		// counts how many nodes each thread has initially

@@ -30,6 +30,7 @@ class Graph {
 			,	maxDiam_(0)
 			,	nEdges_(0)
 			,	nodes_(type_nodearray(N_))
+			,	A_(10) // TODO: must be known here
 		{
 			std::cout << "DEBUG = " << DEBUG << "\tVERBOSE = " << VERBOSE << "\tOPTIMISTIC = " << OPTIMISTIC << "\tENABLE_ANALYSIS = " << ENABLE_ANALYSIS << "\n\n";
 			std::cout << "Initializing graph of size " << N_ << "...\n";
@@ -43,7 +44,7 @@ class Graph {
                 nthr = omp_get_num_threads();
                 nprocs = omp_get_num_procs();
             }
-			A_ = analysis(nthr);
+			A_.nThreads_ = nthr;
             A_.nProcs_ = nprocs;
 		}
 		analysis::type_time time_topSort() {
