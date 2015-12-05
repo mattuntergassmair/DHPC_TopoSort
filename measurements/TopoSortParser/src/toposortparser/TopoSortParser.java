@@ -27,12 +27,16 @@ public class TopoSortParser {
         dbManager.openConnection(true);
         dbManager.createDatabase();
         
+        int fileCounter = 0;
         for (String filename : files) {
-            System.out.println(filename);
+            
             for (Measurement temp : xmlParser.parseXml("../data/" + filename)) {
                 dbManager.insertMeasurement(temp);
             }
+            fileCounter++;
         }
+        
+        System.out.println(fileCounter + " files parsed.");
         
         dbManager.closeConnection();
      

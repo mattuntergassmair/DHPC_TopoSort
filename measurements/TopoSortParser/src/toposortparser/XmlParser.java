@@ -78,7 +78,7 @@ public class XmlParser {
 
                 }
 
-                System.out.println(measurement);
+                //System.out.println(measurement);
 
             }
         } catch (Exception e) {

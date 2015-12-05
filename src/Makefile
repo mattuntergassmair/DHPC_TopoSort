@@ -11,9 +11,9 @@ AN=1 #-DENABLE_ANALYSIS
 
 ## Compiler and standard flags
 COMPILER = g++ # Linux
-# COMPILER = icc # XeonPhi
+# COMPILER = icpc # XeonPhi
 FLAGS = -std=c++11 -fopenmp # Linux
-# FLAGS = -mmic -fopenmp
+# FLAGS = -mmic -fopenmp -std=c++11 # XeonPhi
 
 
 ALGORITHMS = serial omp_tasks omp_locallist omp_bitset #omp_basic  # --> serial
