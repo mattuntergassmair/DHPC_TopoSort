@@ -7,6 +7,9 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <limits.h>
+#include <unistd.h>
+
 
 std::string analysis::suggestBaseFilename(){
     std::string sep = "_";
@@ -20,7 +23,17 @@ std::string analysis::suggestBaseFilename(){
     std::string an = std::to_string(ENABLE_ANALYSIS);
     #else
     std::string an = "0";
-    #endif    
+    #endif
+
+    std::string env_host;
+    char hostname[HOST_NAME_MAX];
+    int result = gethostname(hostname, HOST_NAME_MAX);
+    if (result)
+      env_host = "Unk";
+    else
+      env_host = std::string(hostname);
+
+    
     std::stringstream ss;
            ss << algorithmName_
            << sep << "opt" << opt
@@ -30,6 +43,7 @@ std::string analysis::suggestBaseFilename(){
            << sep << graphName_
            << sep << "n" << nNodes_
            << sep << "e" << nEdges_
+           << sep << env_host
            ;
     return ss.str();
 }
