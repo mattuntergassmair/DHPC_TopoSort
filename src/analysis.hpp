@@ -105,6 +105,7 @@ struct analysis {
     std::string graphName_;
 
 	analysis() {}
+	analysis(unsigned) {}
 
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {}
 	inline void processednodes(type_threadcount tid, type_size nNodes) {}
