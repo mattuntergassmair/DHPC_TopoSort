@@ -6,7 +6,7 @@
 OPT=0 #-DOPTIMISTIC
 DBG=0 #-DDEBUG
 VERB=0 #-DVERBOSE
-AN=1 #-DENABLE_ANALYSIS
+AN=0 #-DENABLE_ANALYSIS
 
 
 ## Compiler and standard flags

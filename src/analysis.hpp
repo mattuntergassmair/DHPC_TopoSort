@@ -2,14 +2,14 @@
 #define ANALYSIS_HPP
 
 #include "rdtsc_timer.hpp"
+#include <omp.h>
+#include <cassert>
 
 #if ENABLE_ANALYSIS == 1
 
 #include <vector>
 #include <map>
 #include <ostream>
-#include <omp.h>
-#include <cassert>
 
 
 struct analysis {
@@ -125,7 +125,20 @@ struct analysis {
     type_size nEdges_;
     std::string graphName_;
 
-	analysis() {}
+	analysis()
+		:	time_Total_(0)
+		,	nThreads_(0) // set in function
+		,	nProcs_(0) // set in function
+	{
+
+		nThreads_ = omp_get_max_threads();
+		nProcs_ = omp_get_num_procs();
+		assert(nThreads_>0 && nProcs_>0);
+
+		// std::cout << "\nNT:" << nThreads_ << std::flush;
+		// std::cout << "\nNP:" << nProcs_ << std::flush;
+	
+	}
 
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {}
 	inline void processednodes(type_threadcount tid, type_size nNodes) {}
