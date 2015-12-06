@@ -24,7 +24,7 @@ def getPerc(where):
 
 def plotPercGraph(graphtype,optim,size):
 	
-	fixedwhere = "enable_analysis=1 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND graph_num_nodes={2}".format(graphtype,optim,size)
+	fixedwhere = "enable_analysis=1 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND graph_num_nodes={2} AND processors>=number_of_threads ".format(graphtype,optim,size)
 
 	query.execute("SELECT number_of_threads FROM measurements WHERE " + fixedwhere + " GROUP BY number_of_threads")
 	nthreads = np.array(query.fetchall())
