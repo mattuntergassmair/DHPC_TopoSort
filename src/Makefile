@@ -24,18 +24,19 @@ GRAPHSRC_DIR := graph_output
 GRAPHSRC_FILES := $(wildcard $(GRAPHSRC_DIR)/*.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
-debug: FLAGS += -g -O0
-debug: DBG=2
-debug: VERB=1
-debug: all
+# Attention: this messes with flags that are set above
+# debug: FLAGS += -g -O0
+# debug: DBG=2
+# debug: VERB=1
+# debug: all
 
-relwithdebinfo: FLAGS+= -g
-relwithdebinfo: release
+# relwithdebinfo: FLAGS+= -g
+# relwithdebinfo: release
 
-release: FLAGS += -O3
-release: DBG=0
-release: VERB=0
-release: all
+# release: FLAGS += -O3
+# release: DBG=0
+# release: VERB=0
+# release: all
 
 all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
 all: $(EXECUTABLES)
