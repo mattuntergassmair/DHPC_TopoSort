@@ -32,8 +32,8 @@ def plotPercGraph(graphtype,optim,size):
 	query.execute("SELECT name FROM timings GROUP BY name ORDER BY name")
 	catnames = np.array(query.fetchall())
 
-	print catnames
-	print nthreads
+	# print catnames
+	# print nthreads
 
 	timings = [];
 
@@ -46,7 +46,7 @@ def plotPercGraph(graphtype,optim,size):
 		for d in data:
 			cats.update({d[0]: d[1]})
 		timings.append(list(cats.values()))
-		print "TIMINGS\n", timings
+		# print "TIMINGS\n", timings
 
 	timings = np.array(timings).astype(np.float)
 	# using .astype(float) to avoid integer division
@@ -95,6 +95,9 @@ def plotPercGraph(graphtype,optim,size):
 
 
 plotPercGraph('SOFTWARE',0,5000);
+plotPercGraph('SOFTWARE',0,50000);
+plotPercGraph('SOFTWARE',0,500000);
+plotPercGraph('SOFTWARE',0,1000000);
 
 
 db.close();

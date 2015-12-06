@@ -78,6 +78,8 @@ bool analysis::xmlAnalysis(std::string relativeDir){
         output << "\t\t\t\t<timing name=\"barrier\">" << timings_[BARRIER][i] << "</timing>\n";
         output << "\t\t\t\t<timing name=\"criticalPushBack\">" << timings_[SOLUTIONPUSHBACK][i] << "</timing>\n";
         output << "\t\t\t\t<timing name=\"criticalRequestValueUpdate\">" << timings_[REQUESTVALUEUPDATE][i] << "</timing>\n";
+        output << "\t\t\t\t<timing name=\"currentGather\">" << timings_[CURRENTGATHER][i] << "</timing>\n";
+        output << "\t\t\t\t<timing name=\"currentScatter\">" << timings_[CURRENTSCATTER][i] << "</timing>\n";
         output << "\t\t\t</timings>\n";
         output << "\t\t\t<processedNodes>" << count_ProcessedNodes_[i] << "</processedNodes>\n";
         output << "\t\t\t</thread>\n";
