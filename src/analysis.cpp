@@ -9,6 +9,8 @@
 #include <random>
 #include <limits.h>
 #include <unistd.h>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/convenience.hpp>
 
 
 std::string analysis::suggestBaseFilename(){
@@ -33,7 +35,7 @@ std::string analysis::suggestBaseFilename(){
     else
       env_host = std::string(hostname);
 
-    
+
     std::stringstream ss;
            ss << algorithmName_
            << sep << "opt" << opt
@@ -56,7 +58,16 @@ bool analysis::xmlAnalysis(std::string relativeDir){
       env_host = "Unk";
     else
       env_host = std::string(hostname);
-          
+    
+
+	// Boost: create directory if it doesn't exist yet
+	boost::filesystem::path boost_reldir(relativeDir.c_str());
+	if(boost::filesystem::create_directories(boost_reldir)) {
+		std::cout << "\nDirectory " << boost_reldir << " created\n";
+	}
+
+
+
     std::stringstream output;
     output << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     output << "<measurements>\n";
