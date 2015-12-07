@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Usage: ./toposort_xyz.exe [N=5000 [,edgeFillDegree = 2.7 [,p = 0.5, q = 0.7]]]" << std::endl;
     
     // Standard values
-    unsigned N = 5000;
+    unsigned N = 500000;
     double edgeFillDegree = 2.7;
     double p = 0.5;
     double q = 0.7;

@@ -2,12 +2,15 @@
 #define ANALYSIS_HPP
 
 #include "rdtsc_timer.hpp"
+#include <omp.h>
+#include <cassert>
 
 #if ENABLE_ANALYSIS == 1
 
 #include <vector>
 #include <map>
 #include <ostream>
+
 
 struct analysis {
 
@@ -22,16 +25,29 @@ struct analysis {
 	using type_clock = util::rdtsc_timer;
 	using type_clockvector = std::vector<type_clock>;
 
-	analysis(unsigned nThreads)
-		:	count_InitialNodes_(type_countmap())
-		,	count_ProcessedNodes_(type_countmap())
-		,	count_LastSyncVal_(type_countmap())
+	analysis()
+		:	count_InitialNodes_(type_countmap()) // still necessary? 
+		,	count_ProcessedNodes_(type_countmap()) // set in function
+		,	count_LastSyncVal_(type_countmap()) // still necessary?
 		,	time_Total_(0)
-		,	nThreads_(nThreads)
+		,	nThreads_(0) // set in function
+		,	nProcs_(0) // set in function
 		,	clocks_(N_TIMECAT)
-		,	timings_(N_TIMECAT,type_timingmap())
-	{}
-	// TODO: implement setMaxThreads()
+		,	timings_() // set in function
+	{
+
+		nThreads_ = omp_get_max_threads();
+		nProcs_ = omp_get_num_procs();
+		assert(nThreads_>0 && nProcs_>0);
+
+		// std::cout << "\nNT:" << nThreads_ << std::flush;
+		// std::cout << "\nNP:" << nProcs_ << std::flush;
+	
+		// TODO: Probably count_InitialNodes_ and count_LastSyncVal_ can be removed
+		count_ProcessedNodes_ = type_countmap(nThreads_);
+		timings_ = type_timingvector(N_TIMECAT,type_timingmap(nThreads_));
+	}
+	
 
 	type_countmap count_InitialNodes_;		// counts how many nodes each thread has initially
 	type_countmap count_ProcessedNodes_;	// counts how many nodes each thread has processed in total
@@ -50,15 +66,19 @@ struct analysis {
     
 	// FUNCTIONS
 	
+	// TODO: this can probably be removed
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {
-		count_InitialNodes_[tid] = nNodes;
+		assert(tid>=0 && tid<nThreads_);
+		// count_InitialNodes_[tid] = nNodes;
 	}
 	
 	inline void processednodes(type_threadcount tid, type_size nNodes) {
+		assert(tid>=0 && tid<nThreads_);
 		count_ProcessedNodes_[tid] = nNodes;
 	}
 	
 	inline void incrementProcessedNodes(type_threadcount tid) { // TODO: check if this can be used instead of processednodes (performance??)
+		assert(tid>=0 && tid<nThreads_);
 		++count_ProcessedNodes_[tid];
 	}
 
@@ -74,6 +94,7 @@ struct analysis {
 	inline void stoptiming(type_threadcount tid, timecat c) {
 		// c stands for the index of the time category we are measuring
 		// tid is the thread id
+		assert(tid>=0 && tid<nThreads_);
 		clocks_[c].stop(); // stop timing
 		timings_[c][tid] += clocks_[c].sec(); // get time in seconds and add to total (for given thread)
 	}
@@ -104,7 +125,20 @@ struct analysis {
     type_size nEdges_;
     std::string graphName_;
 
-	analysis() {}
+	analysis()
+		:	time_Total_(0)
+		,	nThreads_(0) // set in function
+		,	nProcs_(0) // set in function
+	{
+
+		nThreads_ = omp_get_max_threads();
+		nProcs_ = omp_get_num_procs();
+		assert(nThreads_>0 && nProcs_>0);
+
+		// std::cout << "\nNT:" << nThreads_ << std::flush;
+		// std::cout << "\nNP:" << nProcs_ << std::flush;
+	
+	}
 
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {}
 	inline void processednodes(type_threadcount tid, type_size nNodes) {}

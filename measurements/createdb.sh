@@ -4,6 +4,5 @@
 
 cd TopoSortParser
 ant
-cp measurements.db ..
 
 exit 0

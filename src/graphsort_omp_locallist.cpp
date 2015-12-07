@@ -43,7 +43,7 @@ inline void scatterlist( Graph::type_nodelist& globallist, Graph::type_nodelist&
 		std::cout << "\nBEFORESCATTER -\tglobal:" << globallist;
 	#endif // DEBUG >= 1
 
-	Graph::type_nodelist::const_iterator start, end;
+	Graph::type_nodelist::iterator start, end;
 	#pragma omp critical
 	{
 		assert(locallist.empty());

@@ -6,14 +6,14 @@
 OPT=0 #-DOPTIMISTIC
 DBG=0 #-DDEBUG
 VERB=0 #-DVERBOSE
-AN=1 #-DENABLE_ANALYSIS
+AN=0 #-DENABLE_ANALYSIS
 
 
 ## Compiler and standard flags
 COMPILER = g++ # Linux
-# COMPILER = icc # XeonPhi
+# COMPILER = icpc # XeonPhi
 FLAGS = -std=c++11 -fopenmp # Linux
-# FLAGS = -mmic -fopenmp
+# FLAGS = -mmic -fopenmp -std=c++11 # XeonPhi
 
 
 ALGORITHMS = serial omp_tasks omp_locallist omp_bitset #omp_basic  # --> serial
@@ -24,6 +24,7 @@ GRAPHSRC_DIR := graph_output
 GRAPHSRC_FILES := $(wildcard $(GRAPHSRC_DIR)/*.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
+# Attention: this messes with flags that are set above. Use with care, i.e. make clean first
 debug: FLAGS += -g -O0
 debug: DBG=2
 debug: VERB=1
