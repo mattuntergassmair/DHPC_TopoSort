@@ -70,7 +70,7 @@ def plotStrongScaling(graphtype,optim,basesize):
 
 
 # Save plots
-	filename = plotdir + "/strongscaling.pdf";
+	filename = plotdir + "/weakscaling.pdf";
 	plt.savefig(filename,format='pdf')
 	plt.show()
 
