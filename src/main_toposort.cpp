@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     
 	std::string visualbarrier(70,'=');
 	visualbarrier = "\n\n\n" + visualbarrier + "\n\n";
-
+/*
 	// PAPER GRAPH - Testing
 	std::cout << visualbarrier;
 	Graph testgraph_paper(9);
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 	testgraph_random_small.time_topSort();
 	testgraph_random_small.checkCorrect(false);
     testgraph_random_small.viz("random_lin");
-	
+*/
 	// RANDOM GRAPH - MEDIUM
 	std::cout << visualbarrier;
 	Graph testgraph_random(N);
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
 	if(softwaregraph.checkCorrect(false)){
         softwaregraph.dumpXmlAnalysis("results/");
     }
-/*
+
 	// CHAIN GRAPH - MEDIUM
 	std::cout << visualbarrier;
 	Graph testgraph_chain(N);
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
 	if(testgraph_multichain.checkCorrect(false)){
         testgraph_multichain.dumpXmlAnalysis("results/");
     }
-*/
+
 
 	std::cout << visualbarrier;
     
