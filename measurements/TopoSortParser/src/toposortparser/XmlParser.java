@@ -50,6 +50,9 @@ public class XmlParser {
                         case "processors":
                             measurement.setProcessors(Integer.parseInt(node.getTextContent()));
                             break;
+                        case "hostname":
+                            measurement.setHostname(node.getTextContent());
+                            break;
                         case "totalTime":
                             measurement.setTotalTime(Double.parseDouble(node.getTextContent()));
                             break;

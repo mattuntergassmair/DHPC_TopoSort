@@ -64,7 +64,7 @@ public class DbManager {
             String sql = "INSERT INTO measurements ("
                     + "date,number_of_threads,processors,comment,total_time,"
                     + "algorithm,graph_type,graph_num_nodes,graph_num_edges,"
-                    + "optimistic,enable_analysis,verbose,debug) "
+                    + "optimistic,enable_analysis,verbose,debug,hostname) "
                     + "VALUES ("
                     + measurement.getDate() + ", "
                     + measurement.getNumberOfThreads() + ", "
@@ -78,7 +78,8 @@ public class DbManager {
                     + boolToInt(measurement.isOptimistic()) + ", "
                     + boolToInt(measurement.isEnableAnalysis()) + ", "
                     + boolToInt(measurement.isVerbose()) + ", "
-                    + boolToInt(measurement.isDebug()) 
+                    + boolToInt(measurement.isDebug())  + ", "
+                    + "'" + measurement.getHostname()  + "'"
                     + ");";
             stmt.executeUpdate(sql);
             

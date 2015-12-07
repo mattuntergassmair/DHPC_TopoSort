@@ -12,6 +12,7 @@ public class Measurement {
     private long date;
     private int numberOfThreads;
     private int processors;
+    private String hostname;
 
     private double totalTime;
     private String algorithm;
@@ -114,6 +115,16 @@ public class Measurement {
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+    
+    
 
     @Override
     public String toString() {
