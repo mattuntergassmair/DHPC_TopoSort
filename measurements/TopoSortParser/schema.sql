@@ -15,6 +15,7 @@ CREATE TABLE "measurements" (
 	`optimistic`	INTEGER,
 	`enable_analysis`	INTEGER,
 	`verbose`	INTEGER,
-	`debug`	INTEGER
+	`debug`	INTEGER,
+	`hostname`	TEXT
 );
 COMMIT;
