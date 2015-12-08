@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#SBATCH --time=01:00:00
 #SBATCH --gres=mic:1 -n 1 -N 1
 
 export SINK_LD_LIBRARY_PATH=/opt/intel/composer_xe_2015/lib/mic/
@@ -8,7 +7,6 @@ export SINK_LD_LIBRARY_PATH=/opt/intel/composer_xe_2015/lib/mic/
 # GENERAL SETTINGS
 #==================
 
-RUN_CMD='srun --gres=mic:1 micnativeloadex'
 OUT_DIR='results/'
 
 # Number of threads
@@ -59,13 +57,11 @@ do
 				do
 					# Strong scaling
 					filename_ssc="$OUT_DIR${PARALLEL_EXE_NAME[$v]}_opt${op}_an${ANALYSIS}_t${t}_p${THREADS_MAX}_${GRAPH_TYPES_NAME[$gt]}_n${N_SSC}_${HOSTNAME}.$RN$i.xml"
-					eval "$RUN_CMD --output=$filename_ssc ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=${t}c,1t"
-					#echo "$RUN_CMD --output=$filename_ssc ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=${t}c,1t"
+					eval "srun --gres=mic:1 --output=$filename_ssc micnativeloadex ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=${t}c,1t"
 					# Weak scaling
 					ws=$(($N_WSC*$t))
 					filename_wsc="$OUT_DIR${PARALLEL_EXE_NAME[$v]}_opt${op}_an${ANALYSIS}_t${t}_p${THREADS_MAX}_${GRAPH_TYPES_NAME[$gt]}_n${ws}_${HOSTNAME}.$RN$i.xml"
-					eval "$RUN_CMD --output=$filename_wsc ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $ws -e KMP_PLACE_THREADS=${t}c,1t"
-					#echo "$RUN_CMD --output=$filename_wsc ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $ws -e KMP_PLACE_THREADS=${t}c,1t"
+					eval "srun --gres=mic:1 --output=$filename_wsc micnativeloadex ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $ws -e KMP_PLACE_THREADS=${t}c,1t"
 				done
 			done    
 		done
@@ -82,15 +78,13 @@ do
 		do
 			# Strong scaling
 			filename_ssc="$OUT_DIR${SERIAL_EXE_NAME}_opt${op}_an${ANALYSIS}_t1_p1_${GRAPH_TYPES_NAME[$gt]}_n${N_SSC}_${HOSTNAME}.$RN$i.xml"
-			#eval "$RUN_CMD --output=$filename_ssc ./${SERIAL_EXE} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=1c,1t"
-			echo "$RUN_CMD --output=$filename_ssc ./${SERIAL_EXE} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=1c,1t"
+			eval "srun --gres=mic:1 --output=$filename_ssc micnativeloadex ./${SERIAL_EXE} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=1c,1t"
 			# Weak scaling
 			for (( t=$THREADS_MIN; t<=$THREADS_MAX; t=t+$THREADS_STEP ))
 			do
 				ws=$(($N_WSC*$t))
 				filename_wsc="$OUT_DIR${SERIAL_EXE_NAME}_opt${op}_an${ANALYSIS}_t1_p1_${GRAPH_TYPES_NAME[$gt]}_n${ws}_${HOSTNAME}.$RN$i.xml"
-				eval "$RUN_CMD --output=$filename_wsc ./${SERIAL_EXE} ${GRAPH_TYPES[$gt]} $ws -e KMP_PLACE_THREADS=1c,1t"
-				#echo "$RUN_CMD --output=$filename_wsc ./${SERIAL_EXE} ${GRAPH_TYPES[$gt]} $ws -e KMP_PLACE_THREADS=1c,1t"
+				eval "srun --gres=mic:1 --output=$filename_wsc micnativeloadex ./${SERIAL_EXE} ${GRAPH_TYPES[$gt]} $ws -e KMP_PLACE_THREADS=1c,1t"
 			done
 		done
 	done
@@ -116,8 +110,7 @@ do
 				do
 					# Strong scaling
 					filename_ssc="$OUT_DIR${PARALLEL_EXE_NAME[$v]}_opt${op}_an${ANALYSIS}_t${t}_p${THREADS_MAX}_${GRAPH_TYPES_NAME[$gt]}_n${N_SSC}_${HOSTNAME}.$RN$i.xml"
-					eval "$RUN_CMD --output=$filename_ssc ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=${t}c,1t"
-					#echo "$RUN_CMD --output=$filename_ssc ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=${t}c,1t"
+					eval "srun --gres=mic:1 --output=$filename_ssc micnativeloadex ./${PARALLEL_EXE[$v]} ${GRAPH_TYPES[$gt]} $N_SSC -e KMP_PLACE_THREADS=${t}c,1t"
 				done
 			done    
 		done
