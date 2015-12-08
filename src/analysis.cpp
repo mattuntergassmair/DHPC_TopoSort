@@ -62,6 +62,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     output << "<measurements>\n";
     output << "\t<measurement>\n";
     output << "\t\t<date>" << std::time(nullptr) << "</date>\n";
+    output << "\t\t<errorCode>" << errorCode_ << "</errorCode>\n";
     output << "\t\t<numberOfThreads>" << nThreads_ << "</numberOfThreads>\n";
     output << "\t\t<processors>" << nProcs_ << "</processors>\n";
     output << "\t\t<hostname>" << env_host << "</hostname>\n";

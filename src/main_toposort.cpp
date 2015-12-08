@@ -63,9 +63,8 @@ int main(int argc, char* argv[]) {
             Graph testgraph_random(N);
             testgraph_random.connect(Graph::RANDOM_LIN, edgeFillDegree);
             testgraph_random.time_topSort();
-            if(testgraph_random.checkCorrect(false)){
-                testgraph_random.dumpXmlAnalysis(out_dir);
-            }
+            testgraph_random.checkCorrect(false);
+            testgraph_random.dumpXmlAnalysis(out_dir);
             break;
         }
     
@@ -76,9 +75,8 @@ int main(int argc, char* argv[]) {
             Graph softwaregraph(N);
             softwaregraph.connect(Graph::SOFTWARE, 0., p, q);
             softwaregraph.time_topSort();
-            if(softwaregraph.checkCorrect(false)){
-                softwaregraph.dumpXmlAnalysis(out_dir);
-            }
+            softwaregraph.checkCorrect(false);
+            softwaregraph.dumpXmlAnalysis(out_dir);
             break;
         }
         
@@ -89,9 +87,8 @@ int main(int argc, char* argv[]) {
             Graph testgraph_chain(N);
             testgraph_chain.connect(Graph::CHAIN);
             testgraph_chain.time_topSort();
-            if(testgraph_chain.checkCorrect(false)){
-                testgraph_chain.dumpXmlAnalysis(out_dir);
-            }
+            testgraph_chain.checkCorrect(false);
+            testgraph_chain.dumpXmlAnalysis(out_dir);
             break;
         }
         
@@ -107,9 +104,8 @@ int main(int argc, char* argv[]) {
             Graph testgraph_multichain(N);
             testgraph_multichain.connect(Graph::MULTICHAIN, 0., 0., 0., nThreads);
             testgraph_multichain.time_topSort();
-            if(testgraph_multichain.checkCorrect(false)){
-                testgraph_multichain.dumpXmlAnalysis(out_dir);
-            }
+            testgraph_multichain.checkCorrect(false);
+            testgraph_multichain.dumpXmlAnalysis(out_dir);
             break;
         }
         

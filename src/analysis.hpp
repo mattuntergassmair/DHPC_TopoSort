@@ -24,6 +24,7 @@ struct analysis {
 	using type_timingvector = std::vector<type_timingmap>;
 	using type_clock = util::rdtsc_timer;
 	using type_clockvector = std::vector<type_clock>;
+    using type_error = int;
 
 	analysis()
 		:	count_InitialNodes_(type_countmap()) // still necessary? 
@@ -64,6 +65,7 @@ struct analysis {
     type_size nEdges_;
     type_size depth_;
     std::string graphName_;
+    type_error errorCode_;
     
 	// FUNCTIONS
 	
@@ -115,7 +117,8 @@ struct analysis {
 	using type_size = unsigned;
 	using type_clock = util::rdtsc_timer;
 	using type_threadcount = short;
-	
+    using type_error = int;
+
 	type_time time_Total_;
 	type_clock totalclock_;
 
@@ -126,6 +129,7 @@ struct analysis {
     type_size nEdges_;
     type_size depth_;
     std::string graphName_;
+    type_error errorCode_;
 
 	analysis()
 		:	time_Total_(0)

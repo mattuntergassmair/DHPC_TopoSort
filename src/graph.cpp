@@ -196,9 +196,11 @@ bool Graph::checkCorrect(bool verbose) {
     std::cout << "\nChecking solution correctness...\n";
 	bool correct = true;
 
+    analysis::type_error errorCode = 0;
     // 1. check length of solution
     if(solution_.size() != nodes_.size()){
         correct = false;
+        errorCode += 1;
         if(verbose)
             std::cout << "ERROR: Size of solution is " << solution_.size() << ", but should be " << nodes_.size() << "\n";
     }
@@ -218,6 +220,7 @@ bool Graph::checkCorrect(bool verbose) {
     for(size_t i = 0; i < N_; ++i){
         if(checkNodes[i] != 1){
             correct = false;
+            errorCode += 2;
             if(verbose)
                 std::cout << "ERROR: Node #" << nodes_[i]->getID() << " occurs " << checkNodes[i] << " times, but should occur exactly once.\n";
         }
@@ -233,12 +236,14 @@ bool Graph::checkCorrect(bool verbose) {
             size_t childId = parent->getChild(k)->getID();
             if(nodeOrders[parentId] > nodeOrders[childId]){
                 correct = false;
+                errorCode += 4;
                 if(verbose)
                     std::cout << "ERROR: Node #" << parentId << " should have lower index than node #" << childId << "\n";
             }
         }
     }
 
+    A_.errorCode_ = errorCode;
 	if(correct) {
 		std::cout << "\n\033[1;32mOK\033[0m: VALID TOPOLOGICAL SORTING.\n\n";
 	} else {
