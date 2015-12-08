@@ -91,6 +91,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     output << "\t\t\t<type>" << graphName_ << "</type>\n";
     output << "\t\t\t<numberOfNodes>" << nNodes_ << "</numberOfNodes>\n";
     output << "\t\t\t<numberOfEdges>" << nEdges_ << "</numberOfEdges>\n";
+    output << "\t\t\t<depth>" << depth_ << "</depth>\n";
     output << "\t\t</graph>\n";
     #if OPTIMISTIC==1
     output << "\t\t<optimistic>true</optimistic>\n";

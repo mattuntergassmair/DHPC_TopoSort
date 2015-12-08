@@ -10,7 +10,7 @@ std::string Graph::getName(){
 void Graph::topSort() {
 	// Sorting Magic happens here
 	
-	unsigned syncVal = 1;
+	type_size syncVal = 1;
 	unsigned nFinished = 0;
     int nThreads;
     #pragma omp parallel
@@ -83,12 +83,12 @@ void Graph::topSort() {
 			}// end for => one frontier completed
 			#pragma omp single
             {
-                ++syncVal;
-                //std::cout << "\nCurrent Depth = " << syncVal << std::flush;
+                ++syncVal;                
                 shift = (shift+1)%2;
                 char testval = true;
                 newChildren = std::find(newChildrenPerThread.begin(), newChildrenPerThread.end(), testval) != newChildrenPerThread.end();
             }
         }
 	} // end of OMP parallel
+    depth_ = syncVal;
 }

@@ -51,6 +51,7 @@ class Graph {
 			A_.starttotaltiming();
 			this->topSort();
 			A_.stoptotaltiming();
+            A_.depth_ = depth_;
 			std::cout << "\n\nMaximum Diameter: " << maxDiam_;
 			std::cout << "\n\n\tSorting completed in:\t" << std::setprecision(8) << std::fixed << A_.time_Total_ << " sec\n\n";
 			return A_.time_Total_;
@@ -82,6 +83,7 @@ class Graph {
 		type_size N_; // size of graph, == W
 		type_size nEdges_; // number of edges
 		type_size maxDiam_; // maximal diameter, != D
+        type_size depth_; // depth of graph, == D
         std::string graphName_;
 		type_nodearray nodes_;
         type_solution solution_;

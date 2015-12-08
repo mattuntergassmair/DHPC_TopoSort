@@ -62,6 +62,7 @@ struct analysis {
     std::string algorithmName_;
     type_size nNodes_;
     type_size nEdges_;
+    type_size depth_;
     std::string graphName_;
     
 	// FUNCTIONS
@@ -123,6 +124,7 @@ struct analysis {
     std::string algorithmName_;
     type_size nNodes_;
     type_size nEdges_;
+    type_size depth_;
     std::string graphName_;
 
 	analysis()
