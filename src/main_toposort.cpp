@@ -6,10 +6,11 @@
 #include "analysis.hpp"
 
 int main(int argc, char* argv[]) {
-    
-    std::cout << "Usage: ./toposort_xyz.exe [graphType = s [,N=5000 [,destDir=results [,edgeFillDegree = 2.7 [,p = 0.5, q = 0.7]]]]]" << std::endl;
-    std::cout << "Graph Types: t: Test graphs (Paper and small Random)\ts: Software\tr: Random \tc: Chain\tm: Mulitchain" << std::endl;
-    
+    if(argc == 2 && std::string(argv[1]) == "--help"){
+        std::cout << "Usage: ./toposort_xyz.exe [graphType = s [,N=5000 [,destDir=results [,edgeFillDegree = 2.7 [,p = 0.5, q = 0.7]]]]]" << std::endl;
+        std::cout << "Graph Types: t: Test graphs (Paper and small Random)\ts: Software\tr: Random \tc: Chain\tm: Mulitchain" << std::endl;
+        return 0;
+    }
     // Standard values
     char graphType = 's';
     unsigned N = 500000;
