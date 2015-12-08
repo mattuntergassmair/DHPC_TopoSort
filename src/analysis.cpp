@@ -134,6 +134,10 @@ bool analysis::xmlAnalysis(std::string relativeDir){
         std::string rn = std::to_string(dis(gen));
         filename = baseFilename + "." + rn + ".xml";
     }
+    
+    std::cout << output.str();
+    
+    /*
     std::ofstream f(filename);
     if(f){
         f << output.str();
@@ -143,7 +147,8 @@ bool analysis::xmlAnalysis(std::string relativeDir){
         std::cerr << "Could not open file " << filename << std::endl;
         return false;
     }
+    */ 
     
-    std::cout << "Analysis written to: " << filename << std::endl;
+    //std::cout << "Analysis written to: " << filename << std::endl;
     return true;
 }

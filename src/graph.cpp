@@ -14,7 +14,7 @@ using type_size = Graph::type_size;
 
 void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, int nChains) {
 	
-	std::cout << "\nConnection Mode:\t";
+	//std::cout << "\nConnection Mode:\t";
 
 	Node nd = Node(2);
 
@@ -33,7 +33,7 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, 
 			nodes_[8]->addChild(nodes_[1]);
 			nodes_[8]->addChild(nodes_[4]);
             graphName_ = "PAPER";
-			std::cout << "PAPER";
+			//std::cout << "PAPER";
 			break;
 
         case RANDOM_LIN:
@@ -42,7 +42,7 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, 
             int nEdges = N_ * edgeFillDegree;
             connectRandom(nEdges);
             graphName_ = "RANDOMLIN";
-            std::cout << "RANDOM_LIN (target fill degree: " << static_cast<double>(nEdges) / (0.5 * N_ * (N_-1)) << ")";
+            //std::cout << "RANDOM_LIN (target fill degree: " << static_cast<double>(nEdges) / (0.5 * N_ * (N_-1)) << ")";
 
             break;
         }
@@ -53,7 +53,7 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, 
             int nEdges = N_ * (N_ - 1) * 0.5 * edgeFillDegree;
             connectRandom(nEdges);
             graphName_ = "RANDOMQUAD";
-			std::cout << "RANDOM_QUAD (target fill degree: " << edgeFillDegree << ")";
+			//std::cout << "RANDOM_QUAD (target fill degree: " << edgeFillDegree << ")";
 			break;
 		}
 
@@ -106,7 +106,7 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, 
                 }
             }
             graphName_ = "SOFTWARE";            
-			std::cout << "SOFTWARE (attach probability (p): " << p << " attached probability (1-p): " << 1-p << ", double attach probability (q|p=true): " << q << ", )";
+			//std::cout << "SOFTWARE (attach probability (p): " << p << " attached probability (1-p): " << 1-p << ", double attach probability (q|p=true): " << q << ", )";
 			break;
         }
         
@@ -116,7 +116,7 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, 
                 nodes_[i]->addChild(nodes_[i+1]);
             }
             graphName_ = "CHAIN";
-            std::cout << "CHAIN\n";
+            //std::cout << "CHAIN\n";
             break;
         }
         
@@ -129,12 +129,12 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, 
                 nodes_[i]->addChild(nodes_[i+1]);
             }
             graphName_ = "MULTICHAIN";
-            std::cout << "MULTICHAIN (number of chains: " << nChains << ")";
+            //std::cout << "MULTICHAIN (number of chains: " << nChains << ")";
             break;
         }
         
-		default:
-			std::cout << "\nERROR:\tInvalid connection index - no connections added\n";
+		//default:
+			//std::cout << "\nERROR:\tInvalid connection index - no connections added\n";
 
 	}
 
@@ -142,8 +142,8 @@ void Graph::connect(GRAPH_TYPE type, double edgeFillDegree, double p, double q, 
     assert(graphName_ != "");
 	nEdges_ = countEdges();
 
-	std::cout << "\n(Nodes: " << N_ << ", Edges: " << nEdges_ << ", FillDegree: " << static_cast<double>(nEdges_) / (0.5 * N_ * (N_-1)) << ")";
-	std::cout << "\n";
+	//std::cout << "\n(Nodes: " << N_ << ", Edges: " << nEdges_ << ", FillDegree: " << static_cast<double>(nEdges_) / (0.5 * N_ * (N_-1)) << ")";
+	//std::cout << "\n";
 
 }
 
@@ -193,7 +193,7 @@ type_size Graph::countEdges() {
 
 bool Graph::checkCorrect(bool verbose) {
 	
-    std::cout << "\nChecking solution correctness...\n";
+    //std::cout << "\nChecking solution correctness...\n";
 	bool correct = true;
 
     analysis::type_error errorCode = 0;
@@ -245,9 +245,9 @@ bool Graph::checkCorrect(bool verbose) {
 
     A_.errorCode_ = errorCode;
 	if(correct) {
-		std::cout << "\n\033[1;32mOK\033[0m: VALID TOPOLOGICAL SORTING.\n\n";
+		//std::cout << "\n\033[1;32mOK\033[0m: VALID TOPOLOGICAL SORTING.\n\n";
 	} else {
-		std::cout << "\n\033[1;31mERROR: INVALID TOPOLOCIGAL SORTING!\033[0m\n\n";
+		//std::cout << "\n\033[1;31mERROR: INVALID TOPOLOCIGAL SORTING!\033[0m\n\n";
 	}
 
 	#if VERBOSE>=2

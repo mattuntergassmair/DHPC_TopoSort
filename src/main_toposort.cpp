@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
         case 't':
         {
             // PAPER GRAPH - Testing
-            std::cout << visualbarrier;
+            //std::cout << visualbarrier;
             Graph testgraph_paper(9);
             testgraph_paper.connect(Graph::PAPER); // Constructing graph from paper
             testgraph_paper.time_topSort();
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
             testgraph_paper.viz("paper");
 
             // RANDOM GRAPH - SMALL
-            std::cout << visualbarrier;
+            //std::cout << visualbarrier;
             Graph testgraph_random_small(40);
             testgraph_random_small.connect(Graph::RANDOM_LIN, edgeFillDegree);
             testgraph_random_small.time_topSort();
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
         case 'r':
         {
             // RANDOM GRAPH - MEDIUM
-            std::cout << visualbarrier;
+            //std::cout << visualbarrier;
             Graph testgraph_random(N);
             testgraph_random.connect(Graph::RANDOM_LIN, edgeFillDegree);
             testgraph_random.time_topSort();
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
         case 's':
         {
             // SOFTWARE GRAPH - MEDIUM
-            std::cout << visualbarrier;
+            //std::cout << visualbarrier;
             Graph softwaregraph(N);
             softwaregraph.connect(Graph::SOFTWARE, 0., p, q);
             softwaregraph.time_topSort();
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
         case 'c':
         {
             // CHAIN GRAPH - MEDIUM
-            std::cout << visualbarrier;
+            //std::cout << visualbarrier;
             Graph testgraph_chain(N);
             testgraph_chain.connect(Graph::CHAIN);
             testgraph_chain.time_topSort();
@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
         case 'm':
         {
             // MULTICHAIN GRAPH - MEDIUM
-            std::cout << visualbarrier;
+            //std::cout << visualbarrier;
             int nThreads;
             #pragma omp parallel
             {
@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
             std::cout << "Graph Types: t: Test graphs (Paper and small Random)\ts: Software\tr: Random \tc: Chain\tm: Mulitchain" << std::endl;
     }
 
-	std::cout << visualbarrier;
+	//std::cout << visualbarrier;
     
 	return 0;
 

@@ -32,8 +32,8 @@ class Graph {
 			,	nodes_(type_nodearray(N_))
 			,	A_()
 		{
-			std::cout << "DEBUG = " << DEBUG << "\tVERBOSE = " << VERBOSE << "\tOPTIMISTIC = " << OPTIMISTIC << "\tENABLE_ANALYSIS = " << ENABLE_ANALYSIS << "\n\n";
-			std::cout << "Initializing graph of size " << N_ << "...\n";
+			//std::cout << "DEBUG = " << DEBUG << "\tVERBOSE = " << VERBOSE << "\tOPTIMISTIC = " << OPTIMISTIC << "\tENABLE_ANALYSIS = " << ENABLE_ANALYSIS << "\n\n";
+			//std::cout << "Initializing graph of size " << N_ << "...\n";
 			for(unsigned i=0; i<N_; ++i) {
 				nodes_[i] = std::make_shared<Node>(i);
 			}
@@ -52,8 +52,8 @@ class Graph {
 			this->topSort();
 			A_.stoptotaltiming();
             A_.depth_ = depth_;
-			std::cout << "\n\nMaximum Diameter: " << maxDiam_;
-			std::cout << "\n\n\tSorting completed in:\t" << std::setprecision(8) << std::fixed << A_.time_Total_ << " sec\n\n";
+			//std::cout << "\n\nMaximum Diameter: " << maxDiam_;
+			//std::cout << "\n\n\tSorting completed in:\t" << std::setprecision(8) << std::fixed << A_.time_Total_ << " sec\n\n";
 			return A_.time_Total_;
 		}
         void topSort();
