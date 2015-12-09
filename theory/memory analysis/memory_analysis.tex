@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amssymb}
+
+
+\begin{document}
+
+\title{Memory Analysis of TopoSort}
+
+\maketitle
+
+\section{Local List Implementation}
+
+Let $\alpha$ be the size of an integer in bits, $\beta$ the size of a pointer in bits, $\gamma$ the amount of threads, $N$ the amount of nodes and $E$ the amount of edges in the graph. Let $\rho \in [0,1]$ be the density of the graph.
+
+Further we introduce $N'$, which is used to approximate the amount of nodes saved in the lists. In the worst case this equals to $N$. An upper bound of $N'$ would be $min\{N,E\}$ since the amount of child-nodes of a single node can not be higher than the amount of nodes or the amount of edges in the graph. An approximation of $N'$ could be $N\rho$ using the density. If more information about the structure of the graph is given, a much more precise approximation is possible.
+
+
+
+\subsection{Node}
+A single node consumes the following heap space:
+
+\begin{itemize}
+\item childnodes: $N' \beta$ (a list of pointers)
+\item index: $\alpha$
+\item value: $\alpha$
+\item childcount: $\alpha$
+\end{itemize}
+Thus one node consumes $\textrm{memory}_{node} = 3\alpha + N'\beta$ bits.
+
+\subsection{Graph}
+The graph has been divided into a shared part and a private part. The shared part is only held in memory once and is shared by all threads. The private part is private for each thread. Thus the memory for the private part has to be multiplied by the amount of threads $\gamma$. All the constant sized variables have been ignored in the static part since they are only stored once and do not scale with the problem size.
+
+\subsubsection*{Shared}
+\begin{itemize}
+\item nodes\_: $N \beta$ (a list of pointers)
+\item solution\_: $2\beta N$ (factor of 2 since it is a list and every element in a linked list has two pointers)
+\item currentNodes\_: $N' \beta$
+\end{itemize}
+
+\subsubsection*{Private}
+\begin{itemize}
+\item nThreads (stack): $\alpha$
+\item threadID (stack): $\alpha$
+\item parent (stack): $\beta$
+\item child (stack): $\beta$
+\item childcount (stack): $\alpha$
+\item currentvalue (stack): $\alpha$
+\item currentnodes (stack): $N' \beta$
+\item solution\_local (stack): $N' \beta$
+\end{itemize}
+
+The overall memory consumption of a graph is: $\textrm{memory}_{graph} = 3N \beta + N' \beta + \gamma (4 \alpha + 2 \beta + 2N' \beta)$.
+
+\subsection{Analysis}
+
+If we assume $\alpha = 32$ and $\beta = 64$ this leads to a total memory consumption of
+$
+\textrm{memory}_{total} = N \cdot \textrm{memory}_{node} + \textrm{memory}_{graph} = 256 N + 64N'N + 64N' + 256\gamma + 128N'\gamma
+$.
+Asymptoticly this would lead to an upper bound of $\Omega(N^2)$ if we assume $\gamma \leq N$.  If we use the approximation of $N' = N \rho$ this leads to $\textrm{memory}_{total} = 256 N + 64N^2\rho + 64N\rho + 256\gamma + 128N\rho\gamma$.
+
+\subsubsection*{Example}
+Let $G$ be a Graph with $N = 5 \cdot 10^5$, and $\rho = 0.4$, then the total memory consumption with $\gamma = 64$ threads would be: $\textrm{memory}_{total} = 1.28 \cdot 10^8 + 6.4 \cdot 10^{12} + 1.2 \cdot 10^7 + 16384 + 1.6384 \cdot 10^9 = 6,416,524,016,384$ Bits.
+
+To check if this fits in the 512K L2 cache of a Xeon Phi core we calculate the memory consumption of a single thread: $\textrm{memory}_{thread} = 256 + 128N\rho = 256 + 2.56 \cdot 10^7 \approx 3125K > 512K$. Thus the example graph would not fit into the L2 cache of a Xeon Phi core. One has to be careful with this calculation since we assumed $N' = N \rho$ which is only a rough approximation.
+
+
+\end{document}
