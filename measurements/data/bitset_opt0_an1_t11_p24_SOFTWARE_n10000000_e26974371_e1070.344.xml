@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449635731</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>11</numberOfThreads>
+		<processors>24</processors>
+		<hostname>e1070</hostname>
+		<totalTime>14.1619</totalTime>
+		<algorithm>bitset</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">8.73e-07</timing>
+				<timing name="criticalPushBack">0.79513</timing>
+				<timing name="criticalRequestValueUpdate">0.757519</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>789692</processedNodes>
+			</thread>
+			<thread>
+			<id>1</id>
+			<timings>
+				<timing name="barrier">1.004e-06</timing>
+				<timing name="criticalPushBack">0.821056</timing>
+				<timing name="criticalRequestValueUpdate">0.75548</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>787541</processedNodes>
+			</thread>
+			<thread>
+			<id>2</id>
+			<timings>
+				<timing name="barrier">1.051e-06</timing>
+				<timing name="criticalPushBack">0.811539</timing>
+				<timing name="criticalRequestValueUpdate">0.740091</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>782962</processedNodes>
+			</thread>
+			<thread>
+			<id>3</id>
+			<timings>
+				<timing name="barrier">9.4e-07</timing>
+				<timing name="criticalPushBack">0.822271</timing>
+				<timing name="criticalRequestValueUpdate">0.748829</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>784642</processedNodes>
+			</thread>
+			<thread>
+			<id>4</id>
+			<timings>
+				<timing name="barrier">8.06e-07</timing>
+				<timing name="criticalPushBack">1.04604</timing>
+				<timing name="criticalRequestValueUpdate">1.00361</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>1050756</processedNodes>
+			</thread>
+			<thread>
+			<id>5</id>
+			<timings>
+				<timing name="barrier">1.305e-06</timing>
+				<timing name="criticalPushBack">1.08551</timing>
+				<timing name="criticalRequestValueUpdate">1.05294</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>1099302</processedNodes>
+			</thread>
+			<thread>
+			<id>6</id>
+			<timings>
+				<timing name="barrier">1.28e-06</timing>
+				<timing name="criticalPushBack">1.05606</timing>
+				<timing name="criticalRequestValueUpdate">1.00666</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>1062553</processedNodes>
+			</thread>
+			<thread>
+			<id>7</id>
+			<timings>
+				<timing name="barrier">1.26e-06</timing>
+				<timing name="criticalPushBack">1.04169</timing>
+				<timing name="criticalRequestValueUpdate">0.988322</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>1047950</processedNodes>
+			</thread>
+			<thread>
+			<id>8</id>
+			<timings>
+				<timing name="barrier">1.305e-06</timing>
+				<timing name="criticalPushBack">0.906303</timing>
+				<timing name="criticalRequestValueUpdate">0.819237</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>882145</processedNodes>
+			</thread>
+			<thread>
+			<id>9</id>
+			<timings>
+				<timing name="barrier">1.106e-06</timing>
+				<timing name="criticalPushBack">0.868689</timing>
+				<timing name="criticalRequestValueUpdate">0.775584</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>841364</processedNodes>
+			</thread>
+			<thread>
+			<id>10</id>
+			<timings>
+				<timing name="barrier">8.73e-07</timing>
+				<timing name="criticalPushBack">0.889396</timing>
+				<timing name="criticalRequestValueUpdate">0.811836</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>871093</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>SOFTWARE</type>
+			<numberOfNodes>10000000</numberOfNodes>
+			<numberOfEdges>26974371</numberOfEdges>
+			<depth>48</depth>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>

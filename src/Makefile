@@ -13,6 +13,7 @@ AN=0 #-DENABLE_ANALYSIS
 COMPILER = g++ # Linux
 # COMPILER = icpc # XeonPhi
 FLAGS = -std=c++11 -fopenmp # Linux
+LIBS =  -lboost_system -lboost_filesystem
 # FLAGS = -mmic -fopenmp -std=c++11 # XeonPhi
 
 
@@ -42,28 +43,28 @@ all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANAL
 all: $(EXECUTABLES)
 
 $(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
-	$(COMPILER) $(FLAGS) $^ -o $@
+	$(COMPILER) $(FLAGS) $^ -o $@ $(LIBS)
 
 
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c $< 
+	$(COMPILER) $(FLAGS) -c $< $(LIBS)
 
 graph.o: graph.cpp graph.hpp node.hpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c $<
+	$(COMPILER) $(FLAGS) -c $< $(LIBS)
 
 
 $(OBJECTS): %.o: %.cpp graph.hpp node.hpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c $<
+	$(COMPILER) $(FLAGS) -c $< $(LIBS)
 
 
 graphdoc.o: graphdoc.cpp graph.hpp node.hpp
-	$(COMPILER) $(FLAGS) -c graphdoc.cpp
+	$(COMPILER) $(FLAGS) -c graphdoc.cpp $(LIBS)
 
 node.o: node.cpp node.hpp
-	$(COMPILER) $(FLAGS) -c node.cpp
+	$(COMPILER) $(FLAGS) -c node.cpp $(LIBS)
 
 analysis.o: analysis.cpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c analysis.cpp
+	$(COMPILER) $(FLAGS) -c analysis.cpp $(LIBS)
 
 run: all
 	./toposort_omp_locallist.exe

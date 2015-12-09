@@ -8,6 +8,8 @@
 #include <iomanip>
 #include <list>
 #include <algorithm>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/convenience.hpp>
 
 #ifndef CMAKE_SOURCE_DIR
 #define CMAKE_SOURCE_DIR "."
@@ -40,7 +42,15 @@ void Graph::viz(std::string graphfilename) const {
 
 	FILE* outfile_ptr;
 	
-	std::string path = std::string(CMAKE_SOURCE_DIR) + "/graph_output/" + graphfilename;
+	std::string dirstr = std::string(CMAKE_SOURCE_DIR) + "/graph_output/";
+	std::string path = dirstr + graphfilename;
+
+	// Boost: create directory if it doesn't exist yet
+	boost::filesystem::path dir(dirstr.c_str());
+	if(boost::filesystem::create_directories(dir)) {
+		std::cout << "\nDirectory " << dir << " created\n";
+	}
+	
 	outfile_ptr = fopen(path.c_str(),"w");
 	if(outfile_ptr != NULL) {
 		fprintf(outfile_ptr,"# Visualization of Graph %s, size=%u\n\n",path.c_str(),N_);

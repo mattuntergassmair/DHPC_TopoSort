@@ -22,9 +22,9 @@ def getPerc(where):
 	data = np.array(query.fetchall())
 	return data
 
-def plotPercGraph(graphtype,optim,size):
+def plotPercGraph(graphtype,optim,size,host):
 	
-	fixedwhere = "enable_analysis=1 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND graph_num_nodes={2} AND processors>=number_of_threads ".format(graphtype,optim,size)
+	fixedwhere = "enable_analysis=1 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND graph_num_nodes={2} AND processors>=number_of_threads AND algorithm='locallist' AND hostname={3}".format(graphtype,optim,size,host)
 
 	query.execute("SELECT number_of_threads FROM measurements WHERE " + fixedwhere + " GROUP BY number_of_threads")
 	nthreads = np.array(query.fetchall())
@@ -86,7 +86,7 @@ def plotPercGraph(graphtype,optim,size):
 
 	plt.legend(lgnd,lbl)
 
-	filename = plotdir + "/" + "timepercentage_type{0}_size{1}".format(graphtype,size) + ".pdf";
+	filename = plotdir + "/" + "timepercentage_host{3}_type{0}_size{1}_opt{2}".format(graphtype,size,optim,host) + ".pdf";
 	plt.savefig(filename,format='pdf')
 
 	plt.show();
@@ -94,10 +94,10 @@ def plotPercGraph(graphtype,optim,size):
 	print "Done - File written to " + filename
 
 
-plotPercGraph('SOFTWARE',0,5000);
-plotPercGraph('SOFTWARE',0,50000);
-plotPercGraph('SOFTWARE',0,500000);
-plotPercGraph('SOFTWARE',0,1000000);
+plotPercGraph('SOFTWARE',0,5000,'thinkpadE530.localdomain');
+plotPercGraph('SOFTWARE',0,50000,'thinkpadE530.localdomain');
+plotPercGraph('SOFTWARE',0,500000,'thinkpadE530.localdomain');
+plotPercGraph('SOFTWARE',0,1000000,'thinkpadE530.localdomain');
 
 
 db.close();

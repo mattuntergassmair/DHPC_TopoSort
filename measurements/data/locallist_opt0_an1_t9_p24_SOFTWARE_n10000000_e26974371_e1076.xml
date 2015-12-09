@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449621170</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>9</numberOfThreads>
+		<processors>24</processors>
+		<hostname>e1076</hostname>
+		<totalTime>8.16359</totalTime>
+		<algorithm>locallist</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">0.00037684</timing>
+				<timing name="criticalPushBack">2.8082e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.550133</timing>
+				<timing name="currentGather">3.3939e-05</timing>
+				<timing name="currentScatter">1.16673</timing>
+			</timings>
+			<processedNodes>1111155</processedNodes>
+			</thread>
+			<thread>
+			<id>1</id>
+			<timings>
+				<timing name="barrier">0.000209987</timing>
+				<timing name="criticalPushBack">2.5977e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.53229</timing>
+				<timing name="currentGather">3.2692e-05</timing>
+				<timing name="currentScatter">1.24458</timing>
+			</timings>
+			<processedNodes>1111160</processedNodes>
+			</thread>
+			<thread>
+			<id>2</id>
+			<timings>
+				<timing name="barrier">0.000203415</timing>
+				<timing name="criticalPushBack">2.7823e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.585063</timing>
+				<timing name="currentGather">3.2308e-05</timing>
+				<timing name="currentScatter">1.10993</timing>
+			</timings>
+			<processedNodes>1111164</processedNodes>
+			</thread>
+			<thread>
+			<id>3</id>
+			<timings>
+				<timing name="barrier">0.000164319</timing>
+				<timing name="criticalPushBack">2.8909e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.568352</timing>
+				<timing name="currentGather">3.2159e-05</timing>
+				<timing name="currentScatter">0.808093</timing>
+			</timings>
+			<processedNodes>1111166</processedNodes>
+			</thread>
+			<thread>
+			<id>4</id>
+			<timings>
+				<timing name="barrier">0.000197441</timing>
+				<timing name="criticalPushBack">2.6564e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.518884</timing>
+				<timing name="currentGather">2.9292e-05</timing>
+				<timing name="currentScatter">1.02248</timing>
+			</timings>
+			<processedNodes>1111159</processedNodes>
+			</thread>
+			<thread>
+			<id>5</id>
+			<timings>
+				<timing name="barrier">0.000171222</timing>
+				<timing name="criticalPushBack">2.35e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.594388</timing>
+				<timing name="currentGather">3.0436e-05</timing>
+				<timing name="currentScatter">0.901316</timing>
+			</timings>
+			<processedNodes>1111123</processedNodes>
+			</thread>
+			<thread>
+			<id>6</id>
+			<timings>
+				<timing name="barrier">0.000178032</timing>
+				<timing name="criticalPushBack">2.5294e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.646153</timing>
+				<timing name="currentGather">3.2052e-05</timing>
+				<timing name="currentScatter">0.968666</timing>
+			</timings>
+			<processedNodes>1111166</processedNodes>
+			</thread>
+			<thread>
+			<id>7</id>
+			<timings>
+				<timing name="barrier">0.000200964</timing>
+				<timing name="criticalPushBack">2.7309e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.664818</timing>
+				<timing name="currentGather">2.4467e-05</timing>
+				<timing name="currentScatter">1.04999</timing>
+			</timings>
+			<processedNodes>1111159</processedNodes>
+			</thread>
+			<thread>
+			<id>8</id>
+			<timings>
+				<timing name="barrier">0.000182368</timing>
+				<timing name="criticalPushBack">2.4064e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.533907</timing>
+				<timing name="currentGather">2.8949e-05</timing>
+				<timing name="currentScatter">1.00708</timing>
+			</timings>
+			<processedNodes>1111157</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>SOFTWARE</type>
+			<numberOfNodes>10000000</numberOfNodes>
+			<numberOfEdges>26974371</numberOfEdges>
+			<depth>47</depth>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>

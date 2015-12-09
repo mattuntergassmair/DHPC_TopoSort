@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449610382</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>49</numberOfThreads>
+		<processors>49</processors>
+		<hostname>einstein-mic0.inf.ethz.ch</hostname>
+		<totalTime>5.28626</totalTime>
+		<algorithm>bitset</algorithm>
+		<graph>
+			<type>RANDOMLIN</type>
+			<numberOfNodes>490000</numberOfNodes>
+			<numberOfEdges>1322988</numberOfEdges>
+			<depth>21</depth>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>false</enableAnalysis>
+	</measurement>
+</measurements>
+

@@ -26,13 +26,13 @@ number_of_threads = np.array(query.fetchall())
 print "Threads:\n", number_of_threads
 
 
-def plotStrongScaling(graphtype,optim,basesize):
+def plotStrongScaling(graphtype,optim,basesize,hostnamelike):
 
 
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 
-	fixedwhere = "enable_analysis=0 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND processors>=number_of_threads ".format(graphtype,optim)
+	fixedwhere = "enable_analysis=0 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND processors>=number_of_threads AND hostname LIKE '{3}'".format(graphtype,optim,hostnamelike)
 
 	t = []
 	var_t = []
@@ -70,7 +70,7 @@ def plotStrongScaling(graphtype,optim,basesize):
 
 
 # Save plots
-	filename = plotdir + "/strongscaling.pdf";
+	filename = plotdir + "/weakscaling.pdf";
 	plt.savefig(filename,format='pdf')
 	plt.show()
 
@@ -78,7 +78,7 @@ def plotStrongScaling(graphtype,optim,basesize):
 
 
 basesize = 1000000
-plotStrongScaling('SOFTWARE',0,basesize)
+plotStrongScaling('SOFTWARE',0,basesize,"e%") # hostname starts with e*
 
 
 db.close();
