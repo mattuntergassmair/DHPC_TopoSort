@@ -56,3 +56,6 @@ measurements/TopoSortParser/
 *.xml
 *.db
 *.pdf
+
+# don't ignore plots
+!measurements/plots/*.pdf
