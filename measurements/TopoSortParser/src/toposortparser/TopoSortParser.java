@@ -26,6 +26,7 @@ public class TopoSortParser {
         
         dbManager.openConnection(true);
         dbManager.createDatabase();
+        int size = files.size();
         
         int fileCounter = 0;
         for (String filename : files) {
@@ -34,6 +35,10 @@ public class TopoSortParser {
                 dbManager.insertMeasurement(temp);
             }
             fileCounter++;
+            
+            if (size > 0) {
+                System.out.println(fileCounter + "/" + size + " (" + (fileCounter / (size / 100.0)) + "%) of files parsed");
+            }
         }
         
         System.out.println(fileCounter + " files parsed.");
