@@ -11,6 +11,8 @@ public class Graph {
     private String type;
     private int numberOfNodes;
     private BigInteger numberOfEdges;
+    private BigInteger depth;
+    private double density;
 
 
     public String getType() {
@@ -36,5 +38,23 @@ public class Graph {
     public void setNumberOfNodes(int numberOfNodes) {
         this.numberOfNodes = numberOfNodes;
     }
+
+    public BigInteger getDepth() {
+        return depth;
+    }
+
+    public void setDepth(BigInteger depth) {
+        this.depth = depth;
+    }
+
+    public double getDensity() {
+        return density;
+    }
+
+    public void setDensity(double density) {
+        this.density = density;
+    }
+    
+    
 
 }

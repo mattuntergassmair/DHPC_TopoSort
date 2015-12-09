@@ -184,6 +184,7 @@ void Graph::topSort() {
 	
 	} // end of OMP parallel
 
-	maxDiam_ = syncVal;
+	maxDiam_ = syncVal; // is this really according to the definition of diameter?
+    depth_ = syncVal;
 
 }

@@ -73,6 +73,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     output << "<measurements>\n";
     output << "\t<measurement>\n";
     output << "\t\t<date>" << std::time(nullptr) << "</date>\n";
+    output << "\t\t<errorCode>" << errorCode_ << "</errorCode>\n";
     output << "\t\t<numberOfThreads>" << nThreads_ << "</numberOfThreads>\n";
     output << "\t\t<processors>" << nProcs_ << "</processors>\n";
     output << "\t\t<hostname>" << env_host << "</hostname>\n";
@@ -102,6 +103,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     output << "\t\t\t<type>" << graphName_ << "</type>\n";
     output << "\t\t\t<numberOfNodes>" << nNodes_ << "</numberOfNodes>\n";
     output << "\t\t\t<numberOfEdges>" << nEdges_ << "</numberOfEdges>\n";
+    output << "\t\t\t<depth>" << depth_ << "</depth>\n";
     output << "\t\t</graph>\n";
     #if OPTIMISTIC==1
     output << "\t\t<optimistic>true</optimistic>\n";

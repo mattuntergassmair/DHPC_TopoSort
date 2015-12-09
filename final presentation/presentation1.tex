@@ -1,0 +1,134 @@
+\input{./beamerheader.sty}
+
+\author[]{Kevin Wallimann \quad Johannes Baum \quad Matthias Untergassmair}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Topological Sorting]{Parallel Topological Sorting} % The short title appears at the bottom of every slide, the full title is only on the title page
+\subtitle{Design of High Performance Computing, Fall 2015}
+
+\institute[ETHZ]{ ETH Zürich }
+%\date{\today} % Date, can be changed to a custom date
+\date{December 14, 2015}
+	\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Overview}
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Overview}
+
+\begin{itemize}
+\item DAG defines partial order
+\item Topological sorting defines one total order on a DAG
+\item Parallel algorithm: finds one topological sorting of a given DAG
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Difference to BFS}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Difference to BFS}
+
+\begin{itemize}
+\item BFS visits every node
+\item Topological sorting algorithm needs to visit every edge
+\item Thus no BFS optimizations like bottom-up-BFS possible
+\end{itemize}
+
+Example:
+
+\begin{figure}[!hbp]
+ 
+  \begin{tikzpicture}[->,>=stealth',auto,node distance=1cm,
+                    thick,main
+                    node/.style={circle,draw,font=\sffamily\scriptsize},text node/.style={draw=none,font=\sffamily\tiny}]
+
+  \node[main node] (1) [draw=black!80,text=black!80] {A};
+  \node[main node] (2) [below right of=1, node distance=1.2cm]{B};
+  \node[main node] (3) [below of=1, node distance=1.2cm] {C};
+  
+
+  \path[every node/.style={font=\sffamily\small}]
+    (1) edge (2)
+    (2) edge (3)
+    (1) edge (3)
+    ;
+\end{tikzpicture}
+
+\end{figure}
+
+Consider order A,C,B
+$\rightarrow$ valid in BFS, invalid in topological sorting
+
+
+\end{frame}
+
+%------------------------------------------------
+\section{Input graphs}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Input graphs}
+
+Software dependency graphs:
+\begin{itemize}
+\item
+\end{itemize}
+
+Randomly generated graph:
+\begin{itemize}
+\item
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Implementations}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Implementations}
+
+List based approach:
+\begin{itemize}
+\item Nodes to be visited ("front") are stored in a linked list
+\item Every thread builds its local list
+\item Local lists are merged and redistributed at synchronization points to distribute work equally
+\end{itemize}
+
+Array based approach:
+\begin{itemize}
+\item Nodes to be visited are stored in a global bytemap which maps the node id to a boolean value
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Results}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Results - Xeon Phi}
+
+
+
+\end{frame}
+
+
+\end{document} 

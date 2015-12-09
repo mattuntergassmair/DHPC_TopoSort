@@ -4,8 +4,10 @@
         <date>1448229125</date><!-- Unix timestamp -->
         <numberOfThreads>8</numberOfThreads>
         <processors>4</processors>
+        <hostname>Euler</hostname>
         <totalTime>0.227136</totalTime><!-- in seconds -->
         <algorithm>Algorithm name</algorithm>
+        <errorCode>1</errorCode>
         <threads>
             <thread>
                 <id>1</id>
@@ -22,6 +24,8 @@
             <type>random</type>
             <numberOfNodes>5000</numberOfNodes>
             <numberOfEdges>3</numberOfEdges>
+            <depth>100</depth>
+            <density>0.4</density>
             <!-- ... -->
         </graph>
         <optimistic>true</optimistic>
