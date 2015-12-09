@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449622686</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>1</numberOfThreads>
+		<processors>24</processors>
+		<hostname>e1070</hostname>
+		<totalTime>19.8622</totalTime>
+		<algorithm>bitset</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">7.24e-07</timing>
+				<timing name="criticalPushBack">2.36415</timing>
+				<timing name="criticalRequestValueUpdate">6.88679</timing>
+				<timing name="currentGather">0</timing>
+				<timing name="currentScatter">0</timing>
+			</timings>
+			<processedNodes>10000000</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>SOFTWARE</type>
+			<numberOfNodes>10000000</numberOfNodes>
+			<numberOfEdges>26974371</numberOfEdges>
+			<depth>48</depth>
+		</graph>
+		<optimistic>true</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449616878</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>17</numberOfThreads>
+		<processors>24</processors>
+		<hostname>e1070</hostname>
+		<totalTime>5.61002</totalTime>
+		<algorithm>locallist</algorithm>
+		<graph>
+			<type>SOFTWARE</type>
+			<numberOfNodes>10000000</numberOfNodes>
+			<numberOfEdges>26974371</numberOfEdges>
+			<depth>47</depth>
+		</graph>
+		<optimistic>true</optimistic>
+		<enableAnalysis>false</enableAnalysis>
+	</measurement>
+</measurements>
