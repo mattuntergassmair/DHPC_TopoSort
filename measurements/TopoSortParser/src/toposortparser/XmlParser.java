@@ -47,6 +47,9 @@ public class XmlParser {
                         case "numberOfThreads":
                             measurement.setNumberOfThreads(Integer.parseInt(node.getTextContent()));
                             break;
+                        case "errorCode":
+                            measurement.setErrorCode(Integer.parseInt(node.getTextContent()));
+                            break;
                         case "processors":
                             measurement.setProcessors(Integer.parseInt(node.getTextContent()));
                             break;
@@ -153,6 +156,12 @@ public class XmlParser {
                     break;
                 case "numberOfEdges":
                     graph.setNumberOfEdges(new BigInteger(nNode.getTextContent()));
+                    break;
+                case "depth":
+                    graph.setDepth(new BigInteger(nNode.getTextContent()));
+                    break;
+                case "density":
+                    graph.setDensity(Double.parseDouble(nNode.getTextContent()));
                     break;
             }
         }

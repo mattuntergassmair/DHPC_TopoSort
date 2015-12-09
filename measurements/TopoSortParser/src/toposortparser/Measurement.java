@@ -22,6 +22,7 @@ public class Measurement {
     private boolean enableAnalysis;
     private boolean verbose;
     private boolean debug;
+    private int errorCode;
 
     public Measurement() {
 
@@ -122,6 +123,14 @@ public class Measurement {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
     
     

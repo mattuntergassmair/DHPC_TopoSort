@@ -4,8 +4,8 @@ CREATE TABLE "threads" (	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,	`measurement_id
 CREATE TABLE "measurements" (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`date`	BLOB,
-	`number_of_threads`	INTEGER,
-	`processors`	INTEGER,
+	`number_of_threads`	BLOB,
+	`processors`	TEXT,
 	`comment`	NUMERIC,
 	`total_time`	REAL,
 	`algorithm`	TEXT,
@@ -16,6 +16,9 @@ CREATE TABLE "measurements" (
 	`enable_analysis`	INTEGER,
 	`verbose`	INTEGER,
 	`debug`	INTEGER,
-	`hostname`	TEXT
+	`hostname`	TEXT,
+	`error_code`	INTEGER,
+	`graph_depth`	INTEGER,
+	`graph_density`	INTEGER
 );
 COMMIT;
