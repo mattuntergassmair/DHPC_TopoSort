@@ -76,5 +76,13 @@ viz: $(GRAPHIMG_FILES)
 	# circo -Tpng $< -o $@
 	dot -Tpng $< -o $@
 
+
+sync_euler:
+	../sync_euler.sh
+
+sync_xeon:
+	../sync_xeon.sh
+
+
 clean:
 	rm -rf $(EXECUTABLES) *.o
