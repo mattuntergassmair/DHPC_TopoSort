@@ -43,7 +43,7 @@ debug: all
 relwithdebinfo: FLAGS+= -g
 relwithdebinfo: release
 
-release: FLAGS += -O3
+release: FLAGS += -O3 -DNDEBUG 
 release: DBG=0
 release: VERB=0
 release: all
