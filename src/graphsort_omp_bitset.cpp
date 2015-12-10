@@ -43,6 +43,11 @@ void Graph::topSort() {
     
         while(newChildren){
             newChildrenPerThread[threadID] = false;
+            #if ENABLE_ANALYSIS == 1
+                int shiftN = shift * N_;
+                #pragma omp single
+                A_.frontSizeHistogram(std::count(isCurrentNode.begin() + shiftN, isCurrentNode.begin() + shiftN + N_, true));
+            #endif
             #pragma omp for schedule(dynamic, 256)
             for(size_t i = 0; i < N_; ++i){
                 int idx = shift * N_ + i;

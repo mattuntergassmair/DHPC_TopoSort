@@ -46,6 +46,7 @@ class Graph {
             A_.nNodes_ = N_;
             A_.nEdges_ = nEdges_;
             A_.graphName_ = graphName_;
+            A_.nChildrenQuantiles_ = getChildrenQuantiles();
             
             // Start topological sorting
 			A_.starttotaltiming();
@@ -68,6 +69,9 @@ class Graph {
          */
 		void connect(GRAPH_TYPE, double edgeFillDegree = .3, double p = .5, double q = .7, int nChains = 100);
 		type_size countEdges();
+        /** \brief Returns the 0 (aka min), 25, 50 (aka median), 75 and 100 (aka max) quantile of the number of children of each node.
+         */  
+        std::vector<type_size> getChildrenQuantiles();
         bool checkCorrect(bool verbose);
         type_solution getSolution();
         

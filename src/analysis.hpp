@@ -4,10 +4,10 @@
 #include "rdtsc_timer.hpp"
 #include <omp.h>
 #include <cassert>
+#include <vector>
 
 #if ENABLE_ANALYSIS == 1
 
-#include <vector>
 #include <map>
 #include <ostream>
 
@@ -64,6 +64,8 @@ struct analysis {
     type_size nNodes_;
     type_size nEdges_;
     type_size depth_;
+    std::vector<type_size> nChildrenQuantiles_;
+    std::vector<type_size> frontSizes_;
     std::string graphName_;
     type_error errorCode_;
     
@@ -84,6 +86,10 @@ struct analysis {
 		assert(tid>=0 && tid<nThreads_);
 		++count_ProcessedNodes_[tid];
 	}
+
+    inline void frontSizeHistogram(type_size frontSize) {
+        frontSizes_.push_back(frontSize);
+    }
 
 	inline void starttotaltiming();
 	
@@ -130,6 +136,8 @@ struct analysis {
     type_size depth_;
     std::string graphName_;
     type_error errorCode_;
+    std::vector<type_size> nChildrenQuantiles_;
+    std::vector<type_size> frontSizes_;
 
 	analysis()
 		:	time_Total_(0)
@@ -149,6 +157,7 @@ struct analysis {
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {}
 	inline void processednodes(type_threadcount tid, type_size nNodes) {}
 	inline void incrementProcessedNodes(type_threadcount tid) {} // TODO: check if this can be used instead of processednodes (performance??)
+    inline void frontSizeHistogram(type_size frontSize) {}
 	inline void starttotaltiming();
 	inline void starttiming(timecat c) {}
 	inline void stoptotaltiming();
