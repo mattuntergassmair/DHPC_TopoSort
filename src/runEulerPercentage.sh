@@ -10,7 +10,7 @@ THREADS_STEP=1
 THREADS_MAX=$2
 
 # Number of repetitions for each experiment
-NREP=3
+NREP=1
 
 # Executables
 declare -a PARALLEL_EXE=('./toposort_omp_bitset.exe' './toposort_omp_locallist.exe');

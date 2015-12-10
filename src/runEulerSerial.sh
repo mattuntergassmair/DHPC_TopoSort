@@ -10,7 +10,7 @@ THREADS_STEP=1
 THREADS_MAX=24
 
 # Number of repetitions for each experiment
-NREP=3
+NREP=1
 
 # Executables
 SERIAL_EXE='./toposort_serial.exe'
@@ -32,12 +32,12 @@ do
 	for gt in "${GRAPH_TYPES[@]}"
 	do
 		# Strong scaling
-		eval "./$v $gt $N_SSC"
+		eval "./$SERIAL_EXE $gt $N_SSC"
 		# Weak scaling
 		for (( t=$THREADS_MIN; t<=$THREADS_MAX; t=t+$THREADS_STEP ))
 		do
 			ws=$(($N_WSC*$t))
-			eval "./$v $gt $ws"
+			eval "./$SERIAL_EXE $gt $ws"
 		done
 	done
 done

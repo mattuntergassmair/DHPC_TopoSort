@@ -1,3 +1,5 @@
+module load boost
+
 export OMP_NUM_THREADS=12
 bsub -n 12 ./runEulerParallel.sh 1 12
 
