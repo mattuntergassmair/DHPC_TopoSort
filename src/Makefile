@@ -25,7 +25,14 @@ GRAPHSRC_DIR := graph_output
 GRAPHSRC_FILES := $(wildcard $(GRAPHSRC_DIR)/*.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
-# Attention: this messes with flags that are set above. Use with care, i.e. make clean first
+
+all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
+all: $(EXECUTABLES)
+
+
+
+
+
 debug: FLAGS += -g -O0
 debug: DBG=2
 debug: VERB=1
@@ -39,8 +46,10 @@ release: DBG=0
 release: VERB=0
 release: all
 
-all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
-all: $(EXECUTABLES)
+
+
+
+
 
 $(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
 	$(COMPILER) $(FLAGS) $^ -o $@ $(LIBS)
