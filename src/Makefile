@@ -17,7 +17,7 @@ LIBS =  -lboost_system -lboost_filesystem
 # FLAGS = -mmic -fopenmp -std=c++11 # XeonPhi
 
 
-ALGORITHMS = serial omp_tasks omp_locallist omp_bitset #omp_basic  # --> serial
+ALGORITHMS = serial omp_tasks omp_locallist omp_bitset omp_worksteal #omp_basic  # --> serial
 EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
 OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 

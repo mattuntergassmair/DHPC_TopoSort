@@ -75,14 +75,101 @@ inline unsigned roundupdiv(unsigned n, unsigned d) {
 }
 
 
+
+class threadLocallist {
+
+	public:
+
+		threadLocallist()
+			: locallist_current_fast_()
+			, locallist_current_stack_()
+			, locallist_next_()
+		{}
+
+		std::shared_ptr<Node> trySteal() {
+			// TODO: check that locallist_current not empty
+			std::shared_ptr<Node> nd = nullptr;
+			#pragma omp critical
+			{
+				std::cout << "TODO";
+				if(!locallist_current_stack_.empty()) {
+					nd = locallist_current_stack_.back();
+					locallist_current_stack_.pop_back();
+				}
+			}
+			return nd;
+		}
+
+		void work() {
+			
+			assert(locallist_next_.empty());
+			type_threadcount nDone = 0;
+
+			do {
+				while(!locallist_current_stack_.empty()) {
+					while(!locallist_current_fast_.empty()) {
+						// TODO: implement work here
+					}
+					stackToFast();
+				}
+				// #pragma omp atomic // TODO: atomic
+				// nDone_ = nDone; // TODO
+				// if(trySteal()!=nullptr);
+			} while(true/*nDone_<nThreads_*/);
+
+		}
+
+		void nextSyncVal(Graph::type_size nsv) {
+			assert(locallist_current_fast_.empty() && locallist_current_stack_.empty());
+			assert(locallist_next_.empty() || locallist_next_.front()->getValue()==nsv);
+		}
+
+	private:
+		Graph::type_nodelist locallist_current_fast_;
+		Graph::type_nodelist locallist_current_stack_;
+		Graph::type_nodelist locallist_next_;
+
+		inline void stackToFast() {
+			assert(locallist_current_fast_.empty());
+			// TODO: critically transfer a "reasonable" portion from stack to fast
+			// What is "reasonable"?
+			// Experiment with different parameters:
+			// - count of threads currently done
+			// - ...
+			#pragma omp critical 
+			{
+				std::cout << "TODO";
+			}
+		}
+
+};
+
+
+class nodePool {
+
+	public:
+		
+		nodePool(Graph::type_size nThreads)
+			: nThreads_(nThreads)
+			, nodelists_(nThreads_,threadLocallist())
+		{}
+
+	private:
+		const type_threadcount nThreads_;
+		type_threadcount nDone_;
+		std::vector<threadLocallist> nodelists_;
+
+};
+
+
+
+
 void Graph::topSort() {
 
-	// TODO: create global vector of lists of size nthreads
-	// TODO: keep track of pointers to first, last, last of current syncval
 	// TODO: steal randomly from others
 	// TODO: find out how to sync
 
-
+	nodePool(this->A_.nThreads_);
 
 	// Sorting Magic happens here
 
