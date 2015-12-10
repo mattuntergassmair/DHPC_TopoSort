@@ -14,10 +14,12 @@ query = db.cursor()
 def getAvgAndVariance(field,wherestring,otherfields=""):
 	with db:
 		querystring = "SELECT {2} AVG({0}), SUM(({0}-sub.field_avg)*({0}-sub.field_avg))/(COUNT()-1) FROM measurements, (SELECT AVG({0}) AS field_avg FROM measurements WHERE {1}) AS sub WHERE {1}".format(field,wherestring,otherfields)
+		# for debugging
+		# querystring = "SELECT {2} AVG({0}) FROM measurements WHERE {1}".format(field,wherestring,otherfields)
 		# print querystring
 		query.execute(querystring)
 		data = query.fetchall()
-		print "DATA: \n", data
+		# print "DATA: \n", data
 
 	return np.array(data)
 
