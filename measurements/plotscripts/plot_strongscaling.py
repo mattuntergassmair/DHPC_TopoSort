@@ -17,14 +17,11 @@ def getAvgAndVariance(field,wherestring,otherfields=""):
 		# print querystring
 		query.execute(querystring)
 		data = query.fetchall()
-		# print "DATA: \n", data
+		print "DATA: \n", data
 
 	return np.array(data)
 
 
-query.execute("SELECT number_of_threads FROM measurements GROUP BY number_of_threads")
-number_of_threads = np.array(query.fetchall())
-print "Threads:\n", number_of_threads
 
 
 def plotStrongScaling(graphtype,optim,sizes,hostnamelike,algo):
@@ -34,6 +31,14 @@ def plotStrongScaling(graphtype,optim,sizes,hostnamelike,algo):
 	ax = fig.add_subplot(111)
 
 	fixedwhere = "enable_analysis=0 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND processors>=number_of_threads AND hostname LIKE '{2}' AND algorithm='{3}'".format(graphtype,optim,hostnamelike,algo)
+
+	query.execute("SELECT number_of_threads FROM measurements WHERE " + fixedwhere + " GROUP BY number_of_threads")
+	number_of_threads = np.array(query.fetchall())
+	print "Threads:\n", number_of_threads
+
+	if len(number_of_threads) == 0:
+		print "\nNo Data for\n", fixedwhere
+		return None
 
 	color_cnt=0
 	for s in sizes:
@@ -79,7 +84,7 @@ def plotStrongScaling(graphtype,optim,sizes,hostnamelike,algo):
 	print "Done - File written to " + filename
 
 
-sizes = [5000,55000,105000]
+sizes = [10000000]
 plotStrongScaling('SOFTWARE',0,sizes,'e%','locallist') # hostname starting with e (euler)
 plotStrongScaling('RANDOMLIN',0,sizes,'e%','locallist') # hostname starting with e
 plotStrongScaling('CHAIN',0,sizes,'e%','locallist') # hostname starting with e
