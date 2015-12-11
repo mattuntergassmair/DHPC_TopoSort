@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MYABSREPOPATH=/home/matthias/polybox/CSE7/DesignHPC/project/DHPC_TopoSort
-CLUSTERNAME=euler.ethz.ch
+CLUSTERNAME=einstein.inf.ethz.ch
 CLUSTERSRCPATH=dphpc_toposort;
 MYETHUSERNAME=untergam
 
