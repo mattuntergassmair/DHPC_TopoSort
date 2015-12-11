@@ -16,9 +16,11 @@ MYETHUSERNAME=untergam
 # Use your own skript instead of this if you want
 
 # send source code to cluster
-rsync -aiuz ${MYABSREPOPATH}/src/* ${MYETHUSERNAME}@euler.ethz.ch:dphpc_toposort/ --exclude '*.o' --exclude '*.exe' --exclude '*.xml' --exclude 'results/' --exclude 'graph_output/' --exclude 'dryrun/'
+echo -e "Sending to cluster...\n"
+rsync -aiuz ${MYABSREPOPATH}/src/ ${MYETHUSERNAME}@euler.ethz.ch:dphpc_toposort/ --exclude '*.o' --exclude '*.exe' --exclude '*.xml' --exclude 'results/' --exclude 'graph_output/' --exclude 'dryrun/'
 
 # receive from cluster (include not strictly necessary, but more explicit)
-rsync -aiuz ${MYETHUSERNAME}@euler.ethz.ch:dphpc_toposort/ ${MYABSREPOPATH}/src/* --exclude '*.o' --exclude '*.exe' --include '*.xml' --include 'results/' --include 'graph_output/' --exclude 'dryrun/'
+echo -e "Receiving from cluster...\n"
+rsync -aiuz ${MYETHUSERNAME}@euler.ethz.ch:dphpc_toposort/ ${MYABSREPOPATH}/src/ --exclude '*.o' --exclude '*.exe' --include '*.xml' --include 'results/' --include 'graph_output/' --exclude 'dryrun/'
 
 exit 0
