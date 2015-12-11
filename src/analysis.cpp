@@ -125,6 +125,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
         output << "\t\t\t\t<q" << i*n_quantiles << ">" << frontSizes_[i * frontSizes_.size() / n_quantiles] << "</q" << i*n_quantiles << ">\n";
     }
     output << "\t\t\t\t<q100>" << frontSizes_.back() << "</q100>\n";
+    output << "\t\t\t</frontSizes>\n";
     
     #endif
     
