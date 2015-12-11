@@ -26,7 +26,7 @@ def getAvgAndVariance(field,wherestring,otherfields=""):
 
 
 
-def plotStrongScaling(graphtype,optim,sizes,hostnamelike,algo):
+def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 
 
 	fig = plt.figure()
@@ -79,7 +79,7 @@ def plotStrongScaling(graphtype,optim,sizes,hostnamelike,algo):
 	ax.tick_params(top='off', right='off', length=4, width=1)
 
 # Save plots
-	filename = plotdir + "/strongscaling_{0}_gt{1}.pdf".format(algo,graphtype);
+	filename = plotdir + "/strongscaling_{0}_gt{1}_opt{2}.pdf".format(algo,graphtype,optim);
 	plt.savefig(filename,format='pdf')
 	plt.show()
 
@@ -87,14 +87,14 @@ def plotStrongScaling(graphtype,optim,sizes,hostnamelike,algo):
 
 
 sizes = [10000000]
-plotStrongScaling('SOFTWARE',0,sizes,'e%','locallist') # hostname starting with e (euler)
-plotStrongScaling('RANDOMLIN',0,sizes,'e%','locallist') # hostname starting with e
-plotStrongScaling('CHAIN',0,sizes,'e%','locallist') # hostname starting with e
-plotStrongScaling('MULTICHAIN',0,sizes,'e%','locallist') # hostname starting with e
-plotStrongScaling('SOFTWARE',0,sizes,'e%','bitset') # hostname starting with e
-plotStrongScaling('RANDOMLIN',0,sizes,'e%','bitset') # hostname starting with e
-plotStrongScaling('CHAIN',0,sizes,'e%','bitset') # hostname starting with e
-plotStrongScaling('MULTICHAIN',0,sizes,'e%','bitset') # hostname starting with e
+plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%',) # hostname starting with e (euler)
+plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%',) # hostname starting with e
+plotStrongScaling('locallist','CHAIN',sizes,0,'e%',) # hostname starting with e
+plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') # hostname starting with e
+plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%',) # hostname starting with e (euler)
+plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%',) # hostname starting with e
+plotStrongScaling('bitset','CHAIN',sizes,0,'e%',) # hostname starting with e
+plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%') # hostname starting with e
 
 
 db.close();

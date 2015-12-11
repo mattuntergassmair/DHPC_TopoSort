@@ -22,15 +22,21 @@ def getPerc(where):
 	data = np.array(query.fetchall())
 	return data
 
-def plotPercGraph(graphtype,optim,size,host):
+def plotPercGraph(algo,graphtype,size,optim,hostnamelike):
 	
-	fixedwhere = "enable_analysis=1 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND graph_num_nodes={2} AND processors>=number_of_threads AND algorithm='locallist' AND hostname={3}".format(graphtype,optim,size,host)
+	fixedwhere = "enable_analysis=1 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND graph_num_nodes={2} AND processors>=number_of_threads AND hostname LIKE '{3}' AND algorithm='{4}'".format(graphtype,optim,size,hostnamelike,algo)
 
 	query.execute("SELECT number_of_threads FROM measurements WHERE " + fixedwhere + " GROUP BY number_of_threads")
 	nthreads = np.array(query.fetchall())
 	
 	query.execute("SELECT name FROM timings GROUP BY name ORDER BY name")
+
+	print query
+	
 	catnames = np.array(query.fetchall())
+	print catnames
+	if len(catnames) == 0:
+		return None
 
 	# print catnames
 	# print nthreads
@@ -86,7 +92,7 @@ def plotPercGraph(graphtype,optim,size,host):
 
 	plt.legend(lgnd,lbl)
 
-	filename = plotdir + "/" + "timepercentage_host{3}_type{0}_size{1}_opt{2}".format(graphtype,size,optim,host) + ".pdf";
+	filename = plotdir + "/" + "timepercentage_{0}_gt{1}_s{2}_opt{3}".format(algo,graphtype,size,optim) + ".pdf";
 	plt.savefig(filename,format='pdf')
 
 	plt.show();
@@ -94,10 +100,16 @@ def plotPercGraph(graphtype,optim,size,host):
 	print "Done - File written to " + filename
 
 
-plotPercGraph('SOFTWARE',0,5000,'thinkpadE530.localdomain');
-plotPercGraph('SOFTWARE',0,50000,'thinkpadE530.localdomain');
-plotPercGraph('SOFTWARE',0,500000,'thinkpadE530.localdomain');
-plotPercGraph('SOFTWARE',0,1000000,'thinkpadE530.localdomain');
+plotPercGraph('locallist','SOFTWARE',10000000,0,'e%',) # hostname starting with e (euler)
+plotPercGraph('locallist','RANDOMLIN',10000000,0,'e%',) # hostname starting with e
+plotPercGraph('locallist','CHAIN',10000000,0,'e%',) # hostname starting with e
+plotPercGraph('locallist','MULTICHAIN',10000000,0,'e%') # hostname starting with e
+plotPercGraph('bitset','SOFTWARE',10000000,0,'e%',) # hostname starting with e (euler)
+plotPercGraph('bitset','RANDOMLIN',10000000,0,'e%',) # hostname starting with e
+plotPercGraph('bitset','CHAIN',10000000,0,'e%',) # hostname starting with e
+plotPercGraph('bitset','MULTICHAIN',10000000,0,'e%') # hostname starting with e
+
+
 
 
 db.close();
