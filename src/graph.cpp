@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdio>
 #include <list>
+#include <vector>
 #include <random>
 #include <functional>
 #include <numeric>
@@ -189,6 +190,22 @@ type_size Graph::countEdges() {
 		nEdges += ndptr->getChildCount();
 	}
     return nEdges;
+}
+
+std::vector<type_size> Graph::getChildrenQuantiles() {
+    std::vector<type_size> quantiles(5, 0);
+    std::vector<type_size> n_childrenPerNode;
+    for(auto ndptr : nodes_) {
+        n_childrenPerNode.push_back(ndptr->getChildCount());
+    }
+    std::sort(n_childrenPerNode.begin(), n_childrenPerNode.end());
+    quantiles[0] = n_childrenPerNode[0];
+    quantiles[1] = n_childrenPerNode[N_-1 / 4];
+    quantiles[2] = n_childrenPerNode[N_ / 2];
+    quantiles[3] = n_childrenPerNode[3 * N_ / 4];
+    quantiles[4] = n_childrenPerNode[N_ - 1];
+    
+    return quantiles;
 }
 
 bool Graph::checkCorrect(bool verbose) {

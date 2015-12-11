@@ -124,6 +124,7 @@ void Graph::topSort() {
 			#pragma omp single
 			{
 				nCurrentNodes = currentnodes.size();
+                A_.frontSizeHistogram(nCurrentNodes);
 			}
 			A_.starttiming(analysis::BARRIER);
 			#pragma omp barrier // make sure that nCurrentNodes is set

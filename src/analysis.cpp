@@ -104,6 +104,31 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     output << "\t\t\t<numberOfNodes>" << nNodes_ << "</numberOfNodes>\n";
     output << "\t\t\t<numberOfEdges>" << nEdges_ << "</numberOfEdges>\n";
     output << "\t\t\t<depth>" << depth_ << "</depth>\n";
+    
+    #if ENABLE_ANALYSIS == 1
+    // Quantiles of number of children
+    if(nChildrenQuantiles_.size() == 5){
+        output << "\t\t\t<numberOfChildren>\n";
+        output << "\t\t\t\t<q0>" << nChildrenQuantiles_[0] << "</q0>\n";
+        output << "\t\t\t\t<q25>" << nChildrenQuantiles_[1] << "</q25>\n";
+        output << "\t\t\t\t<q50>" << nChildrenQuantiles_[2] << "</q50>\n";
+        output << "\t\t\t\t<q75>" << nChildrenQuantiles_[3] << "</q75>\n";
+        output << "\t\t\t\t<q100>" << nChildrenQuantiles_[4] << "</q100>\n";
+        output << "\t\t\t</numberOfChildren>\n";
+    }
+    
+    // Quantiles of front size
+    std::sort(frontSizes_.begin(), frontSizes_.end());
+    output << "\t\t\t<frontSizes>\n";
+    int n_quantiles = 10;
+    for(int i = 0; i < n_quantiles; ++i){
+        output << "\t\t\t\t<q" << i*n_quantiles << ">" << frontSizes_[i * frontSizes_.size() / n_quantiles] << "</q" << i*n_quantiles << ">\n";
+    }
+    output << "\t\t\t\t<q100>" << frontSizes_.back() << "</q100>\n";
+    output << "\t\t\t</frontSizes>\n";
+    
+    #endif
+    
     output << "\t\t</graph>\n";
     #if OPTIMISTIC==1
     output << "\t\t<optimistic>true</optimistic>\n";

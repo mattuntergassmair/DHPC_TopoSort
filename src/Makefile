@@ -13,7 +13,9 @@ AN=0 #-DENABLE_ANALYSIS
 COMPILER = g++ # Linux
 # COMPILER = icpc # XeonPhi
 FLAGS = -std=c++11 -fopenmp # Linux
+LIBDIR=-L$(BOOST_LIBRARYDIR)
 LIBS =  -lboost_system -lboost_filesystem
+INCDIR= -I$(BOOST_INCLUDEDIR)
 # FLAGS = -mmic -fopenmp -std=c++11 # XeonPhi
 
 
@@ -41,7 +43,7 @@ debug: all
 relwithdebinfo: FLAGS+= -g
 relwithdebinfo: release
 
-release: FLAGS += -O3
+release: FLAGS += -O3 -DNDEBUG 
 release: DBG=0
 release: VERB=0
 release: all
@@ -52,28 +54,28 @@ release: all
 
 
 $(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
-	$(COMPILER) $(FLAGS) $^ -o $@ $(LIBS)
+	$(COMPILER) $(FLAGS) $^ -o $@ $(INCDIR) $(LIBDIR) $(LIBS)
 
 
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c $< $(LIBS)
+	$(COMPILER) $(FLAGS) -c $< $(INCDIR) $(LIBDIR) $(LIBS)
 
 graph.o: graph.cpp graph.hpp node.hpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c $< $(LIBS)
+	$(COMPILER) $(FLAGS) -c $< $(INCDIR) $(LIBDIR) $(LIBS)
 
 
 $(OBJECTS): %.o: %.cpp graph.hpp node.hpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c $< $(LIBS)
+	$(COMPILER) $(FLAGS) -c $< $(INCDIR) $(LIBDIR) $(LIBS)
 
 
 graphdoc.o: graphdoc.cpp graph.hpp node.hpp
-	$(COMPILER) $(FLAGS) -c graphdoc.cpp $(LIBS)
+	$(COMPILER) $(FLAGS) -c graphdoc.cpp $(INCDIR) $(LIBDIR) $(LIBS)
 
 node.o: node.cpp node.hpp
-	$(COMPILER) $(FLAGS) -c node.cpp $(LIBS)
+	$(COMPILER) $(FLAGS) -c node.cpp $(INCDIR) $(LIBDIR) $(LIBS)
 
 analysis.o: analysis.cpp analysis.hpp
-	$(COMPILER) $(FLAGS) -c analysis.cpp $(LIBS)
+	$(COMPILER) $(FLAGS) -c analysis.cpp $(INCDIR) $(LIBDIR) $(LIBS)
 
 run: all
 	./toposort_omp_locallist.exe
