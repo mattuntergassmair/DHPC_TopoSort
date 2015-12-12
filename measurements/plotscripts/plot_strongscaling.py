@@ -85,16 +85,20 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 	print "Done - File written to " + filename
 
 
-sizes = [10000000]
+sizes = [1000000]
 # hostname starting with e*
 plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%',) 
 plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%',) 
-plotStrongScaling('locallist','CHAIN',sizes,0,'e%',) 
-plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') 
+#plotStrongScaling('locallist','CHAIN',sizes,0,'e%',) 
+#plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') 
 plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%',) 
 plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%',) 
-plotStrongScaling('bitset','CHAIN',sizes,0,'e%',) 
-plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%')
+#plotStrongScaling('bitset','CHAIN',sizes,0,'e%',) 
+#plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%')
+plotStrongScaling('bitset','SOFTWARE',sizes,1,'e%',) 
+plotStrongScaling('bitset','RANDOMLIN',sizes,1,'e%',) 
+#plotStrongScaling('bitset','CHAIN',sizes,1,'e%',) 
+#plotStrongScaling('bitset','MULTICHAIN',sizes,1,'e%')
 
 
 db.close();

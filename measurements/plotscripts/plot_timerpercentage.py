@@ -98,14 +98,14 @@ def plotPercGraph(algo,graphtype,size,optim,hostnamelike):
 
 
 # hostname starting with e (euler)
-plotPercGraph('locallist','SOFTWARE',10000000,0,'e%',)
-plotPercGraph('locallist','RANDOMLIN',10000000,0,'e%',) 
-plotPercGraph('locallist','CHAIN',10000000,0,'e%',) 
-plotPercGraph('locallist','MULTICHAIN',10000000,0,'e%') 
-plotPercGraph('bitset','SOFTWARE',10000000,0,'e%',) 
-plotPercGraph('bitset','RANDOMLIN',10000000,0,'e%',) 
-plotPercGraph('bitset','CHAIN',10000000,0,'e%',) 
-plotPercGraph('bitset','MULTICHAIN',10000000,0,'e%') 
+plotPercGraph('locallist','SOFTWARE',1000000,0,'e%',)
+plotPercGraph('locallist','RANDOMLIN',1000000,0,'e%',) 
+#plotPercGraph('locallist','CHAIN',1000000,0,'e%',) 
+#plotPercGraph('locallist','MULTICHAIN',1000000,0,'e%') 
+plotPercGraph('bitset','SOFTWARE',1000000,1,'e%',) 
+plotPercGraph('bitset','RANDOMLIN',1000000,1,'e%',) 
+#plotPercGraph('bitset','CHAIN',1000000,1,'e%',) 
+#plotPercGraph('bitset','MULTICHAIN',1000000,1,'e%') 
 
 
 

@@ -83,19 +83,19 @@ def plotWeakScaling(algo,graphtype,optim,basesize,hostnamelike):
 
 
 # hostname starts with e*
-basesize = 1000000
+basesize = 100000
 plotWeakScaling('bitset','SOFTWARE',1,basesize,"e%") 
 plotWeakScaling('bitset','RANDOMLIN',1,basesize,"e%") 
-plotWeakScaling('bitset','CHAIN',1,basesize,"e%") 
-plotWeakScaling('bitset','MULTICHAIN',1,basesize,"e%") 
+#plotWeakScaling('bitset','CHAIN',1,basesize,"e%") 
+#plotWeakScaling('bitset','MULTICHAIN',1,basesize,"e%") 
 plotWeakScaling('bitset','SOFTWARE',0,basesize,"e%") 
 plotWeakScaling('bitset','RANDOMLIN',0,basesize,"e%") 
-plotWeakScaling('bitset','CHAIN',0,basesize,"e%") 
-plotWeakScaling('bitset','MULTICHAIN',0,basesize,"e%") 
-plotWeakScaling('locallist','SOFTWARE',1,basesize,"e%") 
-plotWeakScaling('locallist','RANDOMLIN',1,basesize,"e%") 
-plotWeakScaling('locallist','CHAIN',1,basesize,"e%") 
-plotWeakScaling('locallist','MULTICHAIN',1,basesize,"e%")
+#plotWeakScaling('bitset','CHAIN',0,basesize,"e%") 
+#plotWeakScaling('bitset','MULTICHAIN',0,basesize,"e%") 
+plotWeakScaling('locallist','SOFTWARE',0,basesize,"e%") 
+plotWeakScaling('locallist','RANDOMLIN',0,basesize,"e%") 
+#plotWeakScaling('locallist','CHAIN',0,basesize,"e%") 
+#plotWeakScaling('locallist','MULTICHAIN',0,basesize,"e%")
 
 
 db.close();
