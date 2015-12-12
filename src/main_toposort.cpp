@@ -97,13 +97,13 @@ int main(int argc, char* argv[]) {
         {
             // MULTICHAIN GRAPH - MEDIUM
             std::cout << visualbarrier;
-            int nThreads;
+            int nProcs;
             #pragma omp parallel
             {
-                nThreads = omp_get_num_threads();
+                nProcs = omp_get_num_procs();
             }
             Graph testgraph_multichain(N);
-            testgraph_multichain.connect(Graph::MULTICHAIN, 0., 0., 0., nThreads);
+            testgraph_multichain.connect(Graph::MULTICHAIN, 0., 0., 0., nProcs);
             testgraph_multichain.time_topSort();
             testgraph_multichain.checkCorrect(false);
             testgraph_multichain.dumpXmlAnalysis(out_dir);
