@@ -5,7 +5,7 @@ import re
 import sqlite3
 import colortableau as ct
 
-plt.style.use('ggplot')
+# plt.style.use('ggplot')
 plotdir = "plots";
 db = sqlite3.connect('measurements.db')
 

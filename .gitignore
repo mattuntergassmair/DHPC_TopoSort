@@ -59,3 +59,7 @@ measurements/TopoSortParser/
 
 # don't ignore plots
 !measurements/plots/*.pdf
+
+
+# ignore compiled python
+*.pyc
