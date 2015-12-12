@@ -1,5 +1,5 @@
 \input{./beamerheader.sty}
-
+\usepackage{wrapfig}
 \author[]{Kevin Wallimann \quad Johannes Baum \quad Matthias Untergassmair}
 
 %----------------------------------------------------------------------------------------
@@ -48,7 +48,6 @@
 \begin{itemize}
 \item BFS visits every node
 \item Topological sorting algorithm needs to visit every edge
-\item Thus no BFS optimizations like bottom-up-BFS possible
 \end{itemize}
 
 Example:
@@ -106,20 +105,100 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Implementations}
+\frametitle{Parallel algorithm}
+\begin{columns}[T]
+ \column{0.5\textwidth}
+  \begin{enumerate}
+    \item As a preparing step, initialize a counter for every child with the number of its parents.
+    \item Distribute parent nodes over threads and process them in parallel.
+    \item For every parent, append it to solution.
+    \item For every child of the parent, decrement its counter. If the counter is zero, make it a parent.
+    \item Distribute new parent nodes etc.
+  \end{enumerate}
 
-List based approach:
-\begin{itemize}
-\item Nodes to be visited ("front") are stored in a linked list
-\item Every thread builds its local list
-\item Local lists are merged and redistributed at synchronization points to distribute work equally
-\end{itemize}
+ \column{0.5\textwidth}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=0.9\textwidth]{img/software10.pdf}
+    \end{center}
+  \end{figure}
+\end{columns}
 
-Array based approach:
-\begin{itemize}
-\item Nodes to be visited are stored in a global bytemap which maps the node id to a boolean value
-\end{itemize}
+\end{frame}
 
+
+\begin{frame}
+ \frametitle{Local lists approach}
+  \begin{itemize}
+  \item Parent nodes stored in a shared list.
+  \item Distribution of parent nodes: Scatter the list among the threads. Each thread has now its local list.
+  \item Add new parents to the end of local list.
+  \item When all parents were processed, gather all local lists into the shared list.
+  \item Repeat until there are no parents in the shared list.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Boolean array approach}
+ \begin{itemize}
+  \item Array of length $N$. 1 if node $i$ is a parent node, 0 otherwise.
+  \item Distribution of parent nodes: Parallel for-loop through the array.
+  \item Mark new parents by setting a 1 in a second array.
+  \item When all parents were processed, swap arrays.
+  \item Loop through the array until there are no new parents.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Optimistic counter check}
+ \begin{itemize}
+  \item Decrement shared counter
+  \item Return true if counter is zero
+ \end{itemize}
+ \begin{lstlisting}[style=cpp]
+  inline bool counterCheck() {
+          bool lastone;
+          #pragma omp critical
+          {
+            --parcount_;
+            lastone = (parcount_ == 0);
+          }
+          return lastone;
+  }
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Optimistic counter check}
+ \begin{itemize}
+  \item Decrement shared counter
+  \item Return true if counter is zero
+ \end{itemize}
+ \begin{lstlisting}[style=cpp]
+  inline bool counterCheck() {
+          #pragma omp atomic
+          --parcount_;
+          return (parcount_ == 0);
+  }
+ \end{lstlisting}
+ \begin{itemize}
+  \item Multiple threads could return true, although only one thread should do so.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Optimistic counter check}
+  \begin{lstlisting}[style=cpp]
+  inline bool counterCheck() {
+          #pragma omp atomic
+          --parcount_;
+          return (parcount_ == 0);
+  }
+ \end{lstlisting}
+ \begin{itemize}
+  \item List based approach: Child is inserted multiple times to solution $\Rightarrow$ Wrong.
+  \item Array approach: Multiple threads write 1 to the array $\Rightarrow$ Ok, doesn't matter.
+ \end{itemize}
 \end{frame}
 
 %------------------------------------------------
