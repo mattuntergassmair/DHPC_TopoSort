@@ -51,10 +51,10 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 			d = getAvgAndVariance("total_time",where)
 			# print "DATA=\n", d
 			t.append(d[:,0])
-			# var_t.append(d[:,1])
+			var_t.append(d[:,1])
 
 			# Calculating stddev for speedup
-			# stdev_speedup = np.sqrt(np.array(var_t[0]) * np.power((1./np.array(t)),2) + var_t * np.power((-t[0]/np.power(t,2)),2))
+			stdev_speedup = np.sqrt(np.array(var_t[0]) * np.power((1./np.array(t)),2) + var_t * np.power((-t[0]/np.power(t,2)),2))
 
 
 		speedup = t[0]/t;
@@ -87,14 +87,15 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 
 
 sizes = [10000000]
-plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%',) # hostname starting with e (euler)
-plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%',) # hostname starting with e
-plotStrongScaling('locallist','CHAIN',sizes,0,'e%',) # hostname starting with e
-plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') # hostname starting with e
-plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%',) # hostname starting with e (euler)
-plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%',) # hostname starting with e
-plotStrongScaling('bitset','CHAIN',sizes,0,'e%',) # hostname starting with e
-plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%') # hostname starting with e
+# hostname starting with e*
+plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%',) 
+plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%',) 
+plotStrongScaling('locallist','CHAIN',sizes,0,'e%',) 
+plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') 
+plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%',) 
+plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%',) 
+plotStrongScaling('bitset','CHAIN',sizes,0,'e%',) 
+plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%')
 
 
 db.close();

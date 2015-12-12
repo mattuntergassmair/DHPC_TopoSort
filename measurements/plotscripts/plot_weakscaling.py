@@ -21,18 +21,24 @@ def getAvgAndVariance(field,wherestring,otherfields=""):
 	return np.array(data)
 
 
-query.execute("SELECT number_of_threads FROM measurements GROUP BY number_of_threads")
-number_of_threads = np.array(query.fetchall())
-print "Threads:\n", number_of_threads
 
-
-def plotStrongScaling(graphtype,optim,basesize,hostnamelike):
+def plotWeakScaling(algo,graphtype,optim,basesize,hostnamelike):
 
 
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 
-	fixedwhere = "enable_analysis=0 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND processors>=number_of_threads AND hostname LIKE '{3}'".format(graphtype,optim,hostnamelike)
+	fixedwhere = "enable_analysis=0 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND processors>=number_of_threads AND hostname LIKE '{2}' AND algorithm='{3}' AND number_of_threads*{4}=graph_num_nodes".format(graphtype,optim,hostnamelike,algo,basesize)
+	
+	query.execute("SELECT number_of_threads FROM measurements WHERE " + fixedwhere + " GROUP BY number_of_threads")
+	number_of_threads = np.array(query.fetchall())
+	print "Threads:\n", number_of_threads
+
+	if len(number_of_threads) == 0:
+		print "\nNo Data for\n", fixedwhere
+		return None
+
+
 
 	t = []
 	var_t = []
@@ -62,23 +68,34 @@ def plotStrongScaling(graphtype,optim,basesize,hostnamelike):
 
 	ax.set_ylabel('Efficiency', fontsize=fontsize_label)
 	ax.set_xlabel('number of OMP threads', fontsize=fontsize_label)
-	ax.set_title('Weak scaling\nBase size 1000000', fontsize=fontsize_title)
+	ax.set_title('Weak scaling\nalgorithm={0}, graphtype={1}, basesize={2}'.format(algo,graphtype,basesize), fontsize=fontsize_title)
 	ax.set_ylim([0,1.1])
-	# ax.legend(['Plain','Load Adjusted'],loc=3)
 	ax.tick_params(top='off', right='off', length=4, width=1)
 
 
 
-# Save plots
-	filename = plotdir + "/weakscaling.pdf";
+	# Save plots
+	filename = plotdir + "/weakscaling_{0}_gt{1}_opt{2}.pdf".format(algo,graphtype,optim);
 	plt.savefig(filename,format='pdf')
 	plt.show()
 
 	print "Done - File written to " + filename
 
 
+# hostname starts with e*
 basesize = 1000000
-plotStrongScaling('SOFTWARE',0,basesize,"e%") # hostname starts with e*
+plotWeakScaling('bitset','SOFTWARE',1,basesize,"e%") 
+plotWeakScaling('bitset','RANDOMLIN',1,basesize,"e%") 
+plotWeakScaling('bitset','CHAIN',1,basesize,"e%") 
+plotWeakScaling('bitset','MULTICHAIN',1,basesize,"e%") 
+plotWeakScaling('bitset','SOFTWARE',0,basesize,"e%") 
+plotWeakScaling('bitset','RANDOMLIN',0,basesize,"e%") 
+plotWeakScaling('bitset','CHAIN',0,basesize,"e%") 
+plotWeakScaling('bitset','MULTICHAIN',0,basesize,"e%") 
+plotWeakScaling('locallist','SOFTWARE',1,basesize,"e%") 
+plotWeakScaling('locallist','RANDOMLIN',1,basesize,"e%") 
+plotWeakScaling('locallist','CHAIN',1,basesize,"e%") 
+plotWeakScaling('locallist','MULTICHAIN',1,basesize,"e%")
 
 
 db.close();
