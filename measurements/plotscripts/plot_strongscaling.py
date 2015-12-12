@@ -61,10 +61,9 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 		# print "TIME\n", t
 		# print "SPEEDUP\n", speedup
 
-		ax.plot(number_of_threads,speedup,'*-',markersize=10,linewidth=2.0,c=ct.tableau20[color_cnt])
+		ax.plot(number_of_threads,speedup,'*-',markersize=10,linewidth=2.0,c=ct.getFGcolor(color_cnt))
 		# ax.errorbar(number_of_threads,speedup,yerr=stdev_speedup,fmt='d-',markersize=3)
 		color_cnt+=1
-		color_cnt%=5 # else not enough colors
 
 	perfectspeedup = np.linspace(1,max(number_of_threads))
 	ax.plot(perfectspeedup,perfectspeedup,'r--',label='perfectspeedup')

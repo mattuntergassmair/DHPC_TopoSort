@@ -1,9 +1,13 @@
 ############### Color#############################################################
-# These are the "Tableau 20" colors as RGB.  
-tableau20 = [(44, 160, 44), (200,82,0), (0, 107,164), (220, 95,189), (225,128,14)]
+myFGcolors = [(44, 160, 44), (0, 107,164), (220, 95,189), (225,128,14), (193,179,215)]
+myFGcolors = list([tuple([x/255. for x in tup]) for tup in myFGcolors])
+myBGcolors = [(154,226,223), (100,82,129), (191,228,118), (255,250,129), (193,179,215), (228,82,75)]
+myBGcolors = list([tuple([x/255. for x in tup]) for tup in myBGcolors])
   
-# Scale the RGB values to the [0, 1] range, which is the format matplotlib accepts.  
-for i in range(len(tableau20)):  
-    r, g, b = tableau20[i]  
-    tableau20[i] = (r / 255., g / 255., b / 255.)
+def getFGcolor(i):
+	return (myFGcolors[i%len(myFGcolors)])
+
+def getBGcolor(i):
+	return (myBGcolors[i%len(myBGcolors)])
+
 ##################################################################################
