@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449950518</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>2</numberOfThreads>
+		<processors>12</processors>
+		<hostname>e1341</hostname>
+		<totalTime>1.06488</totalTime>
+		<algorithm>locallist</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">8.1977e-05</timing>
+				<timing name="criticalPushBack">8.057e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.361942</timing>
+				<timing name="currentGather">7.229e-06</timing>
+				<timing name="currentScatter">0.0285188</timing>
+			</timings>
+			<processedNodes>500017</processedNodes>
+			</thread>
+			<thread>
+			<id>1</id>
+			<timings>
+				<timing name="barrier">3.1003e-05</timing>
+				<timing name="criticalPushBack">9.86e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.361493</timing>
+				<timing name="currentGather">8.672e-06</timing>
+				<timing name="currentScatter">0.0213296</timing>
+			</timings>
+			<processedNodes>500022</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>RANDOMLIN</type>
+			<numberOfNodes>1000000</numberOfNodes>
+			<numberOfEdges>2699997</numberOfEdges>
+			<depth>21</depth>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>

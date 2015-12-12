@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449950535</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>4</numberOfThreads>
+		<processors>12</processors>
+		<hostname>e1015</hostname>
+		<totalTime>0.662162</totalTime>
+		<algorithm>locallist</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">0.000361662</timing>
+				<timing name="criticalPushBack">1.4679e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.127427</timing>
+				<timing name="currentGather">1.5419e-05</timing>
+				<timing name="currentScatter">0.0337039</timing>
+			</timings>
+			<processedNodes>250047</processedNodes>
+			</thread>
+			<thread>
+			<id>1</id>
+			<timings>
+				<timing name="barrier">0.000199407</timing>
+				<timing name="criticalPushBack">1.3531e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.139896</timing>
+				<timing name="currentGather">1.4642e-05</timing>
+				<timing name="currentScatter">0.0281532</timing>
+			</timings>
+			<processedNodes>250034</processedNodes>
+			</thread>
+			<thread>
+			<id>2</id>
+			<timings>
+				<timing name="barrier">0.000195834</timing>
+				<timing name="criticalPushBack">1.4798e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.133872</timing>
+				<timing name="currentGather">1.3963e-05</timing>
+				<timing name="currentScatter">0.0361746</timing>
+			</timings>
+			<processedNodes>250032</processedNodes>
+			</thread>
+			<thread>
+			<id>3</id>
+			<timings>
+				<timing name="barrier">0.000234919</timing>
+				<timing name="criticalPushBack">1.4988e-05</timing>
+				<timing name="criticalRequestValueUpdate">0.114474</timing>
+				<timing name="currentGather">1.4358e-05</timing>
+				<timing name="currentScatter">0.0396836</timing>
+			</timings>
+			<processedNodes>250042</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>SOFTWARE</type>
+			<numberOfNodes>1000000</numberOfNodes>
+			<numberOfEdges>2694223</numberOfEdges>
+			<depth>40</depth>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>

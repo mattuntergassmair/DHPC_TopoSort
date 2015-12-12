@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449950532</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>4</numberOfThreads>
+		<processors>12</processors>
+		<hostname>e1341</hostname>
+		<totalTime>0.734126</totalTime>
+		<algorithm>locallist</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">0.000149051</timing>
+				<timing name="criticalPushBack">9.876e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.159392</timing>
+				<timing name="currentGather">9.464e-06</timing>
+				<timing name="currentScatter">0.0356048</timing>
+			</timings>
+			<processedNodes>250014</processedNodes>
+			</thread>
+			<thread>
+			<id>1</id>
+			<timings>
+				<timing name="barrier">7.2434e-05</timing>
+				<timing name="criticalPushBack">9.01e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.158266</timing>
+				<timing name="currentGather">8.314e-06</timing>
+				<timing name="currentScatter">0.0376723</timing>
+			</timings>
+			<processedNodes>250016</processedNodes>
+			</thread>
+			<thread>
+			<id>2</id>
+			<timings>
+				<timing name="barrier">7.3524e-05</timing>
+				<timing name="criticalPushBack">7.968e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.159516</timing>
+				<timing name="currentGather">8.462e-06</timing>
+				<timing name="currentScatter">0.0370813</timing>
+			</timings>
+			<processedNodes>250022</processedNodes>
+			</thread>
+			<thread>
+			<id>3</id>
+			<timings>
+				<timing name="barrier">0.000106038</timing>
+				<timing name="criticalPushBack">9.363e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.155415</timing>
+				<timing name="currentGather">9.215e-06</timing>
+				<timing name="currentScatter">0.0370553</timing>
+			</timings>
+			<processedNodes>250023</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>RANDOMLIN</type>
+			<numberOfNodes>1000000</numberOfNodes>
+			<numberOfEdges>2699997</numberOfEdges>
+			<depth>21</depth>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>
