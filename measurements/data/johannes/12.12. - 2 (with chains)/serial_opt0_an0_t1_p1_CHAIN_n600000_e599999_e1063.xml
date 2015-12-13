@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449931389</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>1</numberOfThreads>
+		<processors>1</processors>
+		<hostname>e1063</hostname>
+		<totalTime>0.0868314</totalTime>
+		<algorithm>serial</algorithm>
+		<graph>
+			<type>CHAIN</type>
+			<numberOfNodes>600000</numberOfNodes>
+			<numberOfEdges>599999</numberOfEdges>
+			<depth>10927</depth>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>false</enableAnalysis>
+	</measurement>
+</measurements>
