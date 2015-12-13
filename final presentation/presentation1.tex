@@ -378,6 +378,34 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 \end{frame}
 
+\begin{frame}
+\frametitle{Optimistic counter check}
+\begin{columns}[T]
+ \column{0.5\textwidth}
+  \bfseries{Optimistic}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtRANDOMLIN30_opt1.pdf}
+    \end{center}
+  \end{figure}
+ \column{0.5\textwidth}
+  \bfseries{Conventional}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtRANDOMLIN30_opt0.pdf}
+    \end{center}
+  \end{figure}  
+\end{columns}
+
+\begin{table}
+\tiny
+\begin{tabular}{lp{1cm}|p{1cm}}
+ {\bfseries Absolute runtimes on 1 core}  & optimistic  & conventional \\
+                                          & 3.51 s      & 3.52 s
+\end{tabular}
+\end{table}
+
+\end{frame}
 
 \begin{frame}
  \frametitle{Absolute runtime composition}
