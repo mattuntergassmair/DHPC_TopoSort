@@ -153,22 +153,20 @@ Example:
 Consider order A,C,B
 $\rightarrow$ valid in BFS, invalid in topological sorting
 
-
 \end{frame}
 
 %------------------------------------------------
 \section{Input graphs}
 %------------------------------------------------
-%TODO: Maybe omit random graph at all
 \begin{frame}
 \frametitle{Random graph}
+
 \begin{columns}[c]
  \column{0.29\textwidth}
- \begin{tabular}{p{1cm}p{1cm}p{1.5cm}}
-  Nodes    & Edges   & Degree (Median)\\\hline
-  100'000  & 266'699 & 2\\
-  10'000   & 26'989 & 2
- \end{tabular}
+ \begin{itemize}
+  \item Parameter: Average node degree
+ \end{itemize}
+
  \column{0.7\textwidth}
  \begin{figure}[!hbp]
     \includegraphics[height=0.7\textheight]{img/random_lin10.pdf}
@@ -179,6 +177,7 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 \begin{frame}
 \frametitle{Software dependency graph}
+
 \begin{columns}[c]
  \column{0.29\textwidth}
  \begin{tabular}{p{1cm}p{1cm}p{1.5cm}}
@@ -190,11 +189,9 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
  \begin{figure}[!hbp]
     \includegraphics[height=0.7\textheight]{img/software10.pdf}
  \end{figure}
-
 \end{columns}
-
-
 {\color{gray}\tiny Musco, V. et al. (2014) "A Generative Model of Software Dependency Graphs to Better Understand Software Evolution."}
+
 \end{frame}
 
 
@@ -204,6 +201,7 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 \begin{frame}
 \frametitle{Parallel algorithm (shared memory)}
+
 \begin{columns}[c]
  \column{0.7\textwidth}
   \begin{enumerate}
@@ -235,6 +233,7 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
   \item When all parents were processed, \emph{gather} all local lists into the global list.
   \item Repeat until there are no parents left in the global list.
   \end{itemize}
+  
 \end{frame}
 
 \begin{frame}
@@ -247,6 +246,7 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
   \item When all parents were processed, swap arrays.
   \item Loop through the array until there are no new parents.
  \end{itemize}
+ 
 \end{frame}
 
 \begin{frame}[fragile]
@@ -323,45 +323,61 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 \frametitle{Strong scaling software graph}
 \begin{columns}[T]
  \column{0.5\textwidth}
-  \bfseries{Bool array}
-  \begin{figure}[!ht]
-    \begin{center}
-      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtSOFTWARE_opt1.pdf}
-    \end{center}
-  \end{figure}
-
- \column{0.5\textwidth}
   \bfseries{Local lists}
   \begin{figure}[!ht]
     \begin{center}
       \includegraphics[width=\textwidth]{img/strongscaling_locallist_gtSOFTWARE_opt0.pdf}
     \end{center}
   \end{figure}
+ \column{0.5\textwidth}
+  \bfseries{Bool array}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtSOFTWARE_opt1.pdf}
+    \end{center}
+  \end{figure}  
 \end{columns}
+
+\begin{table}
+\tiny
+\begin{tabular}{lp{1cm}|p{1cm}|p{1cm}}
+ {\bfseries Absolute runtimes on 1 core}  & serial  & bool array  & local list\\
+                                          & 0.45 s  & 0.58 s      & 0.48 s
+\end{tabular}
+\end{table}
+
 \end{frame}
 
-%TODO: Figures
 \begin{frame}
-\frametitle{Strong scaling Random graph (node degree 30)}
+\frametitle{Bool array & random graph (node degree 30)}
 \begin{columns}[T]
  \column{0.5\textwidth}
-  \bfseries{Bool array}
+  \bfseries{Strong scaling}
   \begin{figure}[!ht]
     \begin{center}
-      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtSOFTWARE_opt1.pdf}
+      %\includegraphics[width=\textwidth]{img/strongscaling_bitset_gtRANDOMLIN_opt1.pdf}
     \end{center}
   \end{figure}
 
  \column{0.5\textwidth}
-  \bfseries{Local lists}
+  \bfseries{Weak scaling}
   \begin{figure}[!ht]
     \begin{center}
-      \includegraphics[width=\textwidth]{img/strongscaling_locallist_gtSOFTWARE_opt0.pdf}
+      %\includegraphics[width=\textwidth]{img/strongscaling_locallist_gtRANDOMLIN_opt0.pdf}
     \end{center}
   \end{figure}
 \end{columns}
 
+\begin{table}
+\tiny
+\begin{tabular}{lp{1cm}|p{1cm}|p{1cm}}
+ {\bfseries Absolute runtimes on 1 core}  & serial  & bool array  & local list\\
+                                          & 2.76 s  & 3.51 s      & 2.74 s
+\end{tabular}
+\end{table}
+
 \end{frame}
+
 
 \begin{frame}
  \frametitle{Interpretation}
@@ -370,6 +386,8 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 	 \item Paper algorithm did not discuss implementation and omitted some crucial parallelization problems, e.g. threads following each other, sorting required at the end
  \end{itemize}
 \end{frame}
+
+
 
 \begin{frame}
  \frametitle{Remaining issues}
