@@ -126,20 +126,20 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 \begin{frame}
 \frametitle{Parallel algorithm (shared memory)}
-\begin{columns}[T]
- \column{0.5\textwidth}
+\begin{columns}[c]
+ \column{0.7\textwidth}
   \begin{enumerate}
     \item As a preparing step, initialize a counter for every child with the number of its parents.
     \item Distribute parent nodes over threads and process them in parallel.
-    \item For every parent, append it to solution.
-    \item For every child of the parent, decrement its counter. If the counter is zero, make it a parent.
-    \item Distribute new parent nodes etc.
+    \item For every parent, append it to solution ($\rightarrow$ \textbf{lock}).
+    \item For every child of the parent, decrement its counter ($\rightarrow$ \textbf{lock}). If the counter is zero, make it a parent.
+    \item When all parents are processed ($\rightarrow$ \textbf{barrier}), distribute new parent nodes etc.
   \end{enumerate}
 
- \column{0.5\textwidth}
+ \column{0.3\textwidth}
   \begin{figure}[!ht]
     \begin{center}
-      \includegraphics[width=0.9\textwidth]{img/software10.pdf}
+      \includegraphics[width=\textwidth]{img/software10.pdf}
     \end{center}
   \end{figure}
 \end{columns}
@@ -224,24 +224,71 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 %------------------------------------------------
 \section{Architecture}
 %------------------------------------------------
-\frametitle{Euler}
-\begin{itemize}
- \item Intel Xeon E5 on Euler cluster
- \item 2 processors per node
- \item 12 cores
- \item 30 MB shared last-level cache
-\end{itemize}
-
+\begin{frame}
+  \frametitle{Euler}
+  \begin{itemize}
+  \item Intel Xeon E5 on Euler cluster
+  \item 2 processors per node
+  \item 12 cores
+  \item 30 MB shared last-level cache
+  \item Software graph with around 1M nodes should fit into cache % TODO: Maybe it's a little odd to state this here
+  \end{itemize}
+\end{frame}
 
 %------------------------------------------------
 \section{Results}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Results - Xeon Phi}
+\frametitle{Strong scaling software graph}
+\begin{columns}[T]
+ \column{0.5\textwidth}
+  \bfseries{Bool array}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtSOFTWARE_opt1.pdf}
+    \end{center}
+  \end{figure}
 
+ \column{0.5\textwidth}
+  \bfseries{Local lists}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/strongscaling_locallist_gtSOFTWARE_opt0.pdf}
+    \end{center}
+  \end{figure}
+\end{columns}
+\end{frame}
 
+%TODO: Figures
+\begin{frame}
+\frametitle{Strong scaling Random graph (node degree 30)}
+\begin{columns}[T]
+ \column{0.5\textwidth}
+  \bfseries{Bool array}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtSOFTWARE_opt1.pdf}
+    \end{center}
+  \end{figure}
 
+ \column{0.5\textwidth}
+  \bfseries{Local lists}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/strongscaling_locallist_gtSOFTWARE_opt0.pdf}
+    \end{center}
+  \end{figure}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Interpretation}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Remaining issues}
 \end{frame}
 
 
