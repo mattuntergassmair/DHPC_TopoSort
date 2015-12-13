@@ -76,7 +76,12 @@ class Graph {
         void printSolution();
 		void viz(std::string) const;
         void dumpXmlAnalysis(std::string relativeDir);
+        void setDepth(type_size d) {
+        	depth_ = d;
+        }
         
+        type_solution solution_; // TODO: needed to make this public, maybe with better design it can be made private again
+
 	protected:
 
         void connectRandom(int nEdges);
@@ -86,7 +91,6 @@ class Graph {
         type_size depth_; // depth of graph, == D
         std::string graphName_;
 		type_nodearray nodes_;
-        type_solution solution_;
         analysis A_;
 
 };

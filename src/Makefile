@@ -4,8 +4,8 @@
 
 ## Variables from command line
 OPT=0 #-DOPTIMISTIC
-DBG=0 #-DDEBUG
-VERB=0 #-DVERBOSE
+DBG=2 #-DDEBUG
+VERB=2 #-DVERBOSE
 AN=0 #-DENABLE_ANALYSIS
 
 
@@ -25,6 +25,10 @@ GRAPHSRC_DIR := graph_output
 GRAPHSRC_FILES := $(wildcard $(GRAPHSRC_DIR)/*.gv)
 GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 
+
+all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
+all: $(EXECUTABLES)
+
 # Attention: this messes with flags that are set above. Use with care, i.e. make clean first
 debug: FLAGS += -g -O0
 debug: DBG=2
@@ -38,9 +42,6 @@ release: FLAGS += -O3
 release: DBG=0
 release: VERB=0
 release: all
-
-all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
-all: $(EXECUTABLES)
 
 $(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
 	$(COMPILER) $(FLAGS) $^ -o $@ $(LIBS)
@@ -67,7 +68,7 @@ analysis.o: analysis.cpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c analysis.cpp $(LIBS)
 
 run: all
-	./toposort_omp_locallist.exe
+	./toposort_omp_worksteal.exe 'p'
 
 viz: $(GRAPHIMG_FILES)
 	display $(GRAPHIMG_FILES);
