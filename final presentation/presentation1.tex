@@ -131,9 +131,9 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
   \begin{enumerate}
     \item As a preparing step, initialize a counter for every child with the number of its parents.
     \item Distribute parent nodes over threads and process them in parallel.
-    \item For every parent, append it to solution ($\rightarrow$ \textbf{lock}).
-    \item For every child of the parent, decrement its counter ($\rightarrow$ \textbf{lock}). If the counter is zero, make it a parent.
-    \item When all parents are processed ($\rightarrow$ \textbf{barrier}), distribute new parent nodes etc.
+    \item For every parent node, get a list of all child nodes and append the parent itself to solution ($\rightarrow$ \textbf{lock}).
+    \item For every child of the parent, decrement its counter ($\rightarrow$ \textbf{lock}). Once the counter is zero, we can move on
+    \item When all parents are processed ($\rightarrow$ \textbf{barrier}), distribute new nodes and repeat
   \end{enumerate}
 
  \column{0.3\textwidth}
@@ -149,17 +149,19 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 \begin{frame}
  \frametitle{Local lists approach}
+ \textbf{Idea:} perfect load balancing by redistributing nodes at every step
   \begin{itemize}
-  \item Parent nodes stored in a shared list.
-  \item Distribution of parent nodes: Scatter the list among the threads. Each thread has now its local list.
-  \item Add new parents to the end of local list.
-  \item When all parents were processed, gather all local lists into the shared list.
-  \item Repeat until there are no parents in the shared list.
+  \item Parent nodes stored in a global list.
+  \item Distribution of parent nodes: \emph{scatter} the list among the threads. Each thread has now its local list.
+  \item Add new nodes to the end of local list.
+  \item When all parents were processed, \emph{gather} all local lists into the global list.
+  \item Repeat until there are no parents left in the global list.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
  \frametitle{Boolean array approach}
+ \textbf{Idea:} minimizing memory access by using lookup table 
  \begin{itemize}
   \item Array of length $N$. 1 if node $i$ is a parent node, 0 otherwise.
   \item Distribution of parent nodes: Parallel for-loop through the array.
@@ -285,10 +287,18 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 \begin{frame}
  \frametitle{Interpretation}
+ \begin{itemize}
+	 \item Algorithm is inherently serial, $D_{max}$ synchronization points (where $D_{max}$ is the longest directed path in the graph)
+	 \item Paper algorithm did not discuss implementation and omitted some crucial parallelization problems, e.g. threads following each other, sorting required at the end
+ \end{itemize}
 \end{frame}
 
 \begin{frame}
  \frametitle{Remaining issues}
+ \begin{itemize}
+	 \item very poor scaling achieved so far
+	 \item work stealing could help to improve local list approach
+ \end{itemize}
 \end{frame}
 
 
