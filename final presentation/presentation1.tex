@@ -81,21 +81,41 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 %------------------------------------------------
 \section{Input graphs}
 %------------------------------------------------
-
+%TODO: Maybe omit random graph at all
 \begin{frame}
 \frametitle{Random graph}
-\begin{figure}[!hbp]
+\begin{columns}[c]
+ \column{0.29\textwidth}
+ \begin{tabular}{p{1cm}p{1cm}p{1.5cm}}
+  Nodes    & Edges   & Degree (Median)\\\hline
+  100'000  & 266'699 & 2\\
+  10'000   & 26'989 & 2
+ \end{tabular}
+ \column{0.7\textwidth}
+ \begin{figure}[!hbp]
     \includegraphics[height=0.7\textheight]{img/random_lin10.pdf}
-\end{figure}
+ \end{figure}
+\end{columns}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Software dependency graph}
-\begin{figure}[!hbp]
+\begin{columns}[c]
+ \column{0.29\textwidth}
+ \begin{tabular}{p{1cm}p{1cm}p{1.5cm}}
+  Nodes    & Edges   & Degree (Median)\\\hline
+  100'000  & 266'680 & 2\\
+  10'000   & 27'416  & 2
+ \end{tabular}
+ \column{0.7\textwidth}
+ \begin{figure}[!hbp]
     \includegraphics[height=0.7\textheight]{img/software10.pdf}
+ \end{figure}
 
-\end{figure}
+\end{columns}
+
+
 {\color{gray}\tiny Musco, V. et al. (2014) "A Generative Model of Software Dependency Graphs to Better Understand Software Evolution."}
 \end{frame}
 
@@ -105,7 +125,7 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Parallel algorithm}
+\frametitle{Parallel algorithm (shared memory)}
 \begin{columns}[T]
  \column{0.5\textwidth}
   \begin{enumerate}
@@ -200,6 +220,18 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
   \item Array approach: Multiple threads write 1 to the array $\Rightarrow$ Ok, doesn't matter.
  \end{itemize}
 \end{frame}
+
+%------------------------------------------------
+\section{Architecture}
+%------------------------------------------------
+\frametitle{Euler}
+\begin{itemize}
+ \item Intel Xeon E5 on Euler cluster
+ \item 2 processors per node
+ \item 12 cores
+ \item 30 MB shared last-level cache
+\end{itemize}
+
 
 %------------------------------------------------
 \section{Results}
