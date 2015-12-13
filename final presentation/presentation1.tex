@@ -348,31 +348,31 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 \end{frame}
 
+
 \begin{frame}
-\frametitle{Bool array & random graph (node degree 30)}
+\frametitle{Bool array \& random graph (node degree 30)}
 \begin{columns}[T]
  \column{0.5\textwidth}
   \bfseries{Strong scaling}
   \begin{figure}[!ht]
     \begin{center}
-      %\includegraphics[width=\textwidth]{img/strongscaling_bitset_gtRANDOMLIN_opt1.pdf}
+      \includegraphics[width=\textwidth]{img/strongscaling_bitset_gtRANDOMLIN30_opt1.pdf}
     \end{center}
   \end{figure}
-
  \column{0.5\textwidth}
   \bfseries{Weak scaling}
   \begin{figure}[!ht]
     \begin{center}
-      %\includegraphics[width=\textwidth]{img/strongscaling_locallist_gtRANDOMLIN_opt0.pdf}
+      \includegraphics[width=\textwidth]{img/weakscaling_bitset_gtRANDOMLIN30_opt1.pdf}
     \end{center}
-  \end{figure}
+  \end{figure}  
 \end{columns}
 
 \begin{table}
 \tiny
-\begin{tabular}{lp{1cm}|p{1cm}|p{1cm}}
- {\bfseries Absolute runtimes on 1 core}  & serial  & bool array  & local list\\
-                                          & 2.76 s  & 3.51 s      & 2.74 s
+\begin{tabular}{lp{1cm}|p{1cm}}
+ {\bfseries Absolute runtimes on 1 core}  & serial  & bool array \\
+                                          & 2.76 s  & 3.51 s
 \end{tabular}
 \end{table}
 
@@ -380,11 +380,25 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 
 
 \begin{frame}
- \frametitle{Interpretation}
- \begin{itemize}
-	 \item Algorithm is inherently serial, $D_{max}$ synchronization points (where $D_{max}$ is the longest directed path in the graph)
-	 \item Paper algorithm did not discuss implementation and omitted some crucial parallelization problems, e.g. threads following each other, sorting required at the end
- \end{itemize}
+ \frametitle{Absolute runtime composition}
+ \begin{columns}[T]
+ \column{0.5\textwidth}
+  \bfseries{Local lists}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/timeabs_locallist_gtSOFTWARE_s1000000_opt0.pdf}
+    \end{center}
+  \end{figure}
+
+ \column{0.5\textwidth}
+  \bfseries{Bool array}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics[width=\textwidth]{img/timeabs_bitset_gtSOFTWARE_s1000000_opt1.pdf}
+    \end{center}
+  \end{figure}
+\end{columns}
+ 
 \end{frame}
 
 
@@ -392,8 +406,8 @@ $\rightarrow$ valid in BFS, invalid in topological sorting
 \begin{frame}
  \frametitle{Remaining issues}
  \begin{itemize}
-	 \item very poor scaling achieved so far
-	 \item work stealing could help to improve local list approach
+	 \item Pinpoint the reasons for bad scaling
+	 \item Work stealing could help to improve local list approach
  \end{itemize}
 \end{frame}
 
