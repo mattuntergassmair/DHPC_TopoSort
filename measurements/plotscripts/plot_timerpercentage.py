@@ -7,7 +7,7 @@ import colortableau as ct
 from collections import defaultdict
 
 
-# plt.style.use('ggplot')
+plt.style.use('ggplot')
 plotdir = "plots";
 db = sqlite3.connect('measurements.db')
 
@@ -15,7 +15,8 @@ query = db.cursor()
 
 def getPerc(where):
 
-	subquery = "(SELECT threads.measurement_id AS mid, AVG(timings.value) AS t, timings.name AS category FROM timings INNER JOIN threads ON threads.id=timings.thread_id GROUP BY threads.id, timings.name) AS timingdetail"
+	# subquery = "(SELECT threads.measurement_id AS mid, AVG(timings.value) AS t, timings.name AS category FROM timings INNER JOIN threads ON threads.id=timings.thread_id GROUP BY threads.id, timings.name) AS timingdetail"
+	subquery = "(SELECT threads.measurement_id AS mid, SUM(timings.value) AS t, timings.name AS category FROM timings INNER JOIN threads ON threads.id=timings.thread_id GROUP BY threads.id, timings.name) AS timingdetail"
 
 	querystring = "SELECT timingdetail.category AS cat, AVG(timingdetail.t) AS t_det, AVG(m.total_time) AS t_tot FROM measurements AS m INNER JOIN  " + subquery + " ON m.id=timingdetail.mid WHERE " + where + " AND timingdetail.t>0 GROUP BY m.number_of_threads, timingdetail.category ORDER BY m.number_of_threads, timingdetail.category;"
 	# print querystring

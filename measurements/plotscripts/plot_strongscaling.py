@@ -5,7 +5,7 @@ import re
 import sqlite3
 import colortableau as ct
 
-# plt.style.use('ggplot')
+plt.style.use('ggplot')
 plotdir = "plots";
 db = sqlite3.connect('measurements.db')
 
@@ -15,8 +15,8 @@ def getAvgAndVariance(field,wherestring,otherfields=""):
 	with db:
 		querystring = "SELECT {2} AVG({0}), SUM(({0}-sub.field_avg)*({0}-sub.field_avg))/(COUNT()-1) FROM measurements, (SELECT AVG({0}) AS field_avg FROM measurements WHERE {1}) AS sub WHERE {1}".format(field,wherestring,otherfields)
 		# for debugging
-		# querystring = "SELECT {2} AVG({0}) FROM measurements WHERE {1}".format(field,wherestring,otherfields)
-		# print querystring
+		querystring = "SELECT {2} AVG({0}) FROM measurements WHERE {1}".format(field,wherestring,otherfields)
+		print querystring
 		query.execute(querystring)
 		data = query.fetchall()
 		# print "DATA: \n", data
@@ -51,10 +51,10 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 			d = getAvgAndVariance("total_time",where)
 			# print "DATA=\n", d
 			t.append(d[:,0])
-			var_t.append(d[:,1])
+			# var_t.append(d[:,1])
 
 			# Calculating stddev for speedup
-			stdev_speedup = np.sqrt(np.array(var_t[0]) * np.power((1./np.array(t)),2) + var_t * np.power((-t[0]/np.power(t,2)),2))
+			# stdev_speedup = np.sqrt(np.array(var_t[0]) * np.power((1./np.array(t)),2) + var_t * np.power((-t[0]/np.power(t,2)),2))
 
 
 		speedup = t[0]/t;
@@ -87,18 +87,26 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 
 sizes = [1000000]
 # hostname starting with e*
-plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%',) 
-plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%',) 
-#plotStrongScaling('locallist','CHAIN',sizes,0,'e%',) 
+
+'''
+plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%') 
+plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%') 
+#plotStrongScaling('locallist','CHAIN',sizes,0,'e%') 
 #plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') 
-plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%',) 
-plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%',) 
-#plotStrongScaling('bitset','CHAIN',sizes,0,'e%',) 
+plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%') 
+plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%') 
+#plotStrongScaling('bitset','CHAIN',sizes,0,'e%') 
 #plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%')
-plotStrongScaling('bitset','SOFTWARE',sizes,1,'e%',) 
-plotStrongScaling('bitset','RANDOMLIN',sizes,1,'e%',) 
-#plotStrongScaling('bitset','CHAIN',sizes,1,'e%',) 
+plotStrongScaling('bitset','SOFTWARE',sizes,1,'e%') 
+plotStrongScaling('bitset','RANDOMLIN',sizes,1,'e%') 
+#plotStrongScaling('bitset','CHAIN',sizes,1,'e%') 
 #plotStrongScaling('bitset','MULTICHAIN',sizes,1,'e%')
+'''
+
+plotStrongScaling('locallist','SOFTWARE',[1000000],0,'thinkpad%') 
+plotStrongScaling('locallist','RANDOMLIN',[1000000],0,'thinkpad%') 
+plotStrongScaling('bitset','SOFTWARE',[1000000],0,'thinkpad%') 
+plotStrongScaling('bitset','RANDOMLIN',[1000000],0,'thinkpad%') 
 
 
 db.close();

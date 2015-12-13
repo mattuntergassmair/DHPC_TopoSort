@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449411367</date>
+		<numberOfThreads>1</numberOfThreads>
+		<processors>4</processors>
+		<hostname>thinkpadE530.localdomain</hostname>
+		<totalTime>0.0978785</totalTime>
+		<algorithm>locallist</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">2.6976e-05</timing>
+				<timing name="criticalPushBack">5.262e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.0261994</timing>
+				<timing name="currentGather">7.706e-06</timing>
+				<timing name="currentScatter">0.000850379</timing>
+			</timings>
+			<processedNodes>50017</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>RANDOMLIN</type>
+			<numberOfNodes>50000</numberOfNodes>
+			<numberOfEdges>134989</numberOfEdges>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>

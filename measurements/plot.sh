@@ -2,7 +2,8 @@
 
 python plotscripts/plot_strongscaling.py
 python plotscripts/plot_weakscaling.py
-python plotscripts/plot_timerpercentage.py;
+python plotscripts/plot_timerpercentage.py
+python plotscripts/plot_abstimings.py
 
 
 # display plots/*

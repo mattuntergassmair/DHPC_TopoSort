@@ -54,6 +54,7 @@ measurements/TopoSortParser/
 
 # Ignore xml files (for now)
 # *.xml
+src/results/*.xml
 *.db
 *.pdf
 

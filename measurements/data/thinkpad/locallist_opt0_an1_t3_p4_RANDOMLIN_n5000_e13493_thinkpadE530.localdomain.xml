@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1449411336</date>
+		<numberOfThreads>3</numberOfThreads>
+		<processors>4</processors>
+		<hostname>thinkpadE530.localdomain</hostname>
+		<totalTime>0.00706768</totalTime>
+		<algorithm>locallist</algorithm>
+		<threads>
+			<thread>
+			<id>0</id>
+			<timings>
+				<timing name="barrier">0.000190552</timing>
+				<timing name="criticalPushBack">5.903e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.00104419</timing>
+				<timing name="currentGather">5.936e-06</timing>
+				<timing name="currentScatter">0.000140484</timing>
+			</timings>
+			<processedNodes>1679</processedNodes>
+			</thread>
+			<thread>
+			<id>1</id>
+			<timings>
+				<timing name="barrier">1.5502e-05</timing>
+				<timing name="criticalPushBack">6.188e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.00105845</timing>
+				<timing name="currentGather">6.79e-06</timing>
+				<timing name="currentScatter">0.000157523</timing>
+			</timings>
+			<processedNodes>1680</processedNodes>
+			</thread>
+			<thread>
+			<id>2</id>
+			<timings>
+				<timing name="barrier">1.4137e-05</timing>
+				<timing name="criticalPushBack">6.196e-06</timing>
+				<timing name="criticalRequestValueUpdate">0.000984334</timing>
+				<timing name="currentGather">6.285e-06</timing>
+				<timing name="currentScatter">0.00013125</timing>
+			</timings>
+			<processedNodes>1685</processedNodes>
+			</thread>
+		</threads>
+		<graph>
+			<type>RANDOMLIN</type>
+			<numberOfNodes>5000</numberOfNodes>
+			<numberOfEdges>13493</numberOfEdges>
+		</graph>
+		<optimistic>false</optimistic>
+		<enableAnalysis>true</enableAnalysis>
+	</measurement>
+</measurements>
