@@ -60,7 +60,7 @@ def plotPercGraph(algo,graphtype,size,optim,hostnamelike):
 	fontsize_title=12
 	fontsize_label=14
 
-	ax.set_title('Percentage composition of runtime\nalgorithm={0}, graphtype={1}, graphsize={2}'.format(algo,graphtype,size), fontsize=fontsize_title)
+	ax.set_title('Absolute runtime composition\nalgorithm={0}, graphtype={1}, graphsize={2}'.format(algo,graphtype,size), fontsize=fontsize_title)
 	ax.set_ylabel('Runtime [sec]', fontsize=fontsize_label)
 	ax.set_xlabel('number of OMP threads', fontsize=fontsize_label)
 	ax.tick_params(top='off', right='off', length=4, width=1)
