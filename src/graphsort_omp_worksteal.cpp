@@ -98,10 +98,6 @@ namespace myworksteal {
 			// PRE:		locallist_current_* must be empty, the nodes contained in locallist_next_ must have the correct value nsv
 			// POST:	swaps the locallist_current_stack_ contains new nodes to work on, locallist_next_ is empty, currenySyncVal_ is set to nsv
 			inline void nextSyncVal(Graph::type_size nsv) {
-				#pragma omp critical 
-				{
-					std::cout << "BEFOREASSERTION - thread " << tid_ << std::flush;
-				}
 				assert(locallist_current_fast_.empty() && locallist_current_stack_.empty()); // make sure old lists are empty
 				assert(locallist_next_.empty() || locallist_next_.front()->getValue()==nsv); // make sure value is set to correct sync value
 				currentSyncVal_ = nsv;
@@ -198,10 +194,17 @@ namespace myworksteal {
 			}
 
 			// TODO: check if this works well
-			void setDoneWithSyncVal(type_threadcount i) {
+			void doneWithStack(type_threadcount i) {
 				#pragma omp critical // TODO: not sure if this is necessary
 				{
 					doneWithSyncVal_[i] = 1;
+					nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0));
+				}
+			}
+			void doneWithSyncVal(type_threadcount i) {
+				#pragma omp critical // TODO: not sure if this is necessary
+				{
+					doneWithSyncVal_[i] = 2;
 					nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0));
 				}
 			}
@@ -218,20 +221,19 @@ namespace myworksteal {
 				}
 				nDoneWithSyncVal_ = c;
 				// nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0)); 
+				assert(nDoneWithSyncVal_<=2*nThreads_);
 				return nDoneWithSyncVal_;
 			}
 
-			bool allDoneWithSyncVal() const {
+			bool allDoneWithStack() const {
 				return nDoneWithSyncVal_>=nThreads_;
 			}
-		
-			// PRE:		nsv is the valid next SyncValue (gradually incrementing)
-			// POST:	all local threadlists are updated to the new SyncValue nsv
-			void nextSyncVal(Graph::type_size nsv) {
-				for(auto nd : nodelists_) {
-					nd.nextSyncVal(nsv);
-				}
+
+			bool allDoneWithSyncVal() const {
+				assert(nDoneWithSyncVal_<=2*nThreads_);
+				return nDoneWithSyncVal_>=2*nThreads_;
 			}
+		
 
 			// PRE:		ndptr is a valid node pointer, i is a valid thread index
 			// POST:	ndptr is inserted in the local list of thread tid
@@ -268,33 +270,33 @@ namespace myworksteal {
 					#pragma omp barrier
 
 					do {
-						
-						#pragma omp single
+
+						#pragma omp single nowait
 						setUndoneAll();
 					
-						#pragma omp single
+						#pragma omp single nowait
 						++syncVal;
-				
+
+						#pragma omp barrier
+			
 						#pragma omp critical 
-						{
-						std::cout << "\ncall syncval on thread " << threadID << nodelists_[threadID] << std::flush;
 						nodelists_[threadID].nextSyncVal(syncVal);
-						}
+
+						#pragma omp barrier
 						
 						#if VERBOSE>0
-						#pragma omp single
-						std::cout << "\nCurrent syncVal = " << syncVal;
+							#pragma omp single
+							std::cout << "\nCurrent syncVal = " << syncVal;
 						#endif // VERBOSE>0
-		
+	
+						#pragma omp barrier
 						nodelists_[threadID].work(threadID);
 						#pragma omp barrier
-
-						// #pragma omp single
-						// std::cout << *this;
 
 					} while(!sortingComplete());
 				
 				} // end of OMP parallel
+				#pragma omp single
 				graph.setDepth(syncVal);
 
 			}
@@ -375,40 +377,37 @@ namespace myworksteal {
 					}
 
 				}
-				// std::cout << "STUCKDO thread - " << tid_ << "\nstack" << locallist_current_stack_ << "fast" <<  locallist_current_fast_;
 				if(tid_!=0) stackToFast(); // TODO: remove if
 			}
-			
-			np_.setDoneWithSyncVal(tid_);
+	
+			np_.doneWithStack(tid_);
 			np_.countDone(); // TODO: move countdone below termination criterion
+			
 
 			// Try to steal while others are still busy
-			if(!np_.allDoneWithSyncVal()) {
+			if(np_.allDoneWithStack()) { // all threads are done with stack - no point in trying to steal
+				break;
+			} else { // all are done with stack - no point in trying to steal
 				analysis::type_threadcount stealindex = rand()%np_.getNThreads();
 				Graph::type_nodeptr newnode = np_.tryStealFrom(stealindex);
 				if(newnode!=nullptr) {
 					locallist_current_fast_.push_back(newnode);
 				}
-
 			}
 
 		} while(!np_.allDoneWithSyncVal());
 
+		np_.doneWithSyncVal(tid_);
+
+		#pragma omp barrier
+
 		// Collect local lists in global list
 		gatherlist(np_.globalsolution_,solution_local_,tid_);
 
-
 	}
-
 
 }
 
-
-
-
-
-	// TODO: steal randomly from others
-	// TODO: find out how to sync
 
 
 void Graph::topSort() {
