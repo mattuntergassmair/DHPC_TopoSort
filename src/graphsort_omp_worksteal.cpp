@@ -186,7 +186,7 @@ namespace myworksteal {
 			// PRE:
 			// POST:	doneWithSyncVal_[i] = 0 for all i
 			inline void setUndoneAll() {
-				for(auto d : doneWithSyncVal_) d = 0;
+				std::fill(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),0);
 			}
 
 			inline void doneWithStack(type_threadcount i) {
@@ -237,7 +237,7 @@ namespace myworksteal {
 			Graph::type_nodelist& workparallel(Graph& graph) {
 				
 				// SHARED VARIABLES
-				Graph::type_size syncVal = 0;
+				Graph::type_size syncVal = 1;
 				bool notdone = true;
 
 				// Spawn OMP threads
@@ -256,17 +256,8 @@ namespace myworksteal {
 
 					do {
 
-						#pragma omp single nowait
-						setUndoneAll();
-					
-						#pragma omp single nowait
-						++syncVal;
-
-						#pragma omp barrier
-			
 						#pragma omp critical 
 						nodelists_[threadID].nextSyncVal(syncVal);
-
 						#pragma omp barrier
 						
 						#if VERBOSE>0
@@ -274,12 +265,17 @@ namespace myworksteal {
 							std::cout << "\nCurrent syncVal = " << syncVal;
 						#endif // VERBOSE>0
 	
-						#pragma omp barrier
 						nodelists_[threadID].work(threadID);
 						#pragma omp barrier
 
 						#pragma omp single
 						notdone = !sortingComplete();
+						
+						#pragma omp single nowait
+						setUndoneAll();
+						
+						#pragma omp single nowait
+						++syncVal;
 
 					} while(notdone);
 				
