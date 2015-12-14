@@ -1,5 +1,6 @@
 #include <omp.h>
 #include <algorithm>
+#include <cstdlib>
 
 #include "graph.hpp"
 #include "analysis.hpp"
@@ -34,41 +35,6 @@ inline void gatherlist(Graph::type_nodelist& globallist, Graph::type_nodelist& l
 	#endif // DEBUG >= 2
 }
 
-/*
-// PRE:		globallist has all nodes that need to be distributed, locallist is empty
-// POST:	locallist holds a maximum of n elements that were previously in globallist
-inline void scatterlist( Graph::type_nodelist& globallist, Graph::type_nodelist& locallist, Graph::type_size n, analysis::type_threadcount id) {
-
-	#if DEBUG >= 1
-		#pragma omp single
-		std::cout << "\nBEFORESCATTER -\tglobal:" << globallist;
-	#endif // DEBUG >= 1
-
-	Graph::type_nodelist::iterator start, end;
-	#pragma omp critical
-	{
-		assert(locallist.empty());
-		Graph::type_size len = globallist.size();
-		n = std::min(n,len); // make sure that we do not take more nodes than present
-		start = globallist.begin();
-		end = globallist.begin();
-		std::advance(end,n);
-		locallist.splice(locallist.end(),globallist,start,end);
-	}
-	
-	#if DEBUG >= 2
-		#pragma omp single
-		std::cout << "\nAFTERSCATTER -\tglobal:" << globallist;
-	#endif // DEBUG >= 2
-	#if DEBUG >= 1
-		#pragma omp barrier
-		#pragma omp critical
-		std::cout << "\nAFTERSCATTER -\tthread " << id << " :" << locallist;
-		#pragma omp barrier
-	#endif // DEBUG >= 1
-
-}
-*/
 
 // PRE: 
 // POST:	returns unsigned(ceil(n/d)), i.e. round-up division
@@ -102,10 +68,12 @@ namespace myworksteal {
 				std::shared_ptr<Node> nd = nullptr;
 				#pragma omp critical
 				{
-					std::cout << "\nStealing one node from thread " << tid_;
 					if(!locallist_current_stack_.empty()) {
 						nd = locallist_current_stack_.back();
 						locallist_current_stack_.pop_back();
+						#if DEBUG>0 || VERBOSE>1
+							std::cout << "\nStealing one node from thread " << tid_;
+						#endif // DEBUG>0 || VERBOSE>1
 					}
 				}
 				return nd;
@@ -130,12 +98,15 @@ namespace myworksteal {
 			// PRE:		locallist_current_* must be empty, the nodes contained in locallist_next_ must have the correct value nsv
 			// POST:	swaps the locallist_current_stack_ contains new nodes to work on, locallist_next_ is empty, currenySyncVal_ is set to nsv
 			inline void nextSyncVal(Graph::type_size nsv) {
+				#pragma omp critical 
+				{
+					std::cout << "BEFOREASSERTION - thread " << tid_ << std::flush;
+				}
 				assert(locallist_current_fast_.empty() && locallist_current_stack_.empty()); // make sure old lists are empty
 				assert(locallist_next_.empty() || locallist_next_.front()->getValue()==nsv); // make sure value is set to correct sync value
 				currentSyncVal_ = nsv;
 				std::swap(locallist_current_stack_,locallist_next_);
 				assert(locallist_next_.empty());
-				// stackToFast(); // TODO: this should be called somewhere else
 			}
 			
 			// moves nodes from the stack to the fast list critically
@@ -165,7 +136,7 @@ namespace myworksteal {
 				// assert(locallist_current_fast_.empty());
 				// assert(locallist_current_stack_.empty());
 				// return !locallist_next_.empty();
-				// TODO: this might not be threadsafe, imagine someone is stealing ...
+				// NB: this might not be threadsafe, imagine someone is stealing ...
 				return (locallist_current_fast_.empty() && locallist_current_stack_.empty() && locallist_next_.empty());
 			}
 
@@ -207,14 +178,16 @@ namespace myworksteal {
 				, doneWithSyncVal_(nThreads_,0)
 				, nodelists_(nThreads_,myworksteal::threadLocallist(*this))
 			{
-				std::cout << "\n\nInitialized thread-locallists for " << nThreads_ << " threads:\n\n";
+				#if VERBOSE>0
+					std::cout << "\n\nInitialized thread-locallists for " << nThreads_ << " threads:\n\n";
+				#endif // VERBOSE>0
 				for(type_threadcount i=0; i<nThreads_; ++i) {
-		#if DEBUG>0 || VERBOSE>0
+				#if DEBUG>0 || VERBOSE>0
 					#pragma omp critical
 					{
 						std::cout << nodelists_[i];
 					}
-		#endif // DEBUG>0 || VERBOSE>0
+				#endif // DEBUG>0 || VERBOSE>0
 				}
 			}
 
@@ -237,16 +210,19 @@ namespace myworksteal {
 				return nThreads_;
 			}
 
-			type_threadcount countDone() /*const*/ { // TODO: const can be reintroduced later	
+			type_threadcount countDone() { 
 				// TODO: this can be removed cause impelemented above - just safety for now
-				nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0)); 
+				type_threadcount c = 0;
+				for(auto x : doneWithSyncVal_) {
+					c += x;
+				}
+				nDoneWithSyncVal_ = c;
+				// nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0)); 
 				return nDoneWithSyncVal_;
 			}
 
-			bool allDoneWithSyncVal() /*const*/ { // TODO: const can be reintroduced later	
-				#pragma omp single
-				std::cout << "\n\n" << nDoneWithSyncVal_ << " threads are done with current step\n";
-				return countDone()>=nThreads_;
+			bool allDoneWithSyncVal() const {
+				return nDoneWithSyncVal_>=nThreads_;
 			}
 		
 			// PRE:		nsv is the valid next SyncValue (gradually incrementing)
@@ -281,9 +257,10 @@ namespace myworksteal {
 				#pragma omp parallel shared(syncVal)
 				{
 
+					// TODO: check how this runs on cluster:
+					// this may need to be removed - maybe nThreads > omp_get_num_threads
 					#pragma omp single
-					std::cout << "Working in parallel with " << omp_get_num_threads() << " threads (nthreads=" << nThreads_ << ")" << std::flush;
-					assert(nThreads_==omp_get_num_threads()); // TODO: this may need to be removed
+					assert(nThreads_==omp_get_num_threads()); 
 
 					// THREAD PRIVATE VARIABLES
 					const int threadID = omp_get_thread_num();
@@ -297,21 +274,25 @@ namespace myworksteal {
 					
 						#pragma omp single
 						++syncVal;
-						
+				
+						#pragma omp critical 
+						{
+						std::cout << "\ncall syncval on thread " << threadID << nodelists_[threadID] << std::flush;
 						nodelists_[threadID].nextSyncVal(syncVal);
+						}
 						
-						#if VERBOSE>=2
+						#if VERBOSE>0
 						#pragma omp single
 						std::cout << "\nCurrent syncVal = " << syncVal;
-						#endif // VERBOSE>=2
+						#endif // VERBOSE>0
 		
 						nodelists_[threadID].work(threadID);
 						#pragma omp barrier
 
-						#pragma omp single
-						std::cout << *this;
+						// #pragma omp single
+						// std::cout << *this;
 
-					} while(syncVal<20 && !sortingComplete()); // TODO: find appropriate terminaiton condition
+					} while(!sortingComplete());
 				
 				} // end of OMP parallel
 				graph.setDepth(syncVal);
@@ -363,21 +344,12 @@ namespace myworksteal {
 	
 		// A_.incrementProcessedNodes(threadID); // TODO: this is a bonus
 
-		// TODO: remove this
-		#pragma omp single
-		std::cout << "\n\nBEFORE CLEAR "<< *this;
-		
-		locallist_current_stack_.clear();
-		locallist_current_fast_.clear();
-		locallist_next_.clear();
-		
-		#pragma omp single
-		std::cout << "\n\nAFTER CLEAR "<< *this;
-		
-		
+		Graph::type_size currentvalue;
 		do {
-			while(!locallist_current_stack_.empty()) {
+			while(!(locallist_current_stack_.empty() && locallist_current_fast_.empty())) {
 				while(!locallist_current_fast_.empty()) {
+
+					if(tid_==0) break; // TODO: remove - this is just to check if stealing works
 				
 					parent = locallist_current_fast_.front();
 					assert(parent->getValue() == currentSyncVal_); // TODO: this can be removed once working
@@ -385,51 +357,46 @@ namespace myworksteal {
 					solution_local_.push_back(parent); // put node in solution
 					locallist_current_fast_.pop_front(); // remove current node - already visited
 					
-					// TODO: implement work here
-					//
-					//
-					//
-					//
-					//
-					//
+					currentvalue = currentSyncVal_+1; // increase value for child nodes
+					childcount = parent->getChildCount();
+					
+					bool flag;
+					for(Graph::type_size c=0; c<childcount; ++c) {
+						child = parent->getChild(c);
+
+						// Checking if last parent trying to update
+						flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
+						
+						if(flag) { // last parent checking child
+							locallist_next_.push_back(child); // add child node at end of queue
+							child->setValue(currentvalue); // set value of child node to parentvalue
+						} 
+				
+					}
+
 				}
-				stackToFast();
+				// std::cout << "STUCKDO thread - " << tid_ << "\nstack" << locallist_current_stack_ << "fast" <<  locallist_current_fast_;
+				if(tid_!=0) stackToFast(); // TODO: remove if
 			}
-			// TODO: trysteal goes here, but don't steal for now
+			
 			np_.setDoneWithSyncVal(tid_);
-			// if(trySteal()!=nullptr);
+			np_.countDone(); // TODO: move countdone below termination criterion
+
+			// Try to steal while others are still busy
+			if(!np_.allDoneWithSyncVal()) {
+				analysis::type_threadcount stealindex = rand()%np_.getNThreads();
+				Graph::type_nodeptr newnode = np_.tryStealFrom(stealindex);
+				if(newnode!=nullptr) {
+					locallist_current_fast_.push_back(newnode);
+				}
+
+			}
+
 		} while(!np_.allDoneWithSyncVal());
 
 		// Collect local lists in global list
 		gatherlist(np_.globalsolution_,solution_local_,tid_);
 
-		/*
-		
-		
-
-		} else {
-		}
-
-		++currentvalue; // increase value for child nodes
-		childcount = parent->getChildCount();
-
-		bool flag;
-		for(type_size c=0; c<childcount; ++c) {
-			child = parent->getChild(c);
-
-			// Checking if last parent trying to update
-			flag = child->requestValueUpdate(); // IMPORTANT: control atomicity using OPTIMISTIC flag
-			
-			if(flag) { // last parent checking child
-				currentnodes_local.push_back(child); // add child node at end of queue
-				child->setValue(currentvalue); // set value of child node to parentvalue
-			} 
-	
-		}
-
-		
-			
-	*/
 
 	}
 
@@ -445,11 +412,6 @@ namespace myworksteal {
 
 
 void Graph::topSort() {
-
-	std::cout << "\n\n\nRUNNING IN MODE: d-" << DEBUG << " - v-" << VERBOSE << "\n\n\n";
-	#if DEBUG>0 || VERBOSE>0
-	std::cout << "\n\n\nRUNNING IN DEBUG MODE\n\n\n";
-	#endif // DEBUG>0 || VERBOSE>0
 
 	myworksteal::nodePool nodepool(this->A_.nThreads_,this->solution_);
 
@@ -470,8 +432,6 @@ void Graph::topSort() {
 	std::cout << nodepool;
 	#endif // DEBUG>0 || VERBOSE>0
 
-
 	nodepool.workparallel(*this);
-
 
 }
