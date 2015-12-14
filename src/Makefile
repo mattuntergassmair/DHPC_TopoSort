@@ -4,8 +4,8 @@
 
 ## Variables from command line
 OPT=0 #-DOPTIMISTIC
-DBG=0 #-DDEBUG
-VERB=0 #-DVERBOSE
+DBG=1 #-DDEBUG
+VERB=1 #-DVERBOSE
 AN=0 #-DENABLE_ANALYSIS
 
 
@@ -19,7 +19,7 @@ INCDIR= -I$(BOOST_INCLUDEDIR)
 # FLAGS = -mmic -fopenmp -std=c++11 # XeonPhi
 
 
-ALGORITHMS = serial omp_tasks omp_locallist omp_bitset #omp_basic  # --> serial
+ALGORITHMS = serial omp_tasks omp_locallist omp_bitset omp_worksteal #omp_basic  # --> serial
 EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
 OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 
@@ -31,10 +31,7 @@ GRAPHIMG_FILES := $(GRAPHSRC_FILES:.gv=.png)
 all: FLAGS += -DVERBOSE=$(VERB) -DDEBUG=$(DBG) -DOPTIMISTIC=$(OPT) -DENABLE_ANALYSIS=$(AN)
 all: $(EXECUTABLES)
 
-
-
-
-
+# Attention: this messes with flags that are set above. Use with care, i.e. make clean first
 debug: FLAGS += -g -O0
 debug: DBG=2
 debug: VERB=1
@@ -49,13 +46,8 @@ release: VERB=0
 release: all
 
 
-
-
-
-
 $(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
 	$(COMPILER) $(FLAGS) $^ -o $@ $(INCDIR) $(LIBDIR) $(LIBS)
-
 
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c $< $(INCDIR) $(LIBDIR) $(LIBS)
@@ -78,7 +70,7 @@ analysis.o: analysis.cpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c analysis.cpp $(INCDIR) $(LIBDIR) $(LIBS)
 
 run: all
-	./toposort_omp_locallist.exe
+	./toposort_omp_worksteal.exe s 1000000
 
 viz: $(GRAPHIMG_FILES)
 	display $(GRAPHIMG_FILES);

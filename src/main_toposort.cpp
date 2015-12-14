@@ -8,7 +8,7 @@
 int main(int argc, char* argv[]) {
     if(argc == 2 && std::string(argv[1]) == "--help"){
         std::cout << "Usage: ./toposort_xyz.exe [graphType = s [,N=5000 [,destDir=results [,edgeFillDegree = 2.7 [,p = 0.5, q = 0.7]]]]]" << std::endl;
-        std::cout << "Graph Types: t: Test graphs (Paper and small Random)\ts: Software\tr: Random \tc: Chain\tm: Mulitchain" << std::endl;
+        std::cout << "Graph Types: p: Paper graph\tt: Test graphs (Paper and small Random)\ts: Software\tr: Random \tc: Chain\tm: Mulitchain" << std::endl;
         return 0;
     }
     // Standard values
@@ -38,6 +38,17 @@ int main(int argc, char* argv[]) {
 	visualbarrier = "\n\n\n" + visualbarrier + "\n\n";
 
     switch (graphType){
+		case 'p':
+		{
+            // PAPER GRAPH - Testing
+            std::cout << visualbarrier;
+            Graph testgraph_paper(9);
+            testgraph_paper.connect(Graph::PAPER); // Constructing graph from paper
+            testgraph_paper.time_topSort();
+            testgraph_paper.checkCorrect(true);
+            testgraph_paper.viz("paper");
+            break;
+		}
         case 't':
         {
             // PAPER GRAPH - Testing

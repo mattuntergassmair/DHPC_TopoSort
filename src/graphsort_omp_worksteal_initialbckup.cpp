@@ -119,16 +119,21 @@ namespace myworksteal {
 					// Naive:
 					Graph::type_nodelist::const_iterator start = locallist_current_stack_.begin();
 					Graph::type_nodelist::const_iterator end = locallist_current_stack_.begin();
-					Graph::type_size listsize = locallist_current_stack_.size();
-					if(listsize!=0) {
-						std::advance(end,roundupdiv(listsize,2));
+					if(end != locallist_current_stack_.end()) {
+						// TODO: make this faster
+						std::advance(end,1); // take one element only - this will be slow, but hopefully correct
 						locallist_current_fast_.splice(locallist_current_fast_.end(),locallist_current_stack_,start,end);
 					}
 				}
 			}
 			
 			inline bool noMoreNodes() {
-				return (locallist_next_.empty() && locallist_current_fast_.empty() && locallist_current_stack_.empty());
+				// TODO: assertions might be to strong here
+				// assert(locallist_current_fast_.empty());
+				// assert(locallist_current_stack_.empty());
+				// return !locallist_next_.empty();
+				// NB: this might not be threadsafe, imagine someone is stealing ...
+				return (locallist_current_fast_.empty() && locallist_current_stack_.empty() && locallist_next_.empty());
 			}
 
 
@@ -185,35 +190,47 @@ namespace myworksteal {
 
 			// PRE:
 			// POST:	doneWithSyncVal_[i] = 0 for all i
-			inline void setUndoneAll() {
-				std::fill(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),0);
+			void setUndoneAll() {
+				for(auto d : doneWithSyncVal_) d = 0;
 			}
 
-			inline void doneWithStack(type_threadcount i) {
-				// #pragma omp critical // TODO: not sure if this is necessary
-				doneWithSyncVal_[i] = 1;
+			// TODO: check if this works well
+			void doneWithStack(type_threadcount i) {
+				#pragma omp critical // TODO: not sure if this is necessary
+				{
+					doneWithSyncVal_[i] = 1;
+					nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0));
+				}
+			}
+			void doneWithSyncVal(type_threadcount i) {
+				#pragma omp critical // TODO: not sure if this is necessary
+				{
+					doneWithSyncVal_[i] = 2;
+					nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0));
+				}
 			}
 
-			inline void doneWithSyncVal(type_threadcount i) {
-				// #pragma omp critical // TODO: not sure if this is necessary
-				doneWithSyncVal_[i] = 2;
-			}
-
-			inline type_threadcount getNThreads() const {
+			type_threadcount getNThreads() const {
 				return nThreads_;
 			}
 
-			inline type_threadcount countDone() { 
-				nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0)); 
+			type_threadcount countDone() { 
+				// TODO: this can be removed cause impelemented above - just safety for now
+				type_threadcount c = 0;
+				for(auto x : doneWithSyncVal_) {
+					c += x;
+				}
+				nDoneWithSyncVal_ = c;
+				// nDoneWithSyncVal_ = std::accumulate(doneWithSyncVal_.begin(),doneWithSyncVal_.end(),type_threadcount(0)); 
 				assert(nDoneWithSyncVal_<=2*nThreads_);
 				return nDoneWithSyncVal_;
 			}
 
-			inline bool allDoneWithStack() const {
+			bool allDoneWithStack() const {
 				return nDoneWithSyncVal_>=nThreads_;
 			}
 
-			inline bool allDoneWithSyncVal() const {
+			bool allDoneWithSyncVal() const {
 				assert(nDoneWithSyncVal_<=2*nThreads_);
 				return nDoneWithSyncVal_>=2*nThreads_;
 			}
@@ -226,7 +243,7 @@ namespace myworksteal {
 				nodelists_[tid].insert(ndptr);
 			}
 
-			inline bool sortingComplete() {
+			bool sortingComplete() {
 				for(auto nd : nodelists_) {
 					if(!nd.noMoreNodes()) return false;
 				}
@@ -237,11 +254,10 @@ namespace myworksteal {
 			Graph::type_nodelist& workparallel(Graph& graph) {
 				
 				// SHARED VARIABLES
-				Graph::type_size syncVal = 1;
-				bool notdone = true;
+				Graph::type_size syncVal = 0;
 
 				// Spawn OMP threads
-				#pragma omp parallel shared(syncVal,notdone)
+				#pragma omp parallel shared(syncVal)
 				{
 
 					// TODO: check how this runs on cluster:
@@ -256,8 +272,17 @@ namespace myworksteal {
 
 					do {
 
+						#pragma omp single nowait
+						setUndoneAll();
+					
+						#pragma omp single nowait
+						++syncVal;
+
+						#pragma omp barrier
+			
 						#pragma omp critical 
 						nodelists_[threadID].nextSyncVal(syncVal);
+
 						#pragma omp barrier
 						
 						#if VERBOSE>0
@@ -265,19 +290,11 @@ namespace myworksteal {
 							std::cout << "\nCurrent syncVal = " << syncVal;
 						#endif // VERBOSE>0
 	
+						#pragma omp barrier
 						nodelists_[threadID].work(threadID);
 						#pragma omp barrier
 
-						#pragma omp single
-						notdone = !sortingComplete();
-						
-						#pragma omp single nowait
-						setUndoneAll();
-						
-						#pragma omp single nowait
-						++syncVal;
-
-					} while(notdone);
+					} while(!sortingComplete());
 				
 				} // end of OMP parallel
 				#pragma omp single

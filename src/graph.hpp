@@ -27,8 +27,8 @@ class Graph {
         
         explicit Graph(unsigned N)
 			:	N_(N)
-			,	maxDiam_(0)
 			,	nEdges_(0)
+			,	depth_(0)
 			,	nodes_(type_nodearray(N_))
 			,	A_()
 		{
@@ -53,7 +53,7 @@ class Graph {
 			this->topSort();
 			A_.stoptotaltiming();
             A_.depth_ = depth_;
-			std::cout << "\n\nMaximum Diameter: " << maxDiam_;
+			std::cout << "\n\nMaximum Diameter: " << depth_;
 			std::cout << "\n\n\tSorting completed in:\t" << std::setprecision(8) << std::fixed << A_.time_Total_ << " sec\n\n";
 			return A_.time_Total_;
 		}
@@ -80,17 +80,20 @@ class Graph {
         void printSolution();
 		void viz(std::string) const;
         void dumpXmlAnalysis(std::string relativeDir);
+        void setDepth(type_size d) {
+        	depth_ = d;
+        }
         
+        type_solution solution_; // TODO: needed to make this public, maybe with better design it can be made private again
+
 	protected:
 
         void connectRandom(int nEdges);
 		type_size N_; // size of graph, == W
 		type_size nEdges_; // number of edges
-		type_size maxDiam_; // maximal diameter, != D
         type_size depth_; // depth of graph, == D
         std::string graphName_;
 		type_nodearray nodes_;
-        type_solution solution_;
         analysis A_;
 
 };
