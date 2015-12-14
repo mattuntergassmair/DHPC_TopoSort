@@ -68,7 +68,7 @@ analysis.o: analysis.cpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c analysis.cpp $(LIBS)
 
 run: all
-	./toposort_omp_worksteal.exe 'p'
+	./toposort_omp_worksteal.exe s 1000000
 
 viz: $(GRAPHIMG_FILES)
 	display $(GRAPHIMG_FILES);
