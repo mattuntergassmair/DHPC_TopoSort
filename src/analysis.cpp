@@ -118,15 +118,16 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     }
     
     // Quantiles of front size
-    std::sort(frontSizes_.begin(), frontSizes_.end());
-    output << "\t\t\t<frontSizes>\n";
-    int n_quantiles = 10;
-    for(int i = 0; i < n_quantiles; ++i){
-        output << "\t\t\t\t<q" << i*n_quantiles << ">" << frontSizes_[i * frontSizes_.size() / n_quantiles] << "</q" << i*n_quantiles << ">\n";
+    if(frontSizes_.size() != 0){
+        std::sort(frontSizes_.begin(), frontSizes_.end());
+        output << "\t\t\t<frontSizes>\n";
+        int n_quantiles = 10;
+        for(int i = 0; i < n_quantiles; ++i){
+            output << "\t\t\t\t<q" << i*n_quantiles << ">" << frontSizes_[i * frontSizes_.size() / n_quantiles] << "</q" << i*n_quantiles << ">\n";
+        }
+        output << "\t\t\t\t<q100>" << frontSizes_.back() << "</q100>\n";
+        output << "\t\t\t</frontSizes>\n";
     }
-    output << "\t\t\t\t<q100>" << frontSizes_.back() << "</q100>\n";
-    output << "\t\t\t</frontSizes>\n";
-    
     #endif
     
     output << "\t\t</graph>\n";
