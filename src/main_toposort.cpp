@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
 
             // RANDOM GRAPH - SMALL
             std::cout << visualbarrier;
-            Graph testgraph_random_small(N);
+            Graph testgraph_random_small(40);
             testgraph_random_small.connect(Graph::RANDOM_LIN, edgeFillDegree);
             testgraph_random_small.time_topSort();
             testgraph_random_small.checkCorrect(false);
