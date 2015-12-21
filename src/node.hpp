@@ -22,6 +22,7 @@ class Node {
 			, childcount_(0)
 			, parcount_(0)
 			, childnodes_(type_nodecontainer(childcount_))
+            , taken_(false)
 		{
 			// NOTE: value = 1 indicates that a node is a source node
 			// (no other nodes pointing to it)
@@ -59,6 +60,16 @@ class Node {
 			assert(parcount_>=0);
 			return (parcount_ == 0);
 		}
+#elif OPTIMISTIC == 2
+		inline bool requestValueUpdate() {
+			#pragma omp atomic
+			--parcount_;
+			assert(parcount_>=0);
+            bool swapped = false;
+            if(parcount_ == 0)
+                swapped = __sync_bool_compare_and_swap(&taken_, false, true);
+			return swapped;
+		}
 #else
 		inline bool requestValueUpdate() {
 			bool lastone;
@@ -82,6 +93,7 @@ class Node {
 		
 	protected:
 		unsigned parcount_;
+        bool taken_;
 
 };
 
