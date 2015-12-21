@@ -29,6 +29,7 @@ void Graph::topSort() {
 		const int threadID = omp_get_thread_num();
 		unsigned childcount = 0;
 		unsigned currentvalue = 0;
+		type_nodelist solution_local;
 
 		// Distribute Root Nodes among Threads
         #pragma omp for
@@ -60,12 +61,7 @@ void Graph::topSort() {
 				currentvalue = parent->getValue();
                 assert(currentvalue == syncVal);
 
-                A_.starttiming(analysis::SOLUTIONPUSHBACK);
-                #pragma omp critical
-                {
-                    solution_.push_back(parent); // IMPORTANT: this must be atomic
-                }
-                A_.stoptiming(threadID, analysis::SOLUTIONPUSHBACK);
+                solution_local.push_back(parent);
                 isCurrentNode[idx] = false;// remove current node - already visited
 
 				++currentvalue; // increase value for child nodes
@@ -85,7 +81,13 @@ void Graph::topSort() {
 						child->setValue(currentvalue); // set value of child node to parentvalue
 					} 
 				}
-			}// end for => one frontier completed
+			}// end for => one frontier completed       
+            A_.starttiming(analysis::SOLUTIONPUSHBACK);
+            #pragma omp critical
+            {
+                solution_.splice(solution_.end(),solution_local);
+            }
+            A_.stoptiming(threadID, analysis::SOLUTIONPUSHBACK);            
 			#pragma omp single
             {
                 ++syncVal;                
