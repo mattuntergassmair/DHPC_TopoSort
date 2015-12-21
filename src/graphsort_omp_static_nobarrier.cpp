@@ -7,31 +7,7 @@
 using type_threadcount = analysis::type_time;
 
 std::string Graph::getName(){
-    return "nobarrier";
-}
-
-// PRE:		
-// POST:	locallist is appended to globallist, locallist is empty
-inline void gatherlist(Graph::type_nodelist& globallist, Graph::type_nodelist& locallist, analysis::type_threadcount id) {
-	#if DEBUG >= 2
-		#pragma omp single
-		std::cout << "\nBEFOREGATHER -\tglobal:" << globallist;
-		#pragma omp barrier
-		#pragma omp critical
-		std::cout << "\nBEFOREGATHER -\tthread " << id << " :" << locallist;
-		#pragma omp barrier
-	#endif // DEBUG >= 2
-	
-	#pragma omp critical
-	{
-		globallist.splice(globallist.end(),locallist);
-	}
-	assert(locallist.empty());
-
-	#if DEBUG >= 2
-		#pragma omp single
-		std::cout << "\nAFTERGATHER -\tglobal:" << globallist;
-	#endif // DEBUG >= 2
+    return "static_nobarrier";
 }
 
 // PRE:		globallist has all nodes that need to be distributed, locallist is empty
@@ -99,7 +75,7 @@ void Graph::topSort() {
 		const int threadID = omp_get_thread_num();
 		type_nodelist currentnodes_local;
 		type_nodelist solution_local;
-		
+        
 		type_nodeptr parent;
 		type_nodeptr child;
 		type_size childcount = 0;
@@ -121,10 +97,11 @@ void Graph::topSort() {
                 A_.frontSizeHistogram(nCurrentNodes);
 			}
 			#pragma omp barrier // make sure that nCurrentNodes is set
-		
 			A_.starttiming(analysis::CURRENTSCATTER);
 			scatterlist(currentnodes,currentnodes_local,roundupdiv(nCurrentNodes,nThreads), threadID);
 			A_.stoptiming(threadID,analysis::CURRENTSCATTER);
+
+
 
 			while(!currentnodes_local.empty()) {
 				
