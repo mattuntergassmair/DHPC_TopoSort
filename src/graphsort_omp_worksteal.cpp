@@ -162,7 +162,7 @@ namespace myworksteal {
 		public:
 		
 			// PRE: must call constructor single threaded
-			nodePool(Graph::type_size nThreads, Graph::type_nodelist& sollist, analysis A)
+			nodePool(Graph::type_size nThreads, Graph::type_nodelist& sollist, analysis& A)
 				: nThreads_(nThreads)
 				, globalsolution_(sollist)
 				, A_(A)
