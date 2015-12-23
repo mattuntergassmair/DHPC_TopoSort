@@ -3,10 +3,11 @@
 #make debug DBG=1 OPT=1
 
 ## Variables from command line
-OPT=0 #-DOPTIMISTIC
-DBG=1 #-DDEBUG
-VERB=1 #-DVERBOSE
-AN=0 #-DENABLE_ANALYSIS
+## Watch out for trailing whitespace !!!
+OPT=0#-DOPTIMISTIC
+DBG=1#-DDEBUG
+VERB=1#-DVERBOSE
+AN=0#-DENABLE_ANALYSIS
 
 
 ## Compiler and standard flags
@@ -20,7 +21,8 @@ INCDIR= -I$(BOOST_INCLUDEDIR)
 
 
 ALGORITHMS = serial omp_tasks omp_locallist omp_bitset omp_worksteal omp_dynamic_nobarrier omp_bitset_global #omp_static_nobarrier omp_basic  # --> serial
-EXECUTABLES = $(addprefix toposort_, $(addsuffix .exe, $(ALGORITHMS))) # --> toposort_serial.exe
+SUFFIX = _opt$(OPT)_an$(AN)
+EXECUTABLES = $(addprefix toposort_, $(ALGORITHMS)) # --> toposort_serial #.exe is appended later
 OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
 
 GRAPHSRC_DIR := graph_output
@@ -46,8 +48,8 @@ release: VERB=0
 release: all
 
 
-$(EXECUTABLES): toposort_%.exe: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
-	$(COMPILER) $(FLAGS) $^ -o $@ $(INCDIR) $(LIBDIR) $(LIBS)
+$(EXECUTABLES): toposort_%: graphsort_%.o main_toposort.o graph.o graphdoc.o node.o analysis.o
+	$(COMPILER) $(FLAGS) $^ -o $@$(SUFFIX).exe $(INCDIR) $(LIBDIR) $(LIBS)
 
 main_toposort.o: main_toposort.cpp graph.hpp node.hpp analysis.hpp
 	$(COMPILER) $(FLAGS) -c $< $(INCDIR) $(LIBDIR) $(LIBS)
@@ -86,6 +88,8 @@ sync_euler:
 sync_xeon:
 	../sync_xeon.sh
 
-
 clean:
-	rm -rf $(EXECUTABLES) *.o
+	rm -rf *.o
+
+clean_all:
+	rm -rf *.exe *.o
