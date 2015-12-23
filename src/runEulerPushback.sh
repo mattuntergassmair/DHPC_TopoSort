@@ -13,7 +13,8 @@ THREADS_MAX=$2
 NREP=1
 
 # Executables
-declare -a EXE=('./toposort_omp_bitset_opt1_an0' './toposort_omp_bitset_global_opt1_an0')
+declare -a EXE=('./toposort_omp_bitset_opt1_an0.exe'
+                './toposort_omp_bitset_global_opt1_an0.exe')
 declare -a GRAPH_TYPES=('m')
 NCHAINS=10000
 RESULTS_DIR='resultsPushback'
@@ -37,8 +38,10 @@ do
 		for gt in "${GRAPH_TYPES[@]}"
 		do
 			for exe in "${EXE[@]}"
-			# Strong scaling
-			eval "./$exe $gt $N_SSC $RESULTS_DIR 2.7 0.3 0.7 $NCHAINS"
+			do
+				# Strong scaling
+				eval "./$exe $gt $N_SSC $RESULTS_DIR 2.7 0.3 0.7 $NCHAINS"
+			done
 		done
 	done
 done

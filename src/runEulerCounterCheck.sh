@@ -13,7 +13,12 @@ THREADS_MAX=$2
 NREP=1
 
 # Executables
-declare -a EXE=('./toposort_omp_locallist_opt0_an0.exe' './toposort_omp_locallist_opt2_an0' './toposort_omp_bitset_opt1_an0' './toposort_omp_bitset_opt0_an0' './toposort_omp_dynamic_nobarrier_opt0_an0' './toposort_omp_dynamic_nobarrier_opt2_an0')
+declare -a EXE=('./toposort_omp_locallist_workstealing_opt0_an0.exe'
+                './toposort_omp_locallist_workstealing_opt2_an0.exe'
+                './toposort_omp_bitset_opt0_an0.exe'
+                './toposort_omp_bitset_opt1_an0.exe'
+                './toposort_omp_dynamic_nobarrier_opt0_an0.exe'
+                './toposort_omp_dynamic_nobarrier_opt2_an0.exe')
 declare -a GRAPH_TYPES=('r')
 NODE_DEGREE=30
 RESULTS_DIR='resultsCounterCheck'
@@ -37,8 +42,10 @@ do
 		for gt in "${GRAPH_TYPES[@]}"
 		do
 			for exe in "${EXE[@]}"
-			# Strong scaling
-			eval "./$exe $gt $N_SSC $RESULTS_DIR $NODE_DEGREE"
+			do
+				# Strong scaling
+				eval "./$exe $gt $N_SSC $RESULTS_DIR $NODE_DEGREE"
+			done
 		done
 	done
 done
