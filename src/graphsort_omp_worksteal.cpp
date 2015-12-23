@@ -357,7 +357,7 @@ namespace myworksteal {
 						} 
 				
 					}
-		
+                    np_.A_.incrementProcessedEdges(tid_, childcount);
 					np_.A_.incrementProcessedNodes(tid_);
 
 				}

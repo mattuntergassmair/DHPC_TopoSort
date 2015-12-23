@@ -126,6 +126,9 @@ public class XmlParser {
                         case "processedNodes":
                             thread.setProcessedNodes(Integer.parseInt(threadChild.getTextContent()));
                             break;
+                        case "processedEdges":
+                            thread.setProcessedEdges(Integer.parseInt(threadChild.getTextContent()));
+                            break;
                         case "timings":
                             parseTimings(threadChild, thread);
                             break;

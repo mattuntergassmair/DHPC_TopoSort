@@ -11,6 +11,7 @@ public class Thread {
 
     private int id;
     private int processedNodes;
+    private int processedEdges;
     private Map<String,Double> timings;
     
     public Thread() {
@@ -25,6 +26,10 @@ public class Thread {
         return processedNodes;
     }
 
+    public int getProcessedEdges() {
+        return processedEdges;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -32,8 +37,12 @@ public class Thread {
     public void setProcessedNodes(int processedNodes) {
         this.processedNodes = processedNodes;
     }
-    
-     public void addTiming(String name, double value) {
+
+    public void setProcessedEdges(int processedEdges) {
+        this.processedEdges = processedEdges;
+    }
+
+    public void addTiming(String name, double value) {
         this.timings.put(name, value);
     }
     

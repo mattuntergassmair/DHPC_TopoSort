@@ -29,6 +29,7 @@ struct analysis {
 	analysis()
 		:	count_InitialNodes_(type_countmap()) // still necessary? 
 		,	count_ProcessedNodes_(type_countmap()) // set in function
+		,	count_ProcessedEdges_(type_countmap()) // set in function
 		,	count_LastSyncVal_(type_countmap()) // still necessary?
 		,	time_Total_(0)
 		,	nThreads_(0) // set in function
@@ -46,12 +47,14 @@ struct analysis {
 	
 		// TODO: Probably count_InitialNodes_ and count_LastSyncVal_ can be removed
 		count_ProcessedNodes_ = type_countmap(nThreads_);
+		count_ProcessedEdges_ = type_countmap(nThreads_);
 		timings_ = type_timingvector(N_TIMECAT,type_timingmap(nThreads_));
 	}
 	
 
 	type_countmap count_InitialNodes_;		// counts how many nodes each thread has initially
 	type_countmap count_ProcessedNodes_;	// counts how many nodes each thread has processed in total
+	type_countmap count_ProcessedEdges_;	// counts how many nodes each thread has processed in total
 	type_countmap count_LastSyncVal_;		// keeps track of the last sync value of each thread
 	type_time time_Total_;
 	type_clockvector clocks_;
@@ -85,6 +88,11 @@ struct analysis {
 	inline void incrementProcessedNodes(type_threadcount tid) { // TODO: check if this can be used instead of processednodes (performance??)
 		assert(tid>=0 && tid<nThreads_);
 		++count_ProcessedNodes_[tid];
+	}
+	
+    inline void incrementProcessedEdges(type_threadcount tid, type_size nEdges) { // TODO: check if this can be used instead of processednodes (performance??)
+		assert(tid>=0 && tid<nThreads_);
+		count_ProcessedEdges_[tid] += nEdges;
 	}
 
     inline void frontSizeHistogram(type_size frontSize) {
@@ -157,6 +165,7 @@ struct analysis {
 	inline void initialnodes(type_threadcount tid, type_size nNodes) {}
 	inline void processednodes(type_threadcount tid, type_size nNodes) {}
 	inline void incrementProcessedNodes(type_threadcount tid) {} // TODO: check if this can be used instead of processednodes (performance??)
+    inline void incrementProcessedEdges(type_threadcount tid, type_size nEdges){}
     inline void frontSizeHistogram(type_size frontSize) {}
 	inline void starttotaltiming();
 	inline void starttiming(timecat c) {}

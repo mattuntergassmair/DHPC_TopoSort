@@ -151,7 +151,7 @@ void Graph::topSort() {
 
 				++currentvalue; // increase value for child nodes
 				childcount = parent->getChildCount();
-
+                A_.incrementProcessedEdges(threadID, childcount);
 				bool flag;
 				for(type_size c=0; c<childcount; ++c) {
 					child = parent->getChild(c);
