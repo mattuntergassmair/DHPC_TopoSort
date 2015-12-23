@@ -117,8 +117,8 @@ namespace myworksteal {
 				{
 					// TODO: make better
 					// Naive:
-					Graph::type_nodelist::const_iterator start = locallist_current_stack_.begin();
-					Graph::type_nodelist::const_iterator end = locallist_current_stack_.begin();
+					Graph::type_nodelist::iterator start = locallist_current_stack_.begin();
+					Graph::type_nodelist::iterator end = locallist_current_stack_.begin();
 					Graph::type_size listsize = locallist_current_stack_.size();
 					if(listsize!=0) {
 						std::advance(end,roundupdiv(listsize,2));
