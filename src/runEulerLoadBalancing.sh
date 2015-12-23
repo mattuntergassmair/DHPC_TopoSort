@@ -13,15 +13,11 @@ THREADS_MAX=$2
 NREP=1
 
 # Executables
-declare -a EXE=('./toposort_omp_worksteal_opt0_an0.exe'
-                './toposort_omp_worksteal_opt2_an0.exe'
-                './toposort_omp_bitset_opt0_an0.exe'
-                './toposort_omp_bitset_opt1_an0.exe'
-                './toposort_omp_dynamic_nobarrier_opt0_an0.exe'
-                './toposort_omp_dynamic_nobarrier_opt2_an0.exe')
-declare -a GRAPH_TYPES=('r')
-NODE_DEGREE=30
-RESULTS_DIR='resultsCounterCheck'
+declare -a EXE=('./toposort_omp_worksteal_opt2_an1.exe' 
+                './toposort_omp_bitset_opt1_an1.exe'
+                './toposort_omp_dynamic_nobarrier_opt2_an1.exe')
+declare -a GRAPH_TYPES=('s')
+RESULTS_DIR='resultsLoadBalancing'
 
 if [ ! -d "$RESULTS_DIR" ]; then
 	mkdir "$RESULTS_DIR"
@@ -44,10 +40,8 @@ do
 			for exe in "${EXE[@]}"
 			do
 				# Strong scaling
-				eval "./$exe $gt $N_SSC $RESULTS_DIR $NODE_DEGREE"
+				eval "./$exe $gt $N_SSC $RESULTS_DIR"
 			done
 		done
 	done
 done
-
-
