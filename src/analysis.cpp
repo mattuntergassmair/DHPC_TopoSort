@@ -131,7 +131,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
     #endif
     
     output << "\t\t</graph>\n";
-    #if OPTIMISTIC==1
+    #if OPTIMISTIC==1 || OPTIMISTIC==2
     output << "\t\t<optimistic>true</optimistic>\n";
     #else
     output << "\t\t<optimistic>false</optimistic>\n";
