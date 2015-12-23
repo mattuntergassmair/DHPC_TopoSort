@@ -4,7 +4,7 @@
 #include "analysis.hpp"
 
 std::string Graph::getName(){
-    return "bitset";
+    return "bitset_global";
 }
 
 void Graph::topSort() {
@@ -41,7 +41,7 @@ void Graph::topSort() {
                 #pragma omp single
                 A_.frontSizeHistogram(std::count(isCurrentNode.begin() + shiftN, isCurrentNode.begin() + shiftN + N_, true));
             #endif
-            #pragma omp for schedule(dynamic, 1024)
+            #pragma omp for schedule(dynamic, 256)
             for(size_t i = 0; i < N_; ++i){
                 int idx = shift * N_ + i;
                 if(!isCurrentNode[idx])
@@ -50,8 +50,12 @@ void Graph::topSort() {
                 A_.incrementProcessedNodes(threadID);
 
                 auto parent = nodes_[i];
+                
+                A_.starttiming(analysis::SOLUTIONPUSHBACK);
+                #pragma omp critical
+                solution_.push_back(parent);
+                A_.stoptiming(threadID, analysis::SOLUTIONPUSHBACK);            
 
-                solution_local.push_back(parent);
                 isCurrentNode[idx] = false;// remove current node - already visited
 
 				auto childcount = parent->getChildCount();
@@ -69,12 +73,7 @@ void Graph::topSort() {
 					} 
 				}
 			}// end for => one frontier completed       
-            A_.starttiming(analysis::SOLUTIONPUSHBACK);
-            #pragma omp critical
-            {
-                solution_.splice(solution_.end(),solution_local);
-            }
-            A_.stoptiming(threadID, analysis::SOLUTIONPUSHBACK);            
+
 			#pragma omp single
             {
                 shift = (shift+1)%2;
