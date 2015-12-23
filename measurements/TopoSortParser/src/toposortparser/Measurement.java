@@ -149,6 +149,7 @@ public class Measurement {
             output += "\t thread\n";
             output += "\t\t id: " + temp.getId() + "\n";
             output += "\t\t processedNodes: " + temp.getProcessedNodes() + "\n";
+            output += "\t\t processedEdges: " + temp.getProcessedEdges() + "\n";
 
             output += "\t\t timings: \n";
             for (String key : temp.getTimings().keySet()) {

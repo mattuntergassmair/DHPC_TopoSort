@@ -55,7 +55,7 @@ void Graph::topSort() {
                 isCurrentNode[idx] = false;// remove current node - already visited
 
 				auto childcount = parent->getChildCount();
-
+                A_.incrementProcessedEdges(threadID, childcount);
 				for(unsigned c=0; c<childcount; ++c) {
 					auto child = parent->getChild(c);
 

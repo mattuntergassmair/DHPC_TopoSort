@@ -94,6 +94,7 @@ bool analysis::xmlAnalysis(std::string relativeDir){
         output << "\t\t\t\t<timing name=\"currentScatter\">" << timings_[CURRENTSCATTER][i] << "</timing>\n";
         output << "\t\t\t</timings>\n";
         output << "\t\t\t<processedNodes>" << count_ProcessedNodes_[i] << "</processedNodes>\n";
+        output << "\t\t\t<processedEdges>" << count_ProcessedEdges_[i] << "</processedEdges>\n";
         output << "\t\t\t</thread>\n";
     }
     output << "\t\t</threads>\n";

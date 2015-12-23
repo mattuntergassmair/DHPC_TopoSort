@@ -119,11 +119,12 @@ public class DbManager {
             
             stmt = connection.createStatement();
             String sql = "INSERT INTO threads ("
-                    + "measurement_id, thread_id, processed_nodes) "
+                    + "measurement_id, thread_id, processed_nodes, processed_edges) "
                     + "VALUES ("
                     + measurementId + ", "
                     + thread.getId() + ", "
-                    + thread.getProcessedNodes()
+                    + thread.getProcessedNodes() + ", "
+										+ thread.getProcessedEdges()
                     + ");";
 
             stmt.executeUpdate(sql);

@@ -95,6 +95,7 @@ void Graph::topSort() {
             currentnodes_local.pop_front(); // remove current node - already visited
 
             auto childcount = parent->getChildCount();
+            A_.incrementProcessedEdges(threadID, childcount);
             for(type_size c=0; c<childcount; ++c) {
                 auto child = parent->getChild(c);
 
