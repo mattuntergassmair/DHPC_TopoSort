@@ -16,7 +16,7 @@ def getAvgAndVariance(field,wherestring,otherfields=""):
 		querystring = "SELECT {2} AVG({0}), SUM(({0}-sub.field_avg)*({0}-sub.field_avg))/(COUNT()-1) FROM measurements, (SELECT AVG({0}) AS field_avg FROM measurements WHERE {1}) AS sub WHERE {1}".format(field,wherestring,otherfields)
 		# for debugging
 		querystring = "SELECT {2} AVG({0}) FROM measurements WHERE {1}".format(field,wherestring,otherfields)
-		print querystring
+		#print querystring
 		query.execute(querystring)
 		data = query.fetchall()
 		# print "DATA: \n", data
@@ -47,7 +47,9 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 		t = []
 		var_t = []
 		for nt in number_of_threads:
-			where = fixedwhere + " AND number_of_threads={0} AND graph_num_nodes={1}".format(nt[0],s)
+			where = fixedwhere + " AND number_of_threads={0} AND graph_num_nodes={1}".format(nt[0],s[0])
+			if(s[1] != 0):
+				where += " AND graph_num_edges={0}".format(s[1])
 			d = getAvgAndVariance("total_time",where)
 			# print "DATA=\n", d
 			t.append(d[:,0])
@@ -76,37 +78,44 @@ def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 	ax.set_xlabel('OMP number_of_threads', fontsize=fontsize_label)
 	ax.legend(sizes,loc=2,title='Graph size')
 	ax.tick_params(top='off', right='off', length=4, width=1)
-
+	ax.text(0, 0, t[0])
 # Save plots
 	filename = plotdir + "/strongscaling_{0}_gt{1}_opt{2}.pdf".format(algo,graphtype,optim);
 	plt.savefig(filename,format='pdf')
 	plt.show()
-
 	print "Done - File written to " + filename
 
 
-sizes = [1000000]
 # hostname starting with e*
 
-'''
-plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%') 
-plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%') 
-#plotStrongScaling('locallist','CHAIN',sizes,0,'e%') 
-#plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') 
-plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%') 
-plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%') 
-#plotStrongScaling('bitset','CHAIN',sizes,0,'e%') 
-#plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%')
-plotStrongScaling('bitset','SOFTWARE',sizes,1,'e%') 
-plotStrongScaling('bitset','RANDOMLIN',sizes,1,'e%') 
-#plotStrongScaling('bitset','CHAIN',sizes,1,'e%') 
-#plotStrongScaling('bitset','MULTICHAIN',sizes,1,'e%')
-'''
+#counter check
+sizecc = [[1000000, 29999064]]
+plotStrongScaling('worksteal','RANDOMLIN',sizecc,0,'e%') 
+plotStrongScaling('worksteal','RANDOMLIN',sizecc,1,'e%') 
+plotStrongScaling('bitset','RANDOMLIN',sizecc,0,'e%') 
+plotStrongScaling('bitset','RANDOMLIN',sizecc,1,'e%') 
+plotStrongScaling('dynamic_nobarrier','RANDOMLIN',sizecc,0,'e%') 
+plotStrongScaling('dynamic_nobarrier','RANDOMLIN',sizecc,1,'e%') 
 
-plotStrongScaling('locallist','SOFTWARE',[1000000],0,'thinkpad%') 
-plotStrongScaling('locallist','RANDOMLIN',[1000000],0,'thinkpad%') 
-plotStrongScaling('bitset','SOFTWARE',[1000000],0,'thinkpad%') 
-plotStrongScaling('bitset','RANDOMLIN',[1000000],0,'thinkpad%') 
+#pushback
+sizepushback = [[1000000,0]]
+plotStrongScaling('bitset_global','MULTICHAIN1000',sizepushback,1,'e%') 
+plotStrongScaling('bitset','MULTICHAIN1000',sizepushback,1,'e%') 
 
+#barriers
+sizebarriers = [[1000000,0]]
+plotStrongScaling('bitset_global','MULTICHAIN100',sizebarriers,1,'e%') 
+plotStrongScaling('dynamic_nobarrier','MULTICHAIN100',sizebarriers,1,'e%') 
+
+#realistic use case (software graph)
+sizesoftware = [[1000000,0]]
+plotStrongScaling('worksteal','SOFTWARE',sizesoftware,1,'e%') 
+plotStrongScaling('bitset','SOFTWARE',sizesoftware,1,'e%') 
+plotStrongScaling('dynamic_nobarrier','SOFTWARE',sizesoftware,1,'e%') 
+
+#random graph with several sizes
+sizerandom = [[1000000,7999910], [1000000,15999722], [1000000,31998947], [1000000,63995794]]
+plotStrongScaling('bitset','RANDOMLIN',sizerandom,1,'e%') 
+plotStrongScaling('worksteal','RANDOMLIN',sizerandom,1,'e%') 
 
 db.close();
