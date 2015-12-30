@@ -24,8 +24,23 @@ public class TopoSortParser {
 
         DbManager dbManager = new DbManager();
         
-        dbManager.openConnection(true);
-        dbManager.createDatabase();
+        boolean deleteDatabase = true;
+        
+        if (args.length >= 1 && args[0].equals("--noDelete")) {
+            deleteDatabase = false;
+        }
+        
+        dbManager.openConnection(deleteDatabase);
+        
+        if (deleteDatabase) {
+            System.out.println("Started parser in \"delete\" mode:");
+            dbManager.createDatabase();
+        } else {
+            System.out.println("Started parser in \"noDelete\" mode:");
+        }
+        
+        
+        
         int size = files.size();
         
         int fileCounter = 0;
