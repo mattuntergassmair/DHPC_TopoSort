@@ -113,6 +113,7 @@ int main(int argc, char* argv[]) {
             std::cout << visualbarrier;
             Graph testgraph_multichain(N);
             testgraph_multichain.connect(Graph::MULTICHAIN, 0., 0., 0., nChains);
+            testgraph_multichain.setGraphName("MULTICHAIN" + std::to_string(nChains));
             testgraph_multichain.time_topSort();
             testgraph_multichain.checkCorrect(false);
             testgraph_multichain.dumpXmlAnalysis(out_dir);

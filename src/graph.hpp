@@ -83,6 +83,10 @@ class Graph {
         void setDepth(type_size d) {
         	depth_ = d;
         }
+        void setGraphName(std::string name){
+            graphName_ = name;
+        }
+        
         
         type_solution solution_; // TODO: needed to make this public, maybe with better design it can be made private again
 
