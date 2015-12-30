@@ -21,7 +21,7 @@ declare -a EXE=('./toposort_omp_worksteal_opt0_an0.exe'
                 './toposort_omp_dynamic_nobarrier_opt2_an0.exe')
 declare -a GRAPH_TYPES=('r')
 NODE_DEGREE=30
-RESULTS_DIR='resultsCounterCheck'
+RESULTS_DIR='results'
 
 if [ ! -d "$RESULTS_DIR" ]; then
 	mkdir "$RESULTS_DIR"

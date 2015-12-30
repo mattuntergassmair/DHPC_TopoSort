@@ -19,7 +19,7 @@ declare -a EXE=('./toposort_omp_dynamic_nobarrier_opt2_an0.exe'
 								'./toposort_omp_bitset_opt1_an0.exe')
 declare -a GRAPH_TYPES=('m')
 NCHAINS=10000
-RESULTS_DIR='resultsPushback'
+RESULTS_DIR='results'
 
 if [ ! -d "$RESULTS_DIR" ]; then
 	mkdir "$RESULTS_DIR"

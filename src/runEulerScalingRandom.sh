@@ -19,7 +19,7 @@ declare -a EXE=('./toposort_omp_worksteal_opt2_an0.exe'
 SERIAL_EXE='./toposort_serial_opt0_an0.exe'
 declare -a GRAPH_TYPES=('r')
 declare -a NODE_DEGREES=(8 16 32 64)
-RESULTS_DIR='resultsScalingRandom'
+RESULTS_DIR='results'
 
 if [ ! -d "$RESULTS_DIR" ]; then
 	mkdir "$RESULTS_DIR"
