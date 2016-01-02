@@ -4,107 +4,87 @@ import glob
 import re
 import sqlite3
 import colortableau as ct
-from collections import defaultdict
 
-
-plt.style.use('ggplot')
-plotdir = "plots";
+# plt.style.use('ggplot')
+plotdir = "plots/";
 db = sqlite3.connect('measurements.db')
 
 query = db.cursor()
 
-def getPerc(where):
 
-	# subquery = "(SELECT threads.measurement_id AS mid, AVG(timings.value) AS t, timings.name AS category FROM timings INNER JOIN threads ON threads.id=timings.thread_id GROUP BY threads.id, timings.name) AS timingdetail"
-	subquery = "(SELECT threads.measurement_id AS mid, SUM(timings.value) AS t, timings.name AS category FROM timings INNER JOIN threads ON threads.id=timings.thread_id GROUP BY threads.id, timings.name) AS timingdetail"
 
-	querystring = "SELECT timingdetail.category AS cat, AVG(timingdetail.t) AS t_det, AVG(m.total_time) AS t_tot FROM measurements AS m INNER JOIN  " + subquery + " ON m.id=timingdetail.mid WHERE " + where + " AND timingdetail.t>0 GROUP BY m.number_of_threads, timingdetail.category ORDER BY m.number_of_threads, timingdetail.category;"
-	# print querystring
-	query.execute(querystring)
-	data = np.array(query.fetchall())
-	return data
-
-def plotPercGraph(algo,graphtype,size,optim,hostnamelike):
+def getData(field, wherestring):
+	with db:
+		querystring = "SELECT {0} FROM measurements WHERE {1}".format(field,wherestring)
+		query.execute(querystring)
+		data = query.fetchall()
 	
-	fixedwhere = "enable_analysis=1 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND graph_num_nodes={2} AND processors>=number_of_threads AND hostname LIKE '{3}' AND algorithm='{4}'".format(graphtype,optim,size,hostnamelike,algo)
-
-	query.execute("SELECT number_of_threads FROM measurements WHERE " + fixedwhere + " GROUP BY number_of_threads")
-	number_of_threads = np.array(query.fetchall())
-
-	print "Threads:\n", number_of_threads
-
-	if len(number_of_threads) == 0:
-		print "\nNo Data for\n", fixedwhere
-		return None
-
-	percentagedict = defaultdict(list)
-
-	for nt in number_of_threads:
-		where = fixedwhere + " AND number_of_threads={0}".format(nt[0])
-		data = getPerc(where)
-		# print "Data:\n", data
-
-		for i in range(0,data.shape[0]):
-			percentagedict[data[i][0]].append(data[i][1].astype(float))
-
-	orderedlist = sorted(percentagedict.items())
-	cats = [i[0] for i in orderedlist]
-	timefrac = np.array([i[1] for i in orderedlist])
-
-	# Account for time that is not measured
-	timeperc = timefrac
-
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-
-	fontsize_title=12
-	fontsize_label=14
-
-	ax.set_title('Absolute runtime composition\nalgorithm={0}, graphtype={1}, graphsize={2}'.format(algo,graphtype,size), fontsize=fontsize_title)
-	ax.set_ylabel('Runtime [sec]', fontsize=fontsize_label)
-	ax.set_xlabel('number of OMP threads', fontsize=fontsize_label)
-	ax.tick_params(top='off', right='off', length=4, width=1)
-
-	# Creating stacked area chart
-	print "\n\n\n\n\n\n\n\n\n=====================================\nPLOTTING\n"
-	print "NT: ", number_of_threads, " s-", number_of_threads.size
-	print "TC: ", timeperc, " s-", timeperc.size
-	ax.stackplot(number_of_threads.flat,timeperc,edgecolor='white',colors=ct.myBGcolors)
-	
-	plt.xticks(number_of_threads)
-	ax.set_xticklabels(number_of_threads.astype(int).flat);
+	return np.array(data)
 
 
-	ax.margins(0, 0) # Set margins to avoid "whitespace"
+def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel'):
 
-	lgnd = []
-	lbl = []
+	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}'".format(algorithm,optimistic,graphtype,hostnamelike)
 
-	for i in range(0,len(cats)):
-		col = ct.getBGcolor(i)
-		lgnd.append(plt.Rectangle((0,0),1,1,fc=col))
-		lbl.append(cats[i])
+	numthreads = getData('number_of_threads', fixedwhere + 'GROUP BY number_of_threads')
 
-	plt.legend(lgnd,lbl)
+	avgtimings = []
 
-	filename = plotdir + "/" + "timeabs_{0}_gt{1}_s{2}_opt{3}".format(algo,graphtype,size,optim) + ".pdf";
-	plt.savefig(filename,format='pdf')
+	if (np.size(numthreads)==0):
+		return
 
-	plt.show();
+	for nt in numthreads.flat:
+		# print "NUMTHREADS = ", nt
+		where = fixedwhere + 'AND number_of_threads={0}'.format(nt)
+		timings = getData('total_time',where)
+		violin_parts = ax.violinplot(timings,[nt],widths=0.8)
 
-	print "Done - File written to " + filename
+		for pc in violin_parts['bodies']:
+			pc.set_color(ct.getFGcolor(colorindex))
+
+		avgtimings.append(np.mean(timings))
+
+	ax.plot(numthreads,avgtimings[0]/numthreads,'--',color=ct.getBGcolor(colorindex)) # ideal scaling
+	ax.plot(numthreads,avgtimings,'D-',markersize=4,linewidth=1,color=ct.getFGcolor(colorindex),label=linelabel) # connecting dots
 
 
-# hostname starting with e (euler)
-plotPercGraph('locallist','SOFTWARE',1000000,0,'e%',)
-plotPercGraph('locallist','RANDOMLIN',1000000,0,'e%',) 
-#plotPercGraph('locallist','CHAIN',1000000,0,'e%',) 
-#plotPercGraph('locallist','MULTICHAIN',1000000,0,'e%') 
-plotPercGraph('bitset','SOFTWARE',1000000,1,'e%',) 
-plotPercGraph('bitset','RANDOMLIN',1000000,1,'e%',) 
-#plotPercGraph('bitset','CHAIN',1000000,1,'e%',) 
-#plotPercGraph('bitset','MULTICHAIN',1000000,1,'e%') 
 
+
+
+
+
+############################################################
+# Set up Plot and add scaling lines 
+############################################################
+
+##########################
+# Software Graph
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+addAbsTiming(axis=ax, algorithm='locallist', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
+
+addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
+
+addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
+
+addAbsTiming(axis=ax, algorithm='worksteal', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
+
+addAbsTiming(axis=ax, algorithm='worksteal', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+
+plt.title('Absolute Timings of Algorithms')
+
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles,labels)
+ax.legend()
+
+plt.xlabel('Number of threads')
+plt.ylabel('Time [sec]')
+
+ax.minorticks_on()
+
+plt.savefig(plotdir + 'abstimings_comparison_gtSOFTWARE.pdf',format='pdf')
+plt.show()
 
 
 
