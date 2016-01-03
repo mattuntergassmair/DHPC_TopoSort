@@ -72,14 +72,13 @@ addAbsTiming(axis=ax, algorithm='worksteal', optimistic='1', size=1000000, graph
 
 addAbsTiming(axis=ax, algorithm='worksteal', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
 
-plt.title('Absolute Timings of Algorithms')
-
 # handles, labels = ax.get_legend_handles_labels()
 # ax.legend(handles,labels)
 ax.legend()
 
-plt.xlabel('Number of threads')
-plt.ylabel('Time [sec]')
+plt.title('Absolute Timings of Algorithms',fontsize=ct.fontsize_title)
+plt.xlabel('Number of threads',fontsize=ct.fontsize_label)
+plt.ylabel('Time [sec]',fontsize=ct.fontsize_label)
 
 ax.minorticks_on()
 

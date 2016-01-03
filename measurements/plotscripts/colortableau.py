@@ -15,4 +15,10 @@ def getFGcolor(i):
 def getBGcolor(i):
 	return (myBGcolors[i%len(myBGcolors)])
 
+
+
+fontsize_title=14
+fontsize_label=12
+
+
 ##################################################################################

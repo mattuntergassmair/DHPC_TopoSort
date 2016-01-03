@@ -5,108 +5,86 @@ import re
 import sqlite3
 import colortableau as ct
 
-plt.style.use('ggplot')
-plotdir = "plots";
+# plt.style.use('ggplot')
+plotdir = "plots/";
 db = sqlite3.connect('measurements.db')
 
 query = db.cursor()
 
-def getAvgAndVariance(field,wherestring,otherfields=""):
+
+
+def getData(field, wherestring):
 	with db:
-		querystring = "SELECT {2} AVG({0}), SUM(({0}-sub.field_avg)*({0}-sub.field_avg))/(COUNT()-1) FROM measurements, (SELECT AVG({0}) AS field_avg FROM measurements WHERE {1}) AS sub WHERE {1}".format(field,wherestring,otherfields)
-		# for debugging
-		querystring = "SELECT {2} AVG({0}) FROM measurements WHERE {1}".format(field,wherestring,otherfields)
-		print querystring
+		querystring = "SELECT {0} FROM measurements WHERE {1}".format(field,wherestring)
 		query.execute(querystring)
 		data = query.fetchall()
-		# print "DATA: \n", data
-
+	
 	return np.array(data)
 
 
+def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel'):
+
+	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}'".format(algorithm,optimistic,graphtype,hostnamelike)
+
+	numthreads = getData('number_of_threads', fixedwhere + 'GROUP BY number_of_threads')
+
+	avgtimings = []
+
+	if (np.size(numthreads)==0):
+		return
+
+	for nt in numthreads.flat:
+		# print "NUMTHREADS = ", nt
+		where = fixedwhere + 'AND number_of_threads={0}'.format(nt)
+		timings = getData('total_time',where)
+		avgtimings.append(np.mean(timings))
+
+	speedup = avgtimings[0]/avgtimings
+
+	ax.plot(numthreads,speedup,'D-',markersize=4,linewidth=1,color=ct.getFGcolor(colorindex),label=linelabel) # connecting dots
 
 
-def plotStrongScaling(algo,graphtype,sizes,optim,hostnamelike):
 
 
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-
-	fixedwhere = "enable_analysis=0 AND graph_type='{0}' AND debug=0 AND verbose=0 AND optimistic={1} AND processors>=number_of_threads AND hostname LIKE '{2}' AND algorithm='{3}'".format(graphtype,optim,hostnamelike,algo)
-
-	query.execute("SELECT number_of_threads FROM measurements WHERE " + fixedwhere + " GROUP BY number_of_threads")
-	number_of_threads = np.array(query.fetchall())
-	print "Threads:\n", number_of_threads
-
-	if len(number_of_threads) == 0:
-		print "\nNo Data for\n", fixedwhere
-		return None
-
-	color_cnt=0
-	for s in sizes:
-		t = []
-		var_t = []
-		for nt in number_of_threads:
-			where = fixedwhere + " AND number_of_threads={0} AND graph_num_nodes={1}".format(nt[0],s)
-			d = getAvgAndVariance("total_time",where)
-			# print "DATA=\n", d
-			t.append(d[:,0])
-			# var_t.append(d[:,1])
-
-			# Calculating stddev for speedup
-			# stdev_speedup = np.sqrt(np.array(var_t[0]) * np.power((1./np.array(t)),2) + var_t * np.power((-t[0]/np.power(t,2)),2))
 
 
-		speedup = t[0]/t;
-		# print "TIME\n", t
-		# print "SPEEDUP\n", speedup
 
-		ax.plot(number_of_threads,speedup,'*-',markersize=10,linewidth=2.0,c=ct.getFGcolor(color_cnt))
-		# ax.errorbar(number_of_threads,speedup,yerr=stdev_speedup,fmt='d-',markersize=3)
-		color_cnt+=1
+############################################################
+# Set up Plot and add scaling lines 
+############################################################
 
-	perfectspeedup = np.linspace(1,max(number_of_threads))
-	ax.plot(perfectspeedup,perfectspeedup,'r--',label='perfectspeedup')
-
-	fontsize_title=12
-	fontsize_label=14
-
-	ax.set_title('Strong scaling\nalgorithm={0}, graphtype={1}'.format(algo,graphtype), fontsize=fontsize_title)
-	ax.set_ylabel('Speedup', fontsize=fontsize_label)
-	ax.set_xlabel('OMP number_of_threads', fontsize=fontsize_label)
-	ax.legend(sizes,loc=2,title='Graph size')
-	ax.tick_params(top='off', right='off', length=4, width=1)
-
-# Save plots
-	filename = plotdir + "/strongscaling_{0}_gt{1}_opt{2}.pdf".format(algo,graphtype,optim);
-	plt.savefig(filename,format='pdf')
-	plt.show()
-
-	print "Done - File written to " + filename
+##########################
+# Software Graph
+fig = plt.figure()
+ax = fig.add_subplot(111)
 
 
-sizes = [1000000]
-# hostname starting with e*
+addStrongScaling(axis=ax, algorithm='locallist', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
 
-'''
-plotStrongScaling('locallist','SOFTWARE',sizes,0,'e%') 
-plotStrongScaling('locallist','RANDOMLIN',sizes,0,'e%') 
-#plotStrongScaling('locallist','CHAIN',sizes,0,'e%') 
-#plotStrongScaling('locallist','MULTICHAIN',sizes,0,'e%') 
-plotStrongScaling('bitset','SOFTWARE',sizes,0,'e%') 
-plotStrongScaling('bitset','RANDOMLIN',sizes,0,'e%') 
-#plotStrongScaling('bitset','CHAIN',sizes,0,'e%') 
-#plotStrongScaling('bitset','MULTICHAIN',sizes,0,'e%')
-plotStrongScaling('bitset','SOFTWARE',sizes,1,'e%') 
-plotStrongScaling('bitset','RANDOMLIN',sizes,1,'e%') 
-#plotStrongScaling('bitset','CHAIN',sizes,1,'e%') 
-#plotStrongScaling('bitset','MULTICHAIN',sizes,1,'e%')
-'''
+addStrongScaling(axis=ax, algorithm='bitset', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
 
-plotStrongScaling('locallist','SOFTWARE',[1000000],0,'thinkpad%') 
-plotStrongScaling('locallist','RANDOMLIN',[1000000],0,'thinkpad%') 
-plotStrongScaling('bitset','SOFTWARE',[1000000],0,'thinkpad%') 
-plotStrongScaling('bitset','RANDOMLIN',[1000000],0,'thinkpad%') 
+addStrongScaling(axis=ax, algorithm='bitset', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
+
+addStrongScaling(axis=ax, algorithm='worksteal', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
+
+addStrongScaling(axis=ax, algorithm='worksteal', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+
+ax.plot(range(1,24),range(1,24),'r--') # ideal scaling
+
+
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles,labels)
+ax.legend()
+
+plt.title('Absolute Timings of Algorithms',fontsize=ct.fontsize_title)
+plt.xlabel('Number of threads',fontsize=ct.fontsize_label)
+plt.ylabel('Speedup',fontsize=ct.fontsize_label)
+
+ax.minorticks_on()
+
+plt.savefig(plotdir + 'strongscaling_gtSOFTWARE.pdf',format='pdf')
+plt.show()
+
 
 
 db.close();
