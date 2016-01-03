@@ -24,9 +24,9 @@ def getData(field, wherestring):
 
 def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel'):
 
-	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}'".format(algorithm,optimistic,graphtype,hostnamelike)
+	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4}".format(algorithm,optimistic,graphtype,hostnamelike,size)
 
-	numthreads = getData('number_of_threads', fixedwhere + 'GROUP BY number_of_threads')
+	numthreads = getData('number_of_threads', fixedwhere + ' GROUP BY number_of_threads')
 
 	avgtimings = []
 
@@ -35,7 +35,7 @@ def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostna
 
 	for nt in numthreads.flat:
 		# print "NUMTHREADS = ", nt
-		where = fixedwhere + 'AND number_of_threads={0}'.format(nt)
+		where = fixedwhere + ' AND number_of_threads={0}'.format(nt)
 		timings = getData('total_time',where)
 		violin_parts = ax.violinplot(timings,[nt],widths=0.8)
 
