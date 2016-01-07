@@ -106,6 +106,8 @@ Formatting comes later.
 
 
 \section{Background: Whatever the Background is}\label{sec:background}
+%TODO: Johannes
+
  In this section, we define the topological sort problem and contrast it to BFS and DFS.
  Furthermore, we introduce the basics of the parallel algorithms we use (and a cost analysis?).
  
@@ -118,7 +120,7 @@ Formatting comes later.
   \item Output: A sequence (aka total order) containing all nodes exactly once. All partial orders must be kept.
   \item Solution not unique
   \item Minimal Example: A->B, A->C, B->C. Valid BFS traversal order: A, C, B. Invalid for TS.
-  \item TS can (serially) be solved with Kahn's algorithm \cite{kahn1962topological} or DFS and Backpropagation (Tarjan \cite{tarjan1976edge}).
+  \item TS can (serially) be solved with Kahn's algorithm \cite{kahn1962topological} or DFS and Backpropagation (Tarjan \cite{tarjan1976edge}). % See Wikipedia
         Note that TS is not equivalent to DFS, e.g. for A->B, B->C, A->D, D->E, DFS and Backpropagation yields A, B, C, D, E, but another valid TS is A, B, D, C, E
   \item Asymptotic runtime: O(|V| + |E|)
 As an aside, don't talk about "the complexity of the algorithm.'' It's incorrect,
@@ -142,6 +144,7 @@ problems have a complexity, not algorithms.
 
 %TODO: Change title
 \section{Your Proposed Method}\label{sec:yourmethod}
+%TODO: Kevin
 In this section, we present different implementations of the parallel algorithm outlined above.
 Especially, we show how to efficiently implement the three synchronization points and how to ensure load balancing.
 
@@ -178,6 +181,7 @@ Somewhere, we need to mention that we are working with an adjacency list.
 \end{invisible}
 
 \section{Experimental Results}\label{sec:exp}
+%TODO: Matthias
 In this section, we present our experimental setup and the impact of the different optimizations and implementations described in the previous section.
 
 \begin{invisible}
