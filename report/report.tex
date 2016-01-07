@@ -20,9 +20,11 @@
 
 % Example definitions.
 % --------------------
-% nice symbols for real and complex numbers
-\newcommand{\R}[0]{\mathbb{R}}
-\newcommand{\C}[0]{\mathbb{C}}
+% Nice typeset for C++
+\newcommand{\Cpp}{C\nolinebreak[4]\hspace{-.05em}\raisebox{.2ex}{\small \bf ++}}
+%\newcommand{\Cpp}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
+%\newcommand{\Cpp}{\texttt{C\nolinebreak+\nolinebreak+}}
+
 
 % bold paragraph titles
 \newcommand{\mypar}[1]{{\bf #1.}}
@@ -69,17 +71,163 @@
 
 \maketitle
 
-\abstract{We can already start putting some theory parts in the report right now, so it's easier later to get everything together\ldots \\
-Formatting comes later.}
+\begin{abstract}
+ We can already start putting some theory parts in the report right now, so it's easier later to get everything together\ldots \\
+Formatting comes later.
+\end{abstract}
 
-Blablabla
 
 \begin{invisible}
 	This will not be in final report \\
 	we can put derivations and remarks here
 \end{invisible}
 
-Blablabla
+\section{Introduction}\label{sec:intro}
+
+\mypar{Motivation}
+\begin{invisible}
+  \begin{itemize}
+  \item Software Dependencies
+  \item Maybe, to flesh out: Admittedly a bit academic, but interesting problem nevertheless, because memory bound => This is the future of HPC
+  \end{itemize}
+\end{invisible}
+
+
+\mypar{Related work} 
+\begin{invisible}
+  \begin{itemize}
+  \item MC Er Paper \cite{er1983parallel}: Unclear how to retrieve a sorted list from values without sorting and threads might chase other threads. No words about load balancing => Not practicable
+  \item Ma Paper \cite{ma1997efficient}: Theoretical analysis in PRAM model, not practicable.
+  \item Both cases: No code
+  \item Our contribution: (1) Modified algorithm based on MC Er. 1. Sorted list is directly extracted. 2. only one thread continues when multiple threads meet. 3. Ensure load balancing
+                          (2) Actual implementation for shared memory architecture
+  \end{itemize}
+\end{invisible}
+
+
+\section{Background: Whatever the Background is}\label{sec:background}
+ In this section, we define the topological sort problem and contrast it to BFS and DFS.
+ Furthermore, we introduce the basics of the parallel algorithms we use (and a cost analysis?).
+ 
+ \begin{invisible}
+ % Serial TS
+ \mypar{Topological sorting}
+ \begin{itemize}
+  \item What is topological sort, difference to BFS
+  \item Input: A set of dependencies (aka partial orders) of the form A $\rightarrow$ B ``A must come before B''
+  \item Output: A sequence (aka total order) containing all nodes exactly once. All partial orders must be kept.
+  \item Solution not unique
+  \item Minimal Example: A->B, A->C, B->C. Valid BFS traversal order: A, C, B. Invalid for TS.
+  \item TS can (serially) be solved with Kahn's algorithm \cite{kahn1962topological} or DFS and Backpropagation (Tarjan \cite{tarjan1976edge}).
+        Note that TS is not equivalent to DFS, e.g. for A->B, B->C, A->D, D->E, DFS and Backpropagation yields A, B, C, D, E, but another valid TS is A, B, D, C, E
+  \item Asymptotic runtime: O(|V| + |E|)
+As an aside, don't talk about "the complexity of the algorithm.'' It's incorrect,
+problems have a complexity, not algorithms.  
+ \end{itemize}
+
+ % Multithreaded TS
+ \mypar{Parallel algorithm}
+ \begin{itemize}
+  \item Short overview over algorithm of MC Er
+  \item Parallelization over child nodes
+  \item His idea with barrier in each step such that even if the index is written by multiple threads, they write the same number => Avoid race condition at writing the index
+  \item Our idea: Instead of writing an index, directly write to solution list. As a consequence, we have to make sure that node is written to solution only once. And of course there is a race condition on writing to solution list.
+  \item Our idea: First, count (in parallel) how many parents each node has. Each time a node is visited, decrement counter and only write to solution if counter is zero. Of course, there is a race condition on the parent counter.
+  \item 3 synchronization points (that is, bottlenecks): 1. Barrier after each level, 2. Lock solution list for appending new nodes, 3. Lock parent counter for decrementing it and checking if it is zero.
+  \item Cost
+ \end{itemize}
+
+ 
+\end{invisible}
+
+%TODO: Change title
+\section{Your Proposed Method}\label{sec:yourmethod}
+In this section, we present different implementations of the parallel algorithm outlined above.
+Especially, we show how to efficiently implement the three synchronization points and how to ensure load balancing.
+
+\begin{invisible}
+Somewhere, we need to mention that we are working with an adjacency list.
+ \mypar{Efficient update of solution list} %locallist, worksteal, bitset
+ \begin{itemize}
+  \item Thread-local solution lists over one level.
+  \item Append whole list to global list instead of appending each node individually. Order across one level doesn't matter.
+  \item Same level ensured thanks to barrier. Global solution sequence must be a list, can't be a vector.
+ \end{itemize}
+
+ %TODO: Better title
+ \mypar{Efficiently decrementing and checking the parent counter} %locallist, worksteal, bitset, dynamic_nobarrier
+ Insert code of CAS-version of requestValueUpdate
+ 
+ \mypar{Barrier-free implementation} %dynamic_nobarrier
+ \begin{itemize}
+  \item Don't use barrier at all. MC Er only used it to avoid race conditions at writing indices.
+  \item We lock the solution list, so there should be no race condition. But: Cannot use thread-local solution lists anymore.
+ \end{itemize}
+
+ \mypar{Load balancing}
+ \begin{itemize}
+  \item Parallelization over front $\Rightarrow$ Load balancing also over front. Two distinct representations of front: Using thread-local lists and using a global bitset.
+  \item Thread-local lists: Following an idea described in \cite{bulucc2011parallel} %@matthias: Siehe 4.2 Shared memory computation Stichwort thread-local stacks. Müssen das nicht zitieren, weil wir die Idee ja unabhängig gefunden haben.
+  For each level, distribute children evenly among threads. Each thread then holds a list of children that it processes.
+  At the same time, it creates a list of new children which are collected and redistributed at the next level.
+  \item Work stealing: Based on thread-local lists, but better redistribution of nodes?
+  \item Bitset: Idea used in e.g. \cite{agarwal2010scalable} or \cite{beamer2013direction}. Loop over bitset, do nothing if bit is zero. Load balancing with dynamic scheduler of OpenMP.
+  New children are written into a separate bitset. At the end of a level, bitsets are swapped.
+ \end{itemize}
+
+\end{invisible}
+
+\section{Experimental Results}\label{sec:exp}
+In this section, we present our experimental setup and the impact of the different optimizations and implementations described in the previous section.
+
+\begin{invisible}
+ \mypar{Experimental setup}
+ \Cpp  OpenMP
+ (processor, frequency, maybe OS, maybe cache sizes)
+ compiler, version, and flags used.
+ %TODO: Should we play with optimization flags?
+
+ \mypar{Benchmarks}
+ For each item, mention graph type, number of nodes, node degree, optimizations from above
+ \begin{itemize}
+  \item Influence of barrier. Introduce multichain graph, Strong Scaling dynamic nobarrier opt2 MULTICHAIN100 vs bitset global opt1 MULTICHAIN100 Why Multichain100: Should be dominated by barrier%bitset_global is bitset without local solutions, because dynamic_nobarrier has no local solutions
+  \item Influence of local solution. Strong Scaling bitset MULTICHAIN10000 vs bitset global MULTICHAIN10000 Why Multichain10000: Should be dominated by pushbacks to solution
+  \item Influence of atomic counter check. Strong Scaling RANDOMLIN 100000 opt = true vs opt = false for worksteal and bitset
+  \item Strong Scaling software graph \cite{musco2014generative}
+  \item Strong Scaling random graph with different degrees
+  \item Vertex Scaling plot random graph
+ \end{itemize}
+
+\mypar{Results}
+
+Questions to each plot
+\begin{itemize}
+ \item What is the performance penalty of the barrier?
+ \item How well performs the local solution compared to locking the 
+ \item How does the atomic counter check scale compared to the locked version?
+ \item How does the best version of our code scale on a real-world example?
+ \item How does the best version of our code scale in a slightly artificial scenario?
+\end{itemize}
+\end{invisible}
+
+
+\section{Conclusions}
+
+\begin{invisible}
+ \begin{itemize}
+   \item Best thing would be to have no barriers and still local solution update
+   \item Since this is not possible, it is better to accept barriers so as to benefit from local solution
+   \item It is worth noting that performance highly depends on the structure of the graph.
+ \end{itemize}
+\end{invisible}
+
+% References should be produced using the bibtex program from suitable
+% BiBTeX files (here: bibl_conf). The IEEEbib.bst bibliography
+% style file from IEEE produces unsorted bibliography list.
+% -------------------------------------------------------------------------
+\bibliographystyle{IEEEbib}
+\bibliography{bibliography}
+
 
 
 \end{document}
