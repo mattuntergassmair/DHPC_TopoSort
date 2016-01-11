@@ -18,6 +18,9 @@
 \usepackage{multicol}
 \usepackage{ifthen}
 
+\usepackage[ruled,noend,noline,slide]{algorithm2e}
+
+
 % Example definitions.
 % --------------------
 % Nice typeset for C++
@@ -143,41 +146,81 @@ problems have a complexity, not algorithms.
 \end{invisible}
 
 %TODO: Change title
-\section{Your Proposed Method}\label{sec:yourmethod}
+\section{Efficient parallel implementation}\label{sec:yourmethod}
 %TODO: Kevin
+%TODO: Somewhere, we must state the problem: Input many partial orderings, Output one total order (a solution list)
+
 In this section, we present different implementations of the parallel algorithm outlined above.
-Especially, we show how to efficiently implement the three synchronization points and how to ensure load balancing.
+Especially, we show how to ensure load balancing, how to efficiently handle appending nodes to the solution list, decrementing and checking the parent counter, and how to circumvent barriers.
+
+\mypar{Load balancing}
+Parallelization is achieved by distributing the nodes in the current front. We experimented with two representations of the front.
+Firstly, we implemented the front using thread-local lists, following an idea described in \cite{bulucc2011parallel}. Initially, the nodes in the front are split among the threads.
+Each thread owns then a thread-local list, from which it processes the nodes in the current front. Child nodes for the next front are first inserted to another thread-local list.
+When the whole front was processed, one thread collects all thread-local lists and redistributes the new child nodes among the threads.
+
+Secondly, we implemented the front using a bitset, like in \cite{agarwal2010scalable} or \cite{beamer2013direction}. The size of the bitset is equal to the number of nodes.
+Notice that we actually refer to an array of booleans when using the term bitset. A space-efficient bitset is not thread-safe.
+The last parent visiting a child node sets the child nodes' bit to true. Parallelization is then enabled by parallelizing the loop over the bitset.
+Load balancing is conveniently achieved using a dynamic scheduler.
+
+
+\mypar{Efficiently appending to the solution list}
+The algorithm proceeds level by level.
+All nodes in the current level have already been visited by all their parent nodes. % This is actually an invariant, but never mind.
+This is ensured by admitting only those child nodes to the next level, for which the current node is the last visiting parent node. % Maybe belongs to algorithm description
+The nodes in the current level are ready to be inserted to the global solution list.
+Since all nodes in the current level have been visited by all parent nodes, one node cannot be a parent of another node in the same level.
+Therefore, the order among the nodes on one level does not matter for the topological sorting. As a consequence, the nodes can be appended to the solution in parallel.
+To that end, the solution list has to be locked for every appending of a node, which is not optimal.
+
+The optimization that is proposed here is simple: Every thread inserts the nodes in a thread-local list and then appends the whole local list to the solution list.
+On each level, the solution list has to be locked for each thread only once and not for every node once. For lists, appending another list can be done in constant time.
+
+This optimization is based on the level-by-level processing of the nodes and on the fact that the solution list actually is a list and not any other container, e.g. vector.
+
+\mypar{Efficiently decrementing and checking the parent counter}
+In the parallel algorithm, every node has a parent counter that is initialized with the number of parent nodes.
+A node may only be inserted if all its parents have visited it.
+Therefore, each parent has to decrement the parent counter atomically to mark its visit and it has to check atomically whether the parent counter is zero, i.e. whether it is the last visiting parent.
+
+\begin{algorithm}
+ \SetKw{KwRet}{Return}
+ \SetKw{KwBool}{Bool}
+ \SetKw{KwInt}{Integer}
+ \SetKwProg{Fn}{Function}{}{}
+  \KwInt parentCounter\;
+  \tcp{initialized with number of parent nodes}
+  \KwBool taken = false\;
+  \Fn{decrementAndCheckParentCounter{}} {
+    AtomicDecrement(parentCounter)\;
+    \KwBool swapped = false\;
+    \If{parentCounter == 0}{
+      swapped = AtomicCompareAndSwap(taken, false, true)\;
+    }
+    \KwRet swapped;
+  }
+ \caption{Efficiently decrementing and checking the parent counter using atomics.}
+ \label{alg:parentCounter}
+\end{algorithm}
+
+Algorithm \ref{alg:parentCounter} shows the implementation using atomic operations. Multiple threads may in fact decrement the counter before the function returns.
+However the atomic compare-and-swap ensures that only one thread returns true. This is important if the current level is implemented as a list.
+In this case, the child node could be inserted twice, which is wrong.
+If the current level is implemented as a bitset, the compare-and-swap is not necessary, because it makes no difference if multiple threads set the bit to true.
+
+\mypar{Barrier-free implementation}
+Er \cite{er1983parallel} proposed barriers only to avoid race conditions when updating the index values at each node.
+Using barriers allowed him not to lock the index value, since any thread writing to it would write the same value.
+
+As explained earlier, our implementation directly appends to a solution list, instead of writing an index value.
+Since the list must be locked for appending anyway, the barriers would in principle not be necessary.
+However, this is only true if every node is appended individually, because a thread might append a node, whose parent may not yet have been moved from another thread's local list to the solution list.
+Hence, avoiding barriers seems to be a trade-off between the cost of barriers and the cost of locking the solution list for every node.
 
 \begin{invisible}
+Hmm... we could defer decrementing the parent counter and inserting the child node until the local list is appended to the solution list. That means, that we have to touch all nodes twice
 Somewhere, we need to mention that we are working with an adjacency list.
- \mypar{Efficient update of solution list} %locallist, worksteal, bitset
- \begin{itemize}
-  \item Thread-local solution lists over one level.
-  \item Append whole list to global list instead of appending each node individually. Order across one level doesn't matter.
-  \item Same level ensured thanks to barrier. Global solution sequence must be a list, can't be a vector.
- \end{itemize}
-
- %TODO: Better title
- \mypar{Efficiently decrementing and checking the parent counter} %locallist, worksteal, bitset, dynamic_nobarrier
- Insert code of CAS-version of requestValueUpdate
- 
- \mypar{Barrier-free implementation} %dynamic_nobarrier
- \begin{itemize}
-  \item Don't use barrier at all. MC Er only used it to avoid race conditions at writing indices.
-  \item We lock the solution list, so there should be no race condition. But: Cannot use thread-local solution lists anymore.
- \end{itemize}
-
- \mypar{Load balancing}
- \begin{itemize}
-  \item Parallelization over front $\Rightarrow$ Load balancing also over front. Two distinct representations of front: Using thread-local lists and using a global bitset.
-  \item Thread-local lists: Following an idea described in \cite{bulucc2011parallel} %@matthias: Siehe 4.2 Shared memory computation Stichwort thread-local stacks. Müssen das nicht zitieren, weil wir die Idee ja unabhängig gefunden haben.
-  For each level, distribute children evenly among threads. Each thread then holds a list of children that it processes.
-  At the same time, it creates a list of new children which are collected and redistributed at the next level.
-  \item Work stealing: Based on thread-local lists, but better redistribution of nodes?
-  \item Bitset: Idea used in e.g. \cite{agarwal2010scalable} or \cite{beamer2013direction}. Loop over bitset, do nothing if bit is zero. Load balancing with dynamic scheduler of OpenMP.
-  New children are written into a separate bitset. At the end of a level, bitsets are swapped.
- \end{itemize}
-
 \end{invisible}
 
 \section{Experimental Results}\label{sec:exp}
