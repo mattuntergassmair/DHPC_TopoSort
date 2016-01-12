@@ -76,7 +76,7 @@ def plotWeakScaling(algo,graphtype,optim,basesize,hostnamelike):
 
 	# Save plots
 	filename = plotdir + "/weakscaling_{0}_gt{1}_opt{2}.pdf".format(algo,graphtype,optim);
-	plt.savefig(filename,format='pdf')
+	plt.savefig(filename,format='pdf',bbox_inches='tight',dpi=1000)
 	plt.show()
 
 	print "Done - File written to " + filename

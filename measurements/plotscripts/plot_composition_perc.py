@@ -91,7 +91,7 @@ def plotPercGraph(algo,graphtype,size,optim,hostnamelike):
 	plt.legend(lgnd,lbl)
 
 	filename = plotdir + "/" + "timepercentage_{0}_gt{1}_s{2}_opt{3}".format(algo,graphtype,size,optim) + ".pdf";
-	plt.savefig(filename,format='pdf')
+	plt.savefig(filename,format='pdf',bbox_inches='tight',dpi=1000)
 
 	plt.show();
 

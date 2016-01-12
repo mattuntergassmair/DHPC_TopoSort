@@ -82,7 +82,7 @@ plt.ylabel('Speedup',fontsize=ct.fontsize_label)
 
 ax.minorticks_on()
 
-plt.savefig(plotdir + 'strongscaling_gtSOFTWARE.pdf',format='pdf')
+plt.savefig(plotdir + 'strongscaling_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
 plt.show()
 
 

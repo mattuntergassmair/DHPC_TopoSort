@@ -17,6 +17,7 @@ def getData(field, wherestring):
 	with db:
 		querystring = "SELECT {0} FROM measurements WHERE {1}".format(field,wherestring)
 		query.execute(querystring)
+		print(querystring)
 		data = query.fetchall()
 	
 	return np.array(data)
@@ -27,6 +28,8 @@ def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', host
 	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4}*number_of_threads".format(algorithm,optimistic,graphtype,hostnamelike,size)
 
 	numthreads = getData('number_of_threads', fixedwhere + ' GROUP BY number_of_threads')
+
+	print(numthreads)
 
 	avgtimings = []
 
@@ -58,16 +61,13 @@ def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', host
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
+basesize=100000
 
-addWeakScaling(axis=ax, algorithm='locallist', optimistic='0', size=100000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
-
-addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=100000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
-
-addWeakScaling(axis=ax, algorithm='bitset', optimistic='0', size=100000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
-
-addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=100000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
-
-addWeakScaling(axis=ax, algorithm='worksteal', optimistic='0', size=100000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+addWeakScaling(axis=ax, algorithm='locallist', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
+addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
+addWeakScaling(axis=ax, algorithm='bitset', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
+addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
+addWeakScaling(axis=ax, algorithm='worksteal', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
 
 ax.plot([1,24],[1,1],'r--')
 
@@ -81,7 +81,7 @@ plt.ylabel('Speedup',fontsize=ct.fontsize_label)
 
 ax.minorticks_on()
 
-plt.savefig(plotdir + 'weakscaling_gtSOFTWARE.pdf',format='pdf')
+plt.savefig(plotdir + 'weakscaling_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
 plt.show()
 
 

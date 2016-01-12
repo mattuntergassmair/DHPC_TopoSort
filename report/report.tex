@@ -6,11 +6,13 @@
 % --------------------------------------------------------------------------
 
 \documentclass[letterpaper]{article}
-\usepackage{spconf,amsmath,amssymb,graphicx}
+\usepackage{spconf}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{verbatim}		
-\usepackage{epstopdf}
+% \usepackage{epstopdf}
 \usepackage[font=footnotesize]{caption}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{hyperref}
@@ -240,6 +242,18 @@ Somewhere, we need to mention that we are working with an adjacency list.
 \section{Experimental Results}\label{sec:exp}
 %TODO: Matthias
 In this section, we present our experimental setup and the impact of the different optimizations and implementations described in the previous section.
+\par\medskip
+%
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{abstimings_comparison_gtSOFTWARE.pdf}
+	\includegraphics[width=\columnwidth]{strongscaling_gtSOFTWARE.pdf}
+	\includegraphics[width=\columnwidth]{weakscaling_gtSOFTWARE.pdf}
+
+	\caption{Bla}
+	\label{fig:strongscaling_gtsoftware}
+\end{figure}
+
 
 \begin{invisible}
  \mypar{Experimental setup}

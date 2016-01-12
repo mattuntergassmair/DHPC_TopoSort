@@ -82,7 +82,7 @@ plt.ylabel('Time [sec]',fontsize=ct.fontsize_label)
 
 ax.minorticks_on()
 
-plt.savefig(plotdir + 'abstimings_comparison_gtSOFTWARE.pdf',format='pdf')
+plt.savefig(plotdir + 'abstimings_comparison_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
 plt.show()
 
 
