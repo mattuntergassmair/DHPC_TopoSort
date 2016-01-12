@@ -13,7 +13,8 @@ THREADS_MAX=$2
 NREP=1
 
 # Executables
-declare -a EXE=('./toposort_omp_dynamic_nobarrier_opt2_an0.exe'
+declare -a EXE=('./toposort_omp_locallist_opt2_an0.exe'
+								'./toposort_omp_dynamic_nobarrier_opt2_an0.exe'
                 './toposort_omp_bitset_global_opt1_an0.exe'
 								'./toposort_omp_worksteal_opt1_an0.exe'
 								'./toposort_omp_bitset_opt1_an0.exe')
