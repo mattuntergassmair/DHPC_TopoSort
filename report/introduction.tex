@@ -1,0 +1,22 @@
+\section{Introduction}\label{sec:intro}
+
+\mypar{Motivation}
+\begin{invisible}
+  \begin{itemize}
+  \item Software Dependencies
+  \item Maybe, to flesh out: Admittedly a bit academic, but interesting problem nevertheless, because memory bound => This is the future of HPC
+  \end{itemize}
+\end{invisible}
+
+
+\mypar{Related work} 
+\begin{invisible}
+  \begin{itemize}
+  \item MC Er Paper \cite{er1983parallel}: Unclear how to retrieve a sorted list from values without sorting and threads might chase other threads. No words about load balancing => Not practicable
+  \item Ma Paper \cite{ma1997efficient}: Theoretical analysis in PRAM model, not practicable.
+  \item Both cases: No code
+  \item Our contribution: (1) Modified algorithm based on MC Er. 1. Sorted list is directly extracted. 2. only one thread continues when multiple threads meet. 3. Ensure load balancing
+                          (2) Actual implementation for shared memory architecture
+  \end{itemize}
+\end{invisible}
+

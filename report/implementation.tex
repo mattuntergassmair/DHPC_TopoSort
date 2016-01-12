@@ -1,0 +1,89 @@
+
+%TODO: Change title
+\section{Efficient parallel implementation}\label{sec:yourmethod}
+%TODO: Kevin
+%TODO: Somewhere, we must state the problem: Input many partial orderings, Output one total order (a solution list)
+
+In this section, the implementation of the parallel algorithm outlined above is presented.
+Especially, we show how to ensure load balancing, how to efficiently handle appending nodes to the solution list, decrementing and checking the parent counter, and how to circumvent barriers.
+
+\mypar{Parallelization and load balancing}
+Parallelization is achieved by distributing the nodes in the current front among the threads. We experimented with two representations of the front.
+
+Firstly, we implemented the front using thread-local lists, following an idea described in \cite{bulucc2011parallel}.
+The nodes in the front are split among the threads, such that each thread owns a thread-local list, from which it processes the nodes in the current front.
+Child nodes for the next front are first inserted to another thread-local list.
+When the whole front was processed, one thread collects all thread-local lists and redistributes the new child nodes among the threads.
+Redistribution for each front already yields some level of load balancing.
+A further refinement of load balancing was implemented by using a work stealing policy.
+If one thread runs out of nodes within a front, it can steal nodes from another thread that has not finished yet.
+
+Secondly, we implemented the front using a bitset, like in \cite{agarwal2010scalable} or \cite{beamer2013direction}. The size of the bitset is equal to the number of nodes.
+The last parent visiting a child node sets the child nodes' bit to true. Parallelization is then enabled by parallelizing the loop over the bitset.
+Load balancing is conveniently achieved using a dynamic scheduler.
+Notice that we actually refer to an array of booleans when using the term bitset. A space-efficient bitset is not thread-safe.
+
+
+\mypar{Efficient appending to the solution list}
+The algorithm proceeds front by front.
+%All nodes in the current front have already been visited by all their parent nodes. % This is actually an invariant, but never mind.
+%This is ensured by admitting only those child nodes to the next front, for which the current node is the last visiting parent node. % Maybe belongs to algorithm description
+Nodes in the current front are ready to be inserted to the global solution list.
+Since all nodes in the current front have been visited by all of their parent nodes, one node cannot be a parent of another node in the current front.
+Therefore, the order among the nodes on one front does not matter for the topological sorting.
+As a consequence, the nodes can be appended to the solution in parallel without any restrictions on the order.
+Still, the solution list has to be locked for every appending of a node, which is not optimal.
+
+The optimization that is proposed here is simple: Every thread first inserts the nodes in a thread-local list and then appends the whole local list to the solution list.
+Thereby, each thread grabs the lock only once per front and not for every node individually.
+For lists, appending another list can be done in constant time.
+
+\mypar{Efficiently decrementing and checking the parent counter}
+In the parallel algorithm, every node has a parent counter that is initialized with the number of parent nodes.
+As explained before, a node may only be inserted if all its parents have visited it.
+Therefore, each parent has to decrement the parent counter to mark its visit and it has to check whether the parent counter is zero, i.e. whether it is the last visiting parent.
+Na{\"i}vely, the decrement and the check have to be locked together, in order to avoid race conditions on the counter on the one hand, and in order to ensure that only one thread may return true on the other hand. 
+However, a closer examination reveals that these requirements can be met by using atomic operations.
+
+\begin{listing}
+ \SetKw{KwRet}{Return}
+ \SetKw{KwBool}{Bool}
+ \SetKw{KwInt}{Integer}
+ \SetKwProg{Fn}{Function}{}{}
+  \KwInt parentCounter\;
+  \tcp{initialized with number of parent nodes}
+  \KwBool token = false\;
+  \Fn{decrementAndCheckParentCounter{}} {
+    AtomicDecrement(parentCounter)\;
+    \KwBool swapped = false\;
+    \If{parentCounter == 0}{
+      swapped = AtomicCompareAndSwap(token, false, true)\;
+    }
+    \KwRet swapped;
+  }
+ \caption{Efficiently decrementing and checking the parent counter using atomics.}
+ \label{lst:parentCounter}
+\end{listing}
+
+Listing \ref{lst:parentCounter} shows the implementation using atomic operations. Multiple threads may in fact decrement the counter before the function returns.
+However the atomic compare-and-swap ensures that only one thread can return true. This is important if the current front is implemented as a list.
+In this case, the child node would be inserted twice, if multiple threads returned true, which is wrong.
+If the front is implemented as a bitset, the compare-and-swap is in fact not necessary, because it makes no difference if multiple threads set the bit.
+
+\mypar{Barrier-free implementation}
+Barriers were used to process the nodes in a front-by-front fashion.
+Each front is finished with a barrier, either explicitly, if the front was implemented with a list, or implicitly by a for-loop, if the front was implemented using a bitset.
+
+If barriers are given up, it is no longer certain that all threads work on nodes of the same front.
+Some threads may already work on nodes of the next front, while other threads are still working on the previous front.
+
+A priori, this is not a problem, because in any case, a node is only appended to the solution list if all its parents have visited it, regardless of which front its parents belonged to.
+However, it is not possible to temporarily store a node in a thread-local list and defer the appending to the solution list, as suggested earlier.
+In this case, it would be possible that a node was appended to the solution list, while its parent node has only been appended to a thread-local list, but not yet to the solution list, leading to a invalid result.
+
+Hence, avoiding barriers seems to be a trade-off between the cost of barriers and the cost of locking the solution list for every node.
+
+\begin{invisible}
+Hmm... we could defer decrementing the parent counter and inserting the child node until the local list is appended to the solution list. That means, that we have to touch all nodes twice
+Somewhere, we need to mention that we are working with an adjacency list.
+\end{invisible}
