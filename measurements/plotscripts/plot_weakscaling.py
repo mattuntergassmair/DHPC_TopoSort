@@ -41,6 +41,12 @@ def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', host
 		where = fixedwhere + ' AND number_of_threads={0}'.format(nt)
 		timings = getData('total_time',where)
 		avgtimings.append(np.mean(timings))
+		speedups = avgtimings[0]/timings
+
+		violin_parts = ax.violinplot(speedups,[nt],widths=0.8)
+
+		for pc in violin_parts['bodies']:
+			pc.set_color(ct.getFGcolor(colorindex))
 
 	speedup = avgtimings[0]/avgtimings
 
