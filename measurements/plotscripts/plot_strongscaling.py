@@ -3,30 +3,14 @@ import matplotlib.pyplot as plt
 import glob
 import re
 import sqlite3
-import colortableau as ct
-
-# plt.style.use('ggplot')
-plotdir = "plots/";
-db = sqlite3.connect('measurements.db')
-
-query = db.cursor()
-
-
-
-def getData(field, wherestring):
-	with db:
-		querystring = "SELECT {0} FROM measurements WHERE {1}".format(field,wherestring)
-		query.execute(querystring)
-		data = query.fetchall()
-	
-	return np.array(data)
+import helper
 
 
 def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel'):
 
 	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4}".format(algorithm,optimistic,graphtype,hostnamelike,size)
 
-	numthreads = getData('number_of_threads', fixedwhere + ' GROUP BY number_of_threads')
+	numthreads = helper.getData('number_of_threads', fixedwhere + ' GROUP BY number_of_threads')
 
 	avgtimings = []
 
@@ -36,18 +20,18 @@ def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', ho
 	for nt in numthreads.flat:
 		# print "NUMTHREADS = ", nt
 		where = fixedwhere + ' AND number_of_threads={0}'.format(nt)
-		timings = getData('total_time',where)
+		timings = helper.getData('total_time',where)
 		avgtimings.append(np.mean(timings))
 		speedups = avgtimings[0]/timings
 
 		violin_parts = ax.violinplot(speedups,[nt],widths=0.8)
 
 		for pc in violin_parts['bodies']:
-			pc.set_color(ct.getFGcolor(colorindex))
+			pc.set_color(helper.getFGcolor(colorindex))
 
 	speedup = avgtimings[0]/avgtimings
 
-	ax.plot(numthreads,speedup,'D-',markersize=4,linewidth=1,color=ct.getFGcolor(colorindex),label=linelabel) # connecting dots
+	ax.plot(numthreads,speedup,'D-',markersize=4,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
 
 
 
@@ -82,15 +66,12 @@ ax.plot(range(1,24),range(1,24),'r--') # ideal scaling
 # ax.legend(handles,labels)
 ax.legend()
 
-plt.title('Strong Scaling',fontsize=ct.fontsize_title)
-plt.xlabel('Number of threads',fontsize=ct.fontsize_label)
-plt.ylabel('Speedup',fontsize=ct.fontsize_label)
+plt.title('Strong Scaling',fontsize=helper.fontsize_title)
+plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
+plt.ylabel('Speedup',fontsize=helper.fontsize_label)
 
 ax.minorticks_on()
 
-plt.savefig(plotdir + 'strongscaling_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
+plt.savefig(helper.plotdir + 'strongscaling_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
 plt.show()
 
-
-
-db.close();
