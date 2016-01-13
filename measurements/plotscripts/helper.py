@@ -33,9 +33,8 @@ def mean_and_confdev(data, confidence=0.95):
 
 confidence = 0.95
 
-# plt.style.use('ggplot')
 plotdir = "plots/";
-
+show = False # True
 
 
 def getData(field, wherestring):

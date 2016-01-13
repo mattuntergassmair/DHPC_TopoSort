@@ -4,88 +4,43 @@ import glob
 import re
 import sqlite3
 import helper
+import addline
 
 
 
-def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel'):
+def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' AND total_time>0 ',suffix='',basesize=100000):
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	addline.addWeakScaling(axis=ax, algorithm='locallist', optimistic='0', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Globallist')
+	addline.addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
+	addline.addWeakScaling(axis=ax, algorithm='bitset', optimistic='0', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
+	addline.addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
+	addline.addWeakScaling(axis=ax, algorithm='worksteal', optimistic='0', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+	ax.plot([1,24],[1,1],'r--')
+	ax.legend(loc='upper left')
+	ax.minorticks_on()
+	
+	filename = helper.plotdir + 'weakscaling_gt' + allgraphtype + '_n' + str(allsize)
 
-	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4}*number_of_threads".format(algorithm,optimistic,graphtype,hostnamelike,size)
+	plt.title('Speedup vs. Number of Threads',fontsize=helper.fontsize_label)
+	if(suffix==''):
+		plt.suptitle('Weak Scaling for ' + allgraphtype + ' Graph (' + str(allsize) + 'nodes)',fontsize=helper.fontsize_title)
+	else:
+		plt.suptitle('Weak Scaling for ' + allgraphtype + ' Graph (' + str(allsize) + 'nodes, ' + suffix + ')',fontsize=helper.fontsize_title)
+		filename = filename + '_' + suffix
 
-	numthreads = helper.getData('number_of_threads', fixedwhere + ' GROUP BY number_of_threads')
-
-	print(numthreads)
-
-	avgtimings = []
-
-	if (np.size(numthreads)==0):
-		return
-
-	for nt in numthreads.flat:
-		# print "NUMTHREADS = ", nt
-		where = fixedwhere + ' AND number_of_threads={0}'.format(nt)
-		timings = helper.getData('total_time',where)
-
-		# Compute mean and stddev of first timing
-		if(len(avgtimings)==0):
-			mean, dev = helper.mean_and_confdev(data=timings,confidence=helper.confidence)
-			print mean, "+/-", dev[0]
-
-		avgtimings.append(np.mean(timings))
-		speedups = avgtimings[0]/timings
-
-		violin_parts = ax.violinplot(speedups,[nt],widths=0.8)
-
-		for pc in violin_parts['bodies']:
-			pc.set_color(helper.getFGcolor(colorindex))
-
-	speedup = avgtimings[0]/avgtimings
-
-	ax.plot(numthreads,speedup,'D-',markersize=4,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
-
-
-
-
-
-
+	filename = filename + '.pdf'
+	
+	plt.savefig(filename, format='pdf',bbox_inches='tight',dpi=1000)
+	print "File written to:\t", filename
+	if(helper.show):
+		plt.show()
 
 ############################################################
-# Set up Plot and add scaling lines 
+# Call Plotting functions
 ############################################################
-
-basesize=100000
-
-##########################
-# Software Graph
-fig = plt.figure()
-ax = fig.add_subplot(111)
-addWeakScaling(axis=ax, algorithm='locallist', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
-addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
-addWeakScaling(axis=ax, algorithm='bitset', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
-addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
-addWeakScaling(axis=ax, algorithm='worksteal', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
-ax.plot([1,24],[1,1],'r--')
-ax.legend()
-ax.minorticks_on()
-plt.title('Weak Scaling for Software Graph',fontsize=helper.fontsize_title)
-plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
-plt.ylabel('Speedup',fontsize=helper.fontsize_label)
-plt.savefig(helper.plotdir + 'weakscaling_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
-plt.show()
-
-##########################
-# RandomLin Graph
-fig = plt.figure()
-ax = fig.add_subplot(111)
-addWeakScaling(axis=ax, algorithm='locallist', optimistic='0', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,linelabel='Globallist')
-addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
-addWeakScaling(axis=ax, algorithm='bitset', optimistic='0', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
-addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
-addWeakScaling(axis=ax, algorithm='worksteal', optimistic='0', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
-ax.plot([1,24],[1,1],'r--')
-ax.legend()
-ax.minorticks_on()
-plt.title('Weak Scaling for Random Graph',fontsize=helper.fontsize_title)
-plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
-plt.ylabel('Speedup',fontsize=helper.fontsize_label)
-plt.savefig(helper.plotdir + 'weakscaling_gtRANDOMLIN.pdf',format='pdf',bbox_inches='tight',dpi=1000)
-plt.show()
+plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE') # software graph
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=7999910',suffix='deg8') # degree 8
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=15999722',suffix='deg16') # degree 16
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=31998947',suffix='deg32') # degree 32
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=63995794',suffix='deg64') # degree 64
