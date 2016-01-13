@@ -45,26 +45,33 @@ def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostna
 # Software Graph
 fig = plt.figure()
 ax = fig.add_subplot(111)
-
 addAbsTiming(axis=ax, algorithm='locallist', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
-
 addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
-
 addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
-
 addAbsTiming(axis=ax, algorithm='worksteal', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
-
 addAbsTiming(axis=ax, algorithm='worksteal', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
-
-# handles, labels = ax.get_legend_handles_labels()
-# ax.legend(handles,labels)
 ax.legend()
-
+ax.minorticks_on()
 plt.title('Absolute Timings of Algorithms',fontsize=helper.fontsize_title)
 plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
 plt.ylabel('Time [sec]',fontsize=helper.fontsize_label)
-
-ax.minorticks_on()
-
 plt.savefig(helper.plotdir + 'abstimings_comparison_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
+plt.show()
+
+
+##########################
+# RandomLin Graph
+fig = plt.figure()
+ax = fig.add_subplot(111)
+addAbsTiming(axis=ax, algorithm='locallist', optimistic='0', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,linelabel='Globallist')
+addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
+addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
+addAbsTiming(axis=ax, algorithm='worksteal', optimistic='1', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
+addAbsTiming(axis=ax, algorithm='worksteal', optimistic='0', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+ax.legend()
+ax.minorticks_on()
+plt.title('Absolute Timings of Algorithms',fontsize=helper.fontsize_title)
+plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
+plt.ylabel('Time [sec]',fontsize=helper.fontsize_label)
+plt.savefig(helper.plotdir + 'abstimings_comparison_gtRANDOMLIN.pdf',format='pdf',bbox_inches='tight',dpi=1000)
 plt.show()
