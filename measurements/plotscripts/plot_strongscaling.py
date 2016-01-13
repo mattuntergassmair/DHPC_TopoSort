@@ -21,6 +21,12 @@ def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', ho
 		# print "NUMTHREADS = ", nt
 		where = fixedwhere + ' AND number_of_threads={0}'.format(nt)
 		timings = helper.getData('total_time',where)
+
+		# Compute mean and stddev of first timing
+		if(len(avgtimings)==0):
+			mean, dev = helper.mean_and_confdev(data=timings,confidence=helper.confidence)
+			print mean, "+/-", dev[0]
+
 		avgtimings.append(np.mean(timings))
 		speedups = avgtimings[0]/timings
 
