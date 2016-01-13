@@ -46,30 +46,40 @@ def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', host
 # Set up Plot and add scaling lines 
 ############################################################
 
+basesize=100000
+
 ##########################
 # Software Graph
 fig = plt.figure()
 ax = fig.add_subplot(111)
-
-basesize=100000
-
 addWeakScaling(axis=ax, algorithm='locallist', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
 addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
 addWeakScaling(axis=ax, algorithm='bitset', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
 addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
 addWeakScaling(axis=ax, algorithm='worksteal', optimistic='0', size=basesize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
-
 ax.plot([1,24],[1,1],'r--')
-
-# handles, labels = ax.get_legend_handles_labels()
-# ax.legend(handles,labels)
 ax.legend()
-
-plt.title('Weak Scaling',fontsize=helper.fontsize_title)
+ax.minorticks_on()
+plt.title('Weak Scaling for Software Graph',fontsize=helper.fontsize_title)
 plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
 plt.ylabel('Speedup',fontsize=helper.fontsize_label)
-
-ax.minorticks_on()
-
 plt.savefig(helper.plotdir + 'weakscaling_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
+plt.show()
+
+##########################
+# RandomLin Graph
+fig = plt.figure()
+ax = fig.add_subplot(111)
+addWeakScaling(axis=ax, algorithm='locallist', optimistic='0', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,linelabel='Globallist')
+addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
+addWeakScaling(axis=ax, algorithm='bitset', optimistic='0', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
+addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
+addWeakScaling(axis=ax, algorithm='worksteal', optimistic='0', size=basesize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+ax.plot([1,24],[1,1],'r--')
+ax.legend()
+ax.minorticks_on()
+plt.title('Weak Scaling for Random Graph',fontsize=helper.fontsize_title)
+plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
+plt.ylabel('Speedup',fontsize=helper.fontsize_label)
+plt.savefig(helper.plotdir + 'weakscaling_gtRANDOMLIN.pdf',format='pdf',bbox_inches='tight',dpi=1000)
 plt.show()

@@ -47,31 +47,34 @@ def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', ho
 # Software Graph
 fig = plt.figure()
 ax = fig.add_subplot(111)
-
-
 addStrongScaling(axis=ax, algorithm='locallist', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='Globallist')
-
 addStrongScaling(axis=ax, algorithm='bitset', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
-
 addStrongScaling(axis=ax, algorithm='bitset', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
-
 addStrongScaling(axis=ax, algorithm='worksteal', optimistic='1', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
-
 addStrongScaling(axis=ax, algorithm='worksteal', optimistic='0', size=1000000, graphtype='SOFTWARE', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
-
 ax.plot(range(1,24),range(1,24),'r--') # ideal scaling
-
-
-# handles, labels = ax.get_legend_handles_labels()
-# ax.legend(handles,labels)
 ax.legend()
-
-plt.title('Strong Scaling',fontsize=helper.fontsize_title)
+ax.minorticks_on()
+plt.title('Strong Scaling for Software Graph',fontsize=helper.fontsize_title)
 plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
 plt.ylabel('Speedup',fontsize=helper.fontsize_label)
-
-ax.minorticks_on()
-
 plt.savefig(helper.plotdir + 'strongscaling_gtSOFTWARE.pdf',format='pdf',bbox_inches='tight',dpi=1000)
 plt.show()
 
+##########################
+# RandomLin Graph
+fig = plt.figure()
+ax = fig.add_subplot(111)
+addStrongScaling(axis=ax, algorithm='locallist', optimistic='0', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,linelabel='Globallist')
+addStrongScaling(axis=ax, algorithm='bitset', optimistic='1', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
+addStrongScaling(axis=ax, algorithm='bitset', optimistic='0', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
+addStrongScaling(axis=ax, algorithm='worksteal', optimistic='1', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
+addStrongScaling(axis=ax, algorithm='worksteal', optimistic='0', size=1000000, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+ax.plot(range(1,24),range(1,24),'r--') # ideal scaling
+ax.legend()
+ax.minorticks_on()
+plt.title('Strong Scaling for Random Graph',fontsize=helper.fontsize_title)
+plt.xlabel('Number of threads',fontsize=helper.fontsize_label)
+plt.ylabel('Speedup',fontsize=helper.fontsize_label)
+plt.savefig(helper.plotdir + 'strongscaling_gtRANDOMLIN.pdf',format='pdf',bbox_inches='tight',dpi=1000)
+plt.show()
