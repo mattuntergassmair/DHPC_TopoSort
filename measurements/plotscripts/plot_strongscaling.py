@@ -10,6 +10,7 @@ def plotStrongScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	addline.addStrongScaling(axis=ax, algorithm='locallist', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Globallist',additionalwhere=alladditionalwhere)
+	addline.addStrongScaling(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier',additionalwhere=alladditionalwhere)
 	addline.addStrongScaling(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Bitset Opt',additionalwhere=alladditionalwhere)
 	addline.addStrongScaling(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt',additionalwhere=alladditionalwhere)
 	addline.addStrongScaling(axis=ax, algorithm='worksteal', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt',additionalwhere=alladditionalwhere)

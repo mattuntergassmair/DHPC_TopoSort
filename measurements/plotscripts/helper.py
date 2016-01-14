@@ -4,11 +4,11 @@ import scipy as sp
 import scipy.stats
 import sqlite3
 
-myFGcolors = [	(150,50,50), (50,150,50), (50,50,150), \
-				(150,100,50), (50,150,100), (100,50,150), \
-				(150,0,100), (100,150,0), (0,100,150), \
-				(150,150,0), (0,150,150), (150,0,150), \
-				(50,50,50), (100,100,100), (150,150,150) ]
+myFGcolors = [	(200,0,0), (0,200,0), (0,0,200), \
+				(200,200,0), (0,200,200), (200,0,200), \
+				(200,100,100), (100,200,100), (100,100,200), \
+				(200,200,100), (100,200,200), (200,100,200), \
+				(50,50,50), (100,100,100), (200,200,200) ]
 myFGcolors = list([tuple([x/255. for x in tup]) for tup in myFGcolors])
 myBGcolors = list([tuple([np.min([x+0.4,1.0]) for x in tup]) for tup in myFGcolors])
  
@@ -34,7 +34,7 @@ def mean_and_confdev(data, confidence=0.95):
 confidence = 0.95
 
 plotdir = "plots/";
-show = False # True
+show = True
 
 
 def getData(field, wherestring):
