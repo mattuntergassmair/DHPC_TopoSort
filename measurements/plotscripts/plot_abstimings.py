@@ -9,6 +9,7 @@ def plotAbsTiming(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' A
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	addline.addAbsTiming(axis=ax, algorithm='locallist', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Globallist')
+	addline.addAbsTiming(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier')
 	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
 	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
 	addline.addAbsTiming(axis=ax, algorithm='worksteal', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
