@@ -12,7 +12,7 @@ def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere='
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	addline.addWeakScaling(axis=ax, algorithm='locallist', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Globallist')
-	addline.addWeakScaling(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier')
+	#addline.addWeakScaling(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier')
 	addline.addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
 	addline.addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
 	ax.plot([1,24],[1,1],'r--')
@@ -39,7 +39,7 @@ def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere='
 # Call Plotting functions
 ############################################################
 plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE') # software graph
-#plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=7999910',suffix='deg8') # degree 8
-#plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=15999722',suffix='deg16') # degree 16
-#plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=31998947',suffix='deg32') # degree 32
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN8',suffix='deg8') # degree 8
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN16',suffix='deg16') # degree 16
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN32',suffix='deg32') # degree 32
 #plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=63995794',suffix='deg64') # degree 64
