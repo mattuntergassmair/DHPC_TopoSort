@@ -14,6 +14,7 @@ def plotAbsTiming(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' A
 	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
 	addline.addAbsTiming(axis=ax, algorithm='worksteal', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
 	addline.addAbsTiming(axis=ax, algorithm='worksteal', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
+	#addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=5,linelabel='Bitset Global NoOpt')
 	ax.legend(loc='upper left')
 	ax.minorticks_on()
 
