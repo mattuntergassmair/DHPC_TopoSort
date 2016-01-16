@@ -13,7 +13,9 @@ do
 	do
 		c_edges=$(( ${EDGES[$d]}*$t/100000 ))
 		nodes=$(( 100000*$t ))
-	        str="s/<\/measurement>/\t<comment>deg${DEGREES[$d]}<\/comment>\n\t<\/measurement>/g"
-		find ${DIR} -name "*RANDOMLIN*n${nodes}_e${c_edges}*" -print | xargs sed -i $str
+		str="s/RANDOMLIN/RANDOMLIN${DEGREES[$d]}/g"
+		fname="*RANDOMLIN*n${nodes}_e${c_edges}*"
+                rename $str ${DIR}/$fname
+		find ${DIR} -name "$str" -print | xargs sed -i $str
 	done
 done
