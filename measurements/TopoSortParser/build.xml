@@ -22,6 +22,7 @@
 
   <target name="run" depends="jar" description="execute the jar file" >
     <java classname="${main-class}" fork="true">
+      <arg line="${args}"/>
       <classpath>
         <path refid="classpath"/>
         <path location="${ant.project.name}.jar"/>
