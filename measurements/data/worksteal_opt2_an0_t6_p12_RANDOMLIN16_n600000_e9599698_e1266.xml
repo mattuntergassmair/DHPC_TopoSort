@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurements>
+	<measurement>
+		<date>1452706653</date>
+		<errorCode>0</errorCode>
+		<numberOfThreads>6</numberOfThreads>
+		<processors>12</processors>
+		<hostname>e1266</hostname>
+		<totalTime>0.23267</totalTime>
+		<algorithm>worksteal</algorithm>
+		<graph>
+			<type>RANDOMLIN16</type>
+			<numberOfNodes>600000</numberOfNodes>
+			<numberOfEdges>9599698</numberOfEdges>
+			<depth>93</depth>
+		</graph>
+		<optimistic>true</optimistic>
+		<enableAnalysis>false</enableAnalysis>
+	</measurement>
+</measurements>

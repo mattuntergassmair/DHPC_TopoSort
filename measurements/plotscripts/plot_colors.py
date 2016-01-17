@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 
-import colortableau as ct
+import helper
 
-ncolors = np.shape(ct.myFGcolors)[0]
+ncolors = np.shape(helper.myFGcolors)[0]
 s = 0.8
 
 print "Number of Colors defined: ", ncolors
@@ -25,7 +25,7 @@ for i in range(0,ncolors):
 				(0.1+i*(0.1+s),0.1),	# (x,y)
 				s,			# width
 				s,			# height
-				facecolor=ct.getFGcolor(i)
+				facecolor=helper.getFGcolor(i)
 				)
 			)
 
@@ -35,7 +35,7 @@ for i in range(0,ncolors):
 				(0.1+i*(0.1+s),s+0.2),	# (x,y)
 				s,			# width
 				s,			# height
-				facecolor=ct.getBGcolor(i)
+				facecolor=helper.getBGcolor(i)
 				)
 			)
 
