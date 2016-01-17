@@ -23,6 +23,8 @@ public class Measurement {
     private boolean verbose;
     private boolean debug;
     private int errorCode;
+    
+    private String comment;
 
     public Measurement() {
 
@@ -43,6 +45,14 @@ public class Measurement {
 
     public void setNumberOfThreads(int numberOfThreads) {
         this.numberOfThreads = numberOfThreads;
+    }
+    
+    public String getComment() {
+        return this.comment;
+    }
+    
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public int getProcessors() {
@@ -149,7 +159,6 @@ public class Measurement {
             output += "\t thread\n";
             output += "\t\t id: " + temp.getId() + "\n";
             output += "\t\t processedNodes: " + temp.getProcessedNodes() + "\n";
-            output += "\t\t processedEdges: " + temp.getProcessedEdges() + "\n";
 
             output += "\t\t timings: \n";
             for (String key : temp.getTimings().keySet()) {

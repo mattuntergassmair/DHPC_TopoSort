@@ -69,7 +69,7 @@ public class DbManager {
                     + measurement.getDate() + ", "
                     + measurement.getNumberOfThreads() + ", "
                     + measurement.getProcessors() + ", "
-                    + "'', "
+                    + "'" + measurement.getComment() + "'" + ", "
                     + measurement.getTotalTime() + ", "
                     + "'" + measurement.getAlgorithm() + "'" + ", "
                     + "'" + measurement.getGraph().getType() + "'" + ", "
@@ -119,12 +119,11 @@ public class DbManager {
             
             stmt = connection.createStatement();
             String sql = "INSERT INTO threads ("
-                    + "measurement_id, thread_id, processed_nodes, processed_edges) "
+                    + "measurement_id, thread_id, processed_nodes) "
                     + "VALUES ("
                     + measurementId + ", "
                     + thread.getId() + ", "
-                    + thread.getProcessedNodes() + ", "
-										+ thread.getProcessedEdges()
+                    + thread.getProcessedNodes()
                     + ");";
 
             stmt.executeUpdate(sql);

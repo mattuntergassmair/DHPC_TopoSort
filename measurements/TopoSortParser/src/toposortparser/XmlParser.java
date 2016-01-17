@@ -62,6 +62,9 @@ public class XmlParser {
                         case "algorithm":
                             measurement.setAlgorithm(node.getTextContent());
                             break;
+                        case "comment":
+                            measurement.setComment(node.getTextContent());
+                            break;
                         case "threads":
                             parseThreads(node, measurement);
                             break;
@@ -125,9 +128,6 @@ public class XmlParser {
                             break;
                         case "processedNodes":
                             thread.setProcessedNodes(Integer.parseInt(threadChild.getTextContent()));
-                            break;
-                        case "processedEdges":
-                            thread.setProcessedEdges(Integer.parseInt(threadChild.getTextContent()));
                             break;
                         case "timings":
                             parseTimings(threadChild, thread);
