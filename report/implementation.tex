@@ -24,7 +24,7 @@ Load balancing is conveniently achieved using a dynamic scheduler.
 Notice that we actually refer to an array of booleans when using the term bitset. A space-efficient bitset is not thread-safe.
 
 
-\mypar{Efficient appending to the solution list}
+\mypar{Appending to the solution list}
 The algorithm proceeds front by front.
 %All nodes in the current front have already been visited by all their parent nodes. % This is actually an invariant, but never mind.
 %This is ensured by admitting only those child nodes to the next front, for which the current node is the last visiting parent node. % Maybe belongs to algorithm description
@@ -38,7 +38,7 @@ The optimization that is proposed here is simple: Every thread first inserts the
 Thereby, each thread grabs the lock only once per front and not for every node individually.
 For lists, appending another list can be done in constant time.
 
-\mypar{Efficiently decrementing and checking the parent counter}
+\mypar{Decrementing and checking the parent counter}
 In the parallel algorithm, every node has a parent counter that is initialized with the number of parent nodes.
 As explained before, a node may only be inserted if all its parents have visited it.
 Therefore, each parent has to decrement the parent counter to mark its visit and it has to check whether the parent counter is zero, i.e. whether it is the last visiting parent.
