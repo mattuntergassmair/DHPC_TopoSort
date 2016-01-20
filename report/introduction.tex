@@ -1,16 +1,19 @@
 \section{Introduction}\label{sec:intro}
 
 \mypar{Motivation}
-Topological sorting is used to yield a total order from a partial order. For example this is needed when serializing a set of tasks or jobs which depend on each other. Besides task-scheduling it can also be used by a linker to resolve software dependencies. During static code analysis the compiler can use topological sorting to rearrange different code slices. Another example is proving a parallel program sequentially consistent. A parallel implementation of a topological sorting algorithm is challenging, because of the high memory consumption of the algorithms. Since future applications of high performance computing shift towards memory bound problems, the need for a parallel topological algorithm dealing with memory limitation could become more important in the future.
+Topological sorting is used to yield a total order from a set of partial orders. For example this is needed for scheduling tasks which depend on other tasks. It can also be used by a linker to resolve software dependencies. Furthermore, a compiler can use topological sorting during static code analysis to rearrange different code slices.
+
+Like other graph algorithms, topological sorting is an example of a heavily memory bound problem. As such, parallelizing the topological sorting algorithm is challenging and relevant, as hardware trends suggest future applications of high performance computing to shift towards the memory bound realm.
+
 
 \mypar{Related work} 
 M.C. Er \cite{er1983parallel} proposed a parallel algorithm for topological sorting in 1983. This graph algorithm assigns every node a value in parallel. To ensure correctness a barrier is necessary after each node processed. The asymptotic runtime of this algorithm is limited by the longest distance between a source and a sink node. Unfortunately it is left unclear how to retrieve a topological sorting from the node values without sorting them. Furthermore it is not considered that nodes can be processed by several processes, which does not break correctness but decreases the performance. Also, there is no information about work balancing, such that the algorithm is not practicable in the proposed shape.
 
-Ma \cite{ma1997efficient} proposed an algorithm solving the problem using an adjacency matrix of the graph and calculating the transitive closure of that matrix. This results in an asymptotic runtime  of $\mathcal{O}(log^2 |V|)$ on $\mathcal{O}(|V|^3)$ processors, where $V$ is the set of vertices of the graph. This analysis uses the Parallel Random Access Machine (PRAM) model and because of the exponential growth of needed processors the algorithm is not useful in practise.
+Ma \cite{ma1997efficient} proposed an algorithm solving the problem using an adjacency matrix of the graph and calculating the transitive closure of that matrix. This results in an asymptotic runtime  of $\mathcal{O}(\log^2 |V|)$ on $\mathcal{O}(|V|^3)$ processors, where $V$ is the set of vertices of the graph. This analysis uses the Parallel Random Access Machine (PRAM) model and because of the exponential growth of needed processors the algorithm is not useful in practice.
 
 Both algorithms are proposed without code and have not been implemented by their authors.
 
-In this report a parallel algorithm based on the one by M.C. Er is proposed. It addresses the described issues preventing it from being of use in practice and has been implemented and evaluated.
+In this report we propose a parallel algorithm based on the one by M.C. Er. It addresses the described issues preventing it from being of use in practice and has been implemented and evaluated.
 
 
 \begin{invisible}
