@@ -1,7 +1,6 @@
 \section{Experimental Results}\label{sec:exp}
 %
 In this section, we present our experimental setup and the impact of the different optimizations and implementations described in the previous section.
-\par\medskip
 %
 \mypar{General note about the presented plots}
 In all the plots that are presented in this section the marker symbol locates the mean of each measurement while the variance of the data is shown as a probability density around that mean value.
@@ -14,7 +13,6 @@ A list of these single-threaded timings can be found in table \ref{tab:t1timings
 The discussion in this paper will focus on the topological sorting of a random graph with average node degree 32 and a base size of 1Mio nodes.\footnote{All plots in this section refer to graphs with 1Mio nodes except for the weak scaling graphs where the base size is 1Mio and the effective size in each execution is given by number~of~threads~$\times$~1Mio} 
 While the speedup of our algorithms highly depend on the graph type (and in particular on its density), the relative positioning of different optimization strategies is consistent between all the graphs that were tested. \\
 For a more comprehensive overview with more detailed scaling plots we refer to the projects Git repository (see link below).
-\par\medskip
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HARDWARE AND COMPILER
@@ -41,14 +39,15 @@ For a more comprehensive overview with more detailed scaling plots we refer to t
 The following experiments were run on a 24-core system consisting of 2 Intel Xeon E5 processors (see table \ref{tab:hardware}).
 Hyperthreading was not used for the benchmarks.
 The implementations were written in \Cpp, using OpenMP and GCC atomic built-in functions. The graph was stored in an adjacency list.
-\par\medskip
 
 
 
 \mypar{Effect of Optimization Strategies}
 How does the initial, naive code compare to code that was enhanced with the Node-Lookup, Worksteal and other optimizations?
 Figure \ref{fig:abstiming} shows the absolute timing of all the different algorithms that were implemented in this project.
-{\Large TODO: which ones give speedup, which ones don't?}
+\par\medskip
+{\Large TODO: discussion}
+\par\medskip
 %
 \begin{figure}[ht]
 	\centering
@@ -56,7 +55,6 @@ Figure \ref{fig:abstiming} shows the absolute timing of all the different algori
 	\caption{<+caption text+>}
 	\label{fig:abstiming}
 \end{figure}
-\par\medskip
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BENCHMARKS
@@ -65,8 +63,8 @@ Figure \ref{fig:abstiming} shows the absolute timing of all the different algori
 \mypar{Benchmarks of Optimization Strategies}
 So far we have seen that the Node-Lookup and Worksteal algorithms do in fact allow us to speed up the topological sorting by using multiple threads.
 Next we want to look at the scaling behavior of the optimized algorithms to see which ones perform better. \\
-The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and \ref{fig:strongscaling} respectively.
-
+The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and \ref{fig:strongscaling} respectively. Both plots confirm a relatively good scaling of both the Workstealing and the Node-Lookup techniques, with the Node-Lookup showing better scaling in both cases. \\
+%
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\columnwidth]{plots/weakscaling_gtRANDOMLIN32_n1000000_deg32.pdf}
@@ -78,22 +76,16 @@ The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and 
 }
 	\label{fig:weakscaling}
 \end{figure}
-
+%
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\columnwidth]{plots/strongscaling_gtRANDOMLIN_n1000000_deg32.pdf}
-	\caption{<+caption text+>}
+	\caption{The Node-Lookup algorithm again shows better scaling than the Worksteal algorithm. On 24 cores they achieve a speedup factor of 15x and 10x respectively.}
 	\label{fig:strongscaling}
 \end{figure}
+%
+However, bearing in mind the inherently serial nature of the topological sorting algorithm, both implementations can be viewed as very successful parallelizations with the Node-Lookup approach showing better timings and scaling than the Worksteal approach.
 
-
-
-
-\begin{invisible}
-
- Strong Scaling software graph 
-
-\end{invisible}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,8 +110,6 @@ However, the average node degree in such a software graph is very low meaning th
 In fact, figure \ref{fig:strongscaling_graphtypes} clearly shows how the scaling behavior of the algorithm gets better for graphs that have more edges per node.
 Nevertheless, even the random graph with average mode degree 32 that we used for our performance analysis is sparse since the number of edges $|E|$ in the graph is clearly much smaller than the maximum possible number of vertices $|V|(|V|-1)$ (in particular that the number of edges in the graph scale linearly with the graph size, $|E| \sim \mathcal{O} ( |V| )$). \\
 Although the analyzed graphs are somewhat artificial, the performance analysis that was carried out in this report should still be a good indicator of how the topological sorting algorithms would scale on real-world graphs with similar densities.
-To this point however, the performance of the algorithms on real-world graphs was not tested yet, and an investigation of such could be content of further research.
-\par\medskip
+To this point however, the performance of the algorithms on real-world graphs was not tested yet, and an investigation of such could be content of further research. \\
 %
 Plots for other graph types can be found in the repository of our project which is listed at the end of this report.
-\par\medskip

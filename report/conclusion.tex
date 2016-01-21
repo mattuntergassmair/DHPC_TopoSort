@@ -1,4 +1,8 @@
 \section{Conclusion}
+%
+In this report we have extended the theoretical considerations made in \cite{er1983parallel} and discussed as well as tested its parallel implementation.
+Both the Worksteal and the Node-Lookup approach can be considered successful parallelizations of the topological sorting algorithm, with the latter showing better absolute timings and scaling behavior for the graphs that were analyzed. \\
+Finally, one main finding of this project is that the efficiency of the parallelization highly depends on the graph type: if the graph is too sparse and each node has only very few outgoing edges, then the parallelizable portion of the algorithm shrinks and by Amdahl's law the synchronization overhead dominates the runtime resulting in bad scaling. \\
 
 \begin{invisible}
  \begin{itemize}
