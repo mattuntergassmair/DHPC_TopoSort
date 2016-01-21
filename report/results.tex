@@ -3,46 +3,56 @@
 In this section, we present our experimental setup and the impact of the different optimizations and implementations described in the previous section.
 \par\medskip
 %
-Figure \ref{fig:strongscaling_randomlin} shows the strong scaling behavior for the discussed algorithms.
+\begin{invisible}
+	Ist wahrscheinlich doch keine Gute Idee, das Abstiming zu plotten - die Schnellen Algorithmen haben fast identische laufzeiten und die anderen sind seeeeeeeeeehr schlecht
+\end{invisible}
+%
+\mypar{Dependency on Graph Type} Before discussing the differences between the algorithms that we implemented, we want to have a closer look at the input graphs.
+Figure \ref{fig:strongscaling_graphtypes} shows the strong scaling of the BITSET algorithm for several different input graphs:
+The multichain graphs consist of multiple chains of length 100 and 1000 respectively, \ldots and the software graph was constructed accorting to \ldots \\
+\begin{invisible}
+	{\Large TODO:} quick description of graphs here
+\end{invisible}
+It should be noted at this point that all of the analyzed graphs are artificial (i.e. they do not come from real-world datasets but are rather constructed to meet some requirements).
+The DAGs we used for our analysis are sparse, meaning that the number of edges $|E|$ in the graph is much smaller than the maximum number of vertices $|V|\cdot(|V|-1)$ and in particular that the number of edges in the graph scale linearly with the graph size, $|E| \sim \mathcal{O} ( |V| )$. \\
+It can be expected that the following performance analysis based on artificial graphs is a good indicator of how the presented topological sorting algorithms would scale for real-world graphs with similar parameters.
+To this point however, the performance of the algorithms on real-world graphs was not tested yet, and an investigation of such could be content of further research.
+\par\medskip
+%
+For the remaining performance analysis, only the random graph with node degree 16 is considered.
+Plots for other graph types can be found in the repository of our project which is listed at the end of this report.
+
+% \begin{figure}[ht]
+% 	\centering
+% 	\includegraphics[width=\columnwidth]{plots/abstiming_gtRANDOMLIN_n1000000_deg16.pdf}
+% 	\caption{<+caption text+>}
+% 	\label{fig:<+label+>}
+% \end{figure}
+ 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000.pdf}
+	\caption{<+caption text+>}
+	\label{fig:strongscaling_graphtypes}
+\end{figure}
+ 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/strongscaling_gtRANDOMLIN_n1000000_deg16.pdf}
+	\caption{<+caption text+>}
+	\label{fig:<+label+>}
+\end{figure}
+ 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/weakscaling_gtRANDOMLIN16_n1000000_deg16.pdf}
+	\caption{<+caption text+>}
+	\label{fig:<+label+>}
+\end{figure}
 
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/abstimings_comparison_gtSOFTWARE.pdf}
-	\caption{<+caption text+>}
-	\label{fig:<+label+>}
-\end{figure}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/abstimings_comparison_gtRANDOMLIN.pdf}
-	\caption{<+caption text+>}
-	\label{fig:<+label+>}
-\end{figure}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/strongscaling_gtRANDOMLIN.pdf}
-	\caption{<+caption text+>}
-	\label{fig:strongscaling_gtrandom}
-\end{figure}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/strongscaling_gtSOFTWARE.pdf}
-	\caption{<+caption text+>}
-	\label{fig:strongscaling_gtsoftware}
-\end{figure}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/weakscaling_gtRANDOMLIN.pdf}
-	\caption{<+caption text+>}
-	\label{fig:<+label+>}
-\end{figure}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/weakscaling_gtSOFTWARE.pdf}
-	\caption{<+caption text+>}
-	\label{fig:<+label+>}
-\end{figure}
- \mypar{Hardware and compiler}
+
+\mypar{Hardware and compiler}
   \begin{table}[h]
     \centering
     \begin{tabular}{ll}

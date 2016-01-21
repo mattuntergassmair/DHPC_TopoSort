@@ -16,7 +16,7 @@ def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere='
 	addline.addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
 	addline.addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
 	ax.plot([1,24],[1,1],'r--')
-	ax.legend(loc='upper left')
+	ax.legend(loc='upper right')
 	ax.minorticks_on()
 	
 	filename = helper.plotdir + 'weakscaling_gt' + allgraphtype + '_n' + str(allsize)
