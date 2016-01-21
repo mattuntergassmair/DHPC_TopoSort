@@ -20,7 +20,7 @@ INCDIR= -I$(BOOST_INCLUDEDIR)
 # FLAGS = -mmic -fopenmp -std=c++11 # XeonPhi
 
 
-ALGORITHMS = serial omp_tasks omp_locallist omp_bitset omp_worksteal omp_dynamic_nobarrier omp_bitset_global #omp_static_nobarrier omp_basic  # --> serial
+ALGORITHMS = serial omp_tasks omp_locallist omp_bitset omp_worksteal omp_dynamic_nobarrier omp_bitset_global omp_locallist_global omp_worksteal_global #omp_static_nobarrier omp_basic  # --> serial
 SUFFIX = _opt$(OPT)_an$(AN)
 EXECUTABLES = $(addprefix toposort_, $(ALGORITHMS)) # --> toposort_serial #.exe is appended later
 OBJECTS = $(addprefix graphsort_, $(addsuffix .o, $(ALGORITHMS))) # --> graphsort_serial.o
