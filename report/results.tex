@@ -13,7 +13,7 @@ The multichain graphs consist of multiple chains of length 100 and 1000 respecti
 \begin{invisible}
 	{\Large TODO:} quick description of graphs here
 \end{invisible}
-It should be noted at this point that all of the analyzed graphs are artificial (i.e. they do not come from real-world datasets but are rather constructed to meet some requirements).
+It should be noted that all of the analyzed graphs are artificial (i.e. they do not come from real-world datasets but are rather constructed to meet some requirements).
 The DAGs we used for our analysis are sparse, meaning that the number of edges $|E|$ in the graph is much smaller than the maximum number of vertices $|V|\cdot(|V|-1)$ and in particular that the number of edges in the graph scale linearly with the graph size, $|E| \sim \mathcal{O} ( |V| )$. \\
 It can be expected that the following performance analysis based on artificial graphs is a good indicator of how the presented topological sorting algorithms would scale for real-world graphs with similar parameters.
 To this point however, the performance of the algorithms on real-world graphs was not tested yet, and an investigation of such could be content of further research.
