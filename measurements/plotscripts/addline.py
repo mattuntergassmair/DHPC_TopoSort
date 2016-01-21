@@ -10,7 +10,7 @@ plt.style.use('ggplot')
 ###############################################################################
 # Absolute Timing
 ###############################################################################
-def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel'):
+def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,markertype='D-',linelabel='nolabel'):
 
 	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4}".format(algorithm,optimistic,graphtype,hostnamelike,size)
 
@@ -33,7 +33,7 @@ def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostna
 		avgtimings.append(np.mean(timings))
 
 	axis.plot(numthreads,avgtimings[0]/numthreads,'--',color=helper.getBGcolor(colorindex)) # ideal scaling
-	axis.plot(numthreads,avgtimings,'D-',markersize=4,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
+	axis.plot(numthreads,avgtimings,markertype,markersize=6,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
 
 
 
@@ -41,7 +41,7 @@ def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostna
 ###############################################################################
 # Strong Scaling
 ###############################################################################
-def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel',additionalwhere=''):
+def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,markertype='D-',linelabel='nolabel',additionalwhere=''):
 
 	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4} {5}".format(algorithm,optimistic,graphtype,hostnamelike,size,additionalwhere)
 
@@ -72,12 +72,12 @@ def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', ho
 
 	speedup = avgtimings[0]/avgtimings
 
-	axis.plot(numthreads,speedup,'D-',markersize=4,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
+	axis.plot(numthreads,speedup,markertype,markersize=6,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
 
 
 
 
-def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,linelabel='nolabel'):
+def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,markertype='D-',linelabel='nolabel'):
 
 	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4}*number_of_threads".format(algorithm,optimistic,graphtype,hostnamelike,size)
 
@@ -110,4 +110,4 @@ def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', host
 
 	speedup = avgtimings[0]/avgtimings
 
-	axis.plot(numthreads,speedup,'D-',markersize=4,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
+	axis.plot(numthreads,speedup,markertype,markersize=6,linewidth=1,color=helper.getFGcolor(colorindex),label=linelabel) # connecting dots
