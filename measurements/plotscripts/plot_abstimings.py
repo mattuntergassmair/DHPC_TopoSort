@@ -8,14 +8,12 @@ import addline
 def plotAbsTiming(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' AND total_time>0 ',suffix=''):
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
-	addline.addAbsTiming(axis=ax, algorithm='locallist', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Globallist')
-	addline.addAbsTiming(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier')
-	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Bitset Opt')
-	# addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt')
-	addline.addAbsTiming(axis=ax, algorithm='worksteal', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt')
-	# addline.addAbsTiming(axis=ax, algorithm='worksteal', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt')
-	#addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=5,linelabel='Bitset Global NoOpt')
-	#addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=5,linelabel='Bitset Global NoOpt')
+	#addline.addAbsTiming(axis=ax, algorithm='locallist_global', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Scatter-Gather Individual Atomic')
+	#addline.addAbsTiming(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='NoBarrier Individual Atomic')
+	addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='SingleAppend, Lock')
+	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='MultiAppend, Lock')
+	addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=3,linelabel='SingleAppend, Atomic')
+	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='MultiAppend, Atomic')
 	ax.legend(loc='upper left')
 	ax.minorticks_on()
 
@@ -40,8 +38,8 @@ def plotAbsTiming(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' A
 ############################################################
 # Call Plotting functions
 ############################################################
-plotAbsTiming(allsize=1000000,allgraphtype='SOFTWARE') # software graph
-plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=7999910',suffix='deg8') # degree 8
-plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=15999722',suffix='deg16') # degree 16
-plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=31998947',suffix='deg32') # degree 32
-plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=63995794',suffix='deg64') # degree 64
+#plotAbsTiming(allsize=1000000,allgraphtype='SOFTWARE') # software graph
+plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=29999064',suffix='deg30') # degree 30
+#plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=7999910',suffix='deg8') # degree 8
+#plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=15999722',suffix='deg16') # degree 16
+#plotAbsTiming(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=31998947',suffix='deg32') # degree 32

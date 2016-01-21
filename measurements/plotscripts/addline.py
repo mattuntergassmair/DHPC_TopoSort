@@ -10,9 +10,9 @@ plt.style.use('ggplot')
 ###############################################################################
 # Absolute Timing
 ###############################################################################
-def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,markertype='D-',linelabel='nolabel'):
+def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,markertype='D-',linelabel='nolabel', additionalwhere=''):
 
-	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4}".format(algorithm,optimistic,graphtype,hostnamelike,size)
+	fixedwhere = "enable_analysis=0 AND debug=0 AND verbose=0 AND processors>=number_of_threads AND algorithm='{0}' AND optimistic={1} AND graph_type='{2}' AND hostname LIKE '{3}' AND graph_num_nodes={4} {5}".format(algorithm,optimistic,graphtype,hostnamelike,size,additionalwhere)
 
 	numthreads = helper.getData('number_of_threads', fixedwhere + ' GROUP BY number_of_threads')
 
