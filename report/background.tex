@@ -8,12 +8,9 @@
  
 
 \mypar{Topological sorting}
- A directed acyclic graph (DAG) describes a partial order. A topological sorting is a total order on a DAG. Let $G = (V,E)$ be a DAG where $V$ is the set of vertices and $E$ is the set of edges. Formally a topological sorting is a function $ord: V \longrightarrow \{1,...,n\}$ where $n = |V|$ such that $\forall (v,w) \in E: ord(v) < ord(w)$ \cite[Chapter~9.1]{ottmann2012algorithmen}.
-\begin{invisible}
-Herausfinden, ob ord(v) < ord (w) oder $\leq$. Citation! Widmayer?
-\end{invisible}
+ A directed acyclic graph (DAG) describes a partial order. A topological sorting is a total order on a DAG. Let $G = (V,E)$ be a DAG where $V$ is the set of vertices and $E$ is the set of edges. Given $G$, a topological sorting is formally a function $ord: V \longrightarrow \{1,...,n\}$ where $n = |V|$ such that $\forall (v,w) \in E: ord(v) < ord(w)$ \cite[Chapter~9.1]{ottmann2012algorithmen}.
 
-Figure \ref{fig:ts-example} shows a DAG with a corresponding topological sorting: A,I,F,B,E,D,H,G,C. Even though every DAG has at least one topological sorting, in general there are many different topological sortings for the same graph.
+Figure \ref{fig:ts-example} shows a DAG for which one possible topological sorting is A,I,F,B,E,D,H,G,C. Every DAG has at least one topological sorting, but in general there are many different topological sortings for the same graph.
 
 \begin{figure}[!hbp]
  \centering
@@ -50,9 +47,7 @@ Figure \ref{fig:ts-example} shows a DAG with a corresponding topological sorting
 \label{fig:ts-example}
 \end{figure}
 
-Topological sortings can be  used to schedule tasks based on their dependencies. Every vertex represents a task and the edges represent the relation between the tasks.
-
-Although the results of the breadth-first-search (BFS) algorithm seem to be similar to topological sortings, they are not equivalent. The difference between the results of BFS and a topological sorting is, that a topological sorting is a total order with respect to the partial order represented by the input graph. In contrast, the traversal sequence of a BFS (and DFS) generally don’t correspond to a total order induced by a DAG. A simple example is shown in figure \ref{fig:diff-bfs}. The visiting sequence A,C,B is valid in BFS but is not a topological sorting. The only valid topological sorting for the example graph is A,B,C.
+Although the results of the breadth-first-search (BFS) algorithm seem to be similar to topological sortings, they are not equivalent. A topological sorting is a total order with respect to the partial order represented by the input graph. In contrast, the traversal sequences of a BFS (and DFS) generally don’t correspond to a total order induced by a DAG. A simple example is shown in figure \ref{fig:diff-bfs}. The visiting sequence A,C,B is a possible traversal sequence in BFS but is not a topological sorting. The only valid topological sorting for this graph is A,B,C.
 
 
 \begin{figure}[!hbp]
@@ -78,7 +73,7 @@ Although the results of the breadth-first-search (BFS) algorithm seem to be simi
 \label{fig:diff-bfs}
 \end{figure}
 
-A sequential algorithm yielding a topological sorting has been suggested by Kahn \cite{kahn1962topological}. Another algorithm has been published by Tarjan  \cite{tarjan1976edge} and is based on a DFS with backtracking. Topological sorting has an asymptotic complexity of $\mathcal{O}(|V|+|E|)$ \cite[Chapter~22.4]{cormen2001introduction}. 
+Topological sorting has an asymptotic complexity of $\mathcal{O}(|V|+|E|)$ \cite[Chapter~22.4]{cormen2001introduction}. Sequential algorithms have been published by Kahn \cite{kahn1962topological} and by Tarjan  \cite{tarjan1976edge}. The latter is based on a DFS with backtracking.
 
  \mypar{Parallel algorithm}
  In 1983 M. C. Er \cite{er1983parallel} came up with a parallel approach to retrieve a topological sorting. The algorithm works in 5 steps:
@@ -86,20 +81,18 @@ A sequential algorithm yielding a topological sorting has been suggested by Kahn
         \item Build the graph from the given partial order (optional if the problem is already stated as a graph).
         \item Add a special node value to every node and initialize it to zero
         \item Visit all source nodes (nodes with an indegree of zero) and set their node values to one.
-        \item Start from all source nodes in parallel and proceed for all successor nodes as follows: Let $N_p$ be the node value of the current source node and $N_s$ the node value of the currently observed successor node. Then the algorithm checks if $N_s \leq N_p$ and sets the value of the successor to $N_p + 1$, if so. This step is iterated until there are no further successor nodes. 
+        \item Let all source nodes be front nodes. For all child nodes of the front nodes, proceed in parallel as follows: Let $N_f$ be the node value of a front node and $N_c$ the node value of a child node. If $N_f \leq N_c$, the value of the child is set to $N_f + 1$. After all child nodes have been processed, denote all child nodes as the new front nodes. Repeat this step until there are no further child nodes. 
         \item List all the nodes in ascending order of node values.
  \end{enumerate}
+ 
+To avoid a race condition by concurrent writes to a node’s value, M. C. Er proposes a synchronization after every iteration of step 4. Therefore, any two threads would write the same number to a node’s value, because the barrier ensures that all threads are in the same iteration. This comes at the price of a lower performance, but avoids locking the node's value. However, node values might be rewritten by multiple threads that "follow" each other. For example, in figure \ref{fig:ts-example}, nodes H, G and C could receive the values 2,3,4 initially, but would eventually be overwritten with the values 4,5,6
 
-To avoid a race condition by concurrent writes to a node’s value, M. C. Er proposes a synchronization after every step. Therefore, any two threads would write the same number to a node’s value, because the barrier ensures that all threads are in the same step. This comes at the price of a lower performance. Node values might be rewritten by multiple threads that "follow" each other. For example, in figure \ref{fig:ts-example}, node H, G and C could receive the values 2,3,4 initially, but would eventually be overwritten with the values 4,5,6
-
-
-The asymptotic parallel runtime of the above algorithm is described by M. C. Er as $\mathcal{O}(D_{max})$, where $D_{max}$ is defined as the maximum distance between a source node and a sink node. This runtime is hard to achieve in practice if one implements step 5 of the algorithm via sorting the nodes with respect to their values. It is not mentioned by M. C. Er how to create the result list of step 5.
-
+The asymptotic parallel runtime of the above algorithm is stated by M. C. Er as $\mathcal{O}(D_{max})$, where $D_{max}$ is defined as the maximum distance between a source node and a sink node. This runtime is hard to achieve in practice if one implements step 5 of the algorithm via sorting the nodes with respect to their values. It is not mentioned by M. C. Er how to create the result list of step 5.
 
 \mypar{Improvements}
-We propose not to use node values, but to directly put the node into the solution list. This avoids sorting the nodes by their value at the end. Also the barriers are not necessary anymore. However, it must be made sure that no node is written more than once to the result list and race conditions while writing to the solution list must be avoided.
+We propose not to use node values, but to directly put the node into the solution list. This avoids sorting the nodes by their value at the end. However, it must be made sure that no node is written more than once to the result list and race conditions while writing to the solution list must be avoided.
 
-Furthermore, we introduce a parent counter to address the problem of several processes following the same path. The parent counter is initialized to the number of parent nodes. During the algorithm each thread arriving at a node will decrease the counter by one. It will only process the node if the parent counter is zero. Thus a node will be processed only by the last arriving thread. It has to be taken care of the race condition while updating the parent counter.
+Furthermore, we introduce a parent counter to address the problem of several threads processing the same nodes. For each node, the parent counter is initialized to the number of parent nodes. During the algorithm each thread arriving at a node will decrease the counter by one. It will only process the node if the parent counter is zero. Thus a node will be processed only by the last arriving thread. Care has to be taken of the race condition while updating the parent counter.
 
 
 
