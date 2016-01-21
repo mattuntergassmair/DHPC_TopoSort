@@ -3,55 +3,22 @@
 In this section, we present our experimental setup and the impact of the different optimizations and implementations described in the previous section.
 \par\medskip
 %
-\begin{invisible}
-	Ist wahrscheinlich doch keine Gute Idee, das Abstiming zu plotten - die Schnellen Algorithmen haben fast identische laufzeiten und die anderen sind seeeeeeeeeehr schlecht
-\end{invisible}
-%
-\mypar{Dependency on Graph Type} Before discussing the differences between the algorithms that we implemented, we want to have a closer look at the input graphs.
-Figure \ref{fig:strongscaling_graphtypes} shows the strong scaling of the BITSET algorithm for several different input graphs:
-The multichain graphs consist of multiple chains of length 100 and 1000 respectively, \ldots and the software graph was constructed accorting to \ldots \\
-\begin{invisible}
-	{\Large TODO:} quick description of graphs here
-\end{invisible}
-It should be noted that all of the analyzed graphs are artificial (i.e. they do not come from real-world datasets but are rather constructed to meet some requirements).
-The DAGs we used for our analysis are sparse, meaning that the number of edges $|E|$ in the graph is much smaller than the maximum number of vertices $|V|\cdot(|V|-1)$ and in particular that the number of edges in the graph scale linearly with the graph size, $|E| \sim \mathcal{O} ( |V| )$. \\
-It can be expected that the following performance analysis based on artificial graphs is a good indicator of how the presented topological sorting algorithms would scale for real-world graphs with similar parameters.
-To this point however, the performance of the algorithms on real-world graphs was not tested yet, and an investigation of such could be content of further research.
+\mypar{General note about the presented plots}
+In all the plots that are presented in this section the marker symbol locates the mean of each measurement while the variance of the data is shown as a probability density around that mean value.
+For the computation of the speedup on $n$ threads defined as $t_1/t_n$ the mean value of the one-threaded timing $t_1$ of the parallel code was used.
+A list of these single-threaded timings can be found in table \ref{tab:t1timings}. 
 \par\medskip
-%
-For the remaining performance analysis, only the random graph with node degree 16 is considered.
-Plots for other graph types can be found in the repository of our project which is listed at the end of this report.
+{\Large TODO: timing table}
+\par\medskip
+(the 95\% confidence interval of each set of measurements of $t_1$ is less than $\pm 10\%$ around the mean). \\
+The discussion in this paper will focus on the topological sorting of a random graph with average node degree 32 and a base size of 1Mio nodes.\footnote{All plots in this section refer to graphs with 1Mio nodes except for the weak scaling graphs where the base size is 1Mio and the effective size in each execution is given by number~of~threads~$\times$~1Mio} 
+While the speedup of our algorithms highly depend on the graph type (and in particular on its density), the relative positioning of different optimization strategies is consistent between all the graphs that were tested. \\
+For a more comprehensive overview with more detailed scaling plots we refer to the projects Git repository (see link below).
+\par\medskip
 
-% \begin{figure}[ht]
-% 	\centering
-% 	\includegraphics[width=\columnwidth]{plots/abstiming_gtRANDOMLIN_n1000000_deg16.pdf}
-% 	\caption{<+caption text+>}
-% 	\label{fig:<+label+>}
-% \end{figure}
- 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000.pdf}
-	\caption{<+caption text+>}
-	\label{fig:strongscaling_graphtypes}
-\end{figure}
- 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/strongscaling_gtRANDOMLIN_n1000000_deg16.pdf}
-	\caption{<+caption text+>}
-	\label{fig:<+label+>}
-\end{figure}
- 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\columnwidth]{plots/weakscaling_gtRANDOMLIN16_n1000000_deg16.pdf}
-	\caption{<+caption text+>}
-	\label{fig:<+label+>}
-\end{figure}
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HARDWARE AND COMPILER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \mypar{Hardware and compiler}
   \begin{table}[h]
     \centering
@@ -71,30 +38,88 @@ Plots for other graph types can be found in the repository of our project which 
     \label{tab:hardware}
   \end{table}
  
- The following experiments were run on a 24-core system consisting of 2 Intel Xeon E5 processors (see table \ref{tab:hardware}).
- Hyperthreading was not used for the benchmarks.
- The implementations were written in \Cpp, using OpenMP and GCC atomic built-in functions. The graph was stored in an adjacency list.
+The following experiments were run on a 24-core system consisting of 2 Intel Xeon E5 processors (see table \ref{tab:hardware}).
+Hyperthreading was not used for the benchmarks.
+The implementations were written in \Cpp, using OpenMP and GCC atomic built-in functions. The graph was stored in an adjacency list.
+\par\medskip
+
+
+
+\mypar{Effect of Optimization Strategies}
+How does the initial, naive code compare to code that was enhanced with the Node-Lookup, Worksteal and other optimizations?
+Figure \ref{fig:abstiming} shows the absolute timing of all the different algorithms that were implemented in this project.
+{\Large TODO: which ones give speedup, which ones don't?}
+%
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/abstiming_gtRANDOMLIN_n1000000_deg16.pdf}
+	\caption{<+caption text+>}
+	\label{fig:abstiming}
+\end{figure}
+\par\medskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BENCHMARKS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mypar{Benchmarks of Optimization Strategies}
+So far we have seen that the Node-Lookup and Worksteal algorithms do in fact allow us to speed up the topological sorting by using multiple threads.
+Next we want to look at the scaling behavior of the optimized algorithms to see which ones perform better. \\
+The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and \ref{fig:strongscaling} respectively.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/weakscaling_gtRANDOMLIN32_n1000000_deg32.pdf}
+	\caption{The base size of the graphs in this weak scaling plot is 1Mio nodes.
+		The Node-Lookup algorithm achieves the best performance and is only roughly 3 times slower at sorting a 24Mio node graph on 24 threads than in the base case. The Worksteal implementation takes approx. 5 times longer than the base case. \\
+	It can also be noted that there is a relatively high speedup drop between 12 and 13 threads.
+	This can be explained by the hardware on which the program is run. In fact, there are 24 cores but only 12 of them are on the same socket.
+	Also the variance of the timings almost vanishes thread numbers higher than 12.
+}
+	\label{fig:weakscaling}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/strongscaling_gtRANDOMLIN_n1000000_deg32.pdf}
+	\caption{<+caption text+>}
+	\label{fig:strongscaling}
+\end{figure}
+
+
+
+
 \begin{invisible}
 
- \mypar{Benchmarks}
- For each item, mention graph type, number of nodes, node degree, optimizations from above
- \begin{itemize}
-  \item Influence of barrier. Introduce multichain graph, Strong Scaling dynamic nobarrier opt2 MULTICHAIN100 vs bitset global opt1 MULTICHAIN100 Why Multichain100: Should be dominated by barrier%bitset_global is bitset without local solutions, because dynamic_nobarrier has no local solutions
-  \item Influence of local solution. Strong Scaling bitset MULTICHAIN10000 vs bitset global MULTICHAIN10000 Why Multichain10000: Should be dominated by pushbacks to solution
-  \item Influence of atomic counter check. Strong Scaling RANDOMLIN 100000 opt = true vs opt = false for worksteal and bitset
-  \item Strong Scaling software graph \cite{musco2014generative}
-  \item Strong Scaling random graph with different degrees
-  \item Vertex Scaling plot random graph
- \end{itemize}
+ Strong Scaling software graph 
 
-\mypar{Results}
-
-Questions to each plot
-\begin{itemize}
- \item What is the performance penalty of the barrier?
- \item How well performs the local solution compared to locking the 
- \item How does the atomic counter check scale compared to the locked version?
- \item How does the best version of our code scale on a real-world example?
- \item How does the best version of our code scale in a slightly artificial scenario?
-\end{itemize}
 \end{invisible}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GRAPH TYPES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mypar{Dependency on Graph Type} As mentioned in the introduction to this section, we chose to focus our analysis to a random graph of node degree 32.
+	For a 
+%
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000.pdf}
+	\caption{Strong scaling of the Node-Lookup algorithm for several different input graphs of size 1Mio nodes. The scaling is better for random graphs with higher node degree than for those with low node degree.
+		The software graph (average node degree approx. 2) achieves a speedup of roughly 6x on 10 threads but does not scale any further.
+}
+	\label{fig:strongscaling_graphtypes}
+\end{figure}
+%
+Figure \ref{fig:strongscaling_graphtypes} shows the strong scaling of the Node-Lookup algorithm for several different input graphs.
+It should be noted that all of the analyzed graphs are artificial (i.e. they do not come from real-world datasets but are rather constructed to meet some requirements).
+However, the construction of the software graph was done according to the description in \cite{musco2014generative} and should to some extend be a realistic emulation of a real world software graph. \\
+However, the average node degree in such a software graph is very low meaning that the overhead required to synchronize the threads becomes large compared to the work that needs to be performed which in turn destroys most of the parallelism. \\
+In fact, figure \ref{fig:strongscaling_graphtypes} clearly shows how the scaling behavior of the algorithm gets better for graphs that have more edges per node.
+Nevertheless, even the random graph with average mode degree 32 that we used for our performance analysis is sparse since the number of edges $|E|$ in the graph is clearly much smaller than the maximum possible number of vertices $|V|(|V|-1)$ (in particular that the number of edges in the graph scale linearly with the graph size, $|E| \sim \mathcal{O} ( |V| )$). \\
+Although the analyzed graphs are somewhat artificial, the performance analysis that was carried out in this report should still be a good indicator of how the topological sorting algorithms would scale on real-world graphs with similar densities.
+To this point however, the performance of the algorithms on real-world graphs was not tested yet, and an investigation of such could be content of further research.
+\par\medskip
+%
+Plots for other graph types can be found in the repository of our project which is listed at the end of this report.
+\par\medskip

@@ -34,7 +34,7 @@ def mean_and_confdev(data, confidence=0.95):
 confidence = 0.95
 
 plotdir = "plots/";
-show = True
+show = False
 
 
 def getData(field, wherestring):

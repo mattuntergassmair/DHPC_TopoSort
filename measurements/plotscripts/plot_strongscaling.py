@@ -9,11 +9,11 @@ import addline
 def plotStrongScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' AND total_time>0 ',suffix=''):
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
-	addline.addStrongScaling(axis=ax, algorithm='locallist', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Globallist',additionalwhere=alladditionalwhere)
-	addline.addStrongScaling(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier',additionalwhere=alladditionalwhere)
-	addline.addStrongScaling(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Bitset Opt',additionalwhere=alladditionalwhere)
-	addline.addStrongScaling(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='Bitset NoOpt',additionalwhere=alladditionalwhere)
-	addline.addStrongScaling(axis=ax, algorithm='worksteal', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal Opt',additionalwhere=alladditionalwhere)
+	addline.addStrongScaling(axis=ax, algorithm='locallist', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Scatter-Gather',additionalwhere=alladditionalwhere)
+	# addline.addStrongScaling(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier',additionalwhere=alladditionalwhere)
+	addline.addStrongScaling(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Node-Lookup Atomic',additionalwhere=alladditionalwhere)
+	addline.addStrongScaling(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=4,linelabel='Node-Lookup Lock',additionalwhere=alladditionalwhere)
+	addline.addStrongScaling(axis=ax, algorithm='worksteal', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal CAS',additionalwhere=alladditionalwhere)
 	addline.addStrongScaling(axis=ax, algorithm='worksteal', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=5,linelabel='Worksteal NoOpt',additionalwhere=alladditionalwhere)
 	ax.plot(range(1,24),range(1,24),'r--') # ideal scaling
 	ax.legend(loc='upper left')
@@ -55,8 +55,8 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 allalgorithm = 'bitset'
 allsize = 1000000
-addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='MULTICHAIN100', hostnamelike='e%',colorindex=1,markertype='o-',linelabel='MultiChain 100')
-addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='MULTICHAIN10000', hostnamelike='e%',colorindex=1,markertype='p-',linelabel='MultiChain 1000')
+# addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='MULTICHAIN100', hostnamelike='e%',colorindex=1,markertype='o-',linelabel='MultiChain 100')
+# addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='MULTICHAIN10000', hostnamelike='e%',colorindex=1,markertype='p-',linelabel='MultiChain 1000')
 # addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN8', hostnamelike='e%',colorindex=1,markertype='s-',linelabel='Random (Deg8)')
 # addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN16', hostnamelike='e%',colorindex=1,markertype='v-',linelabel='Random (Deg16)')
 # addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN32', hostnamelike='e%',colorindex=1,markertype='D-',linelabel='Random (Deg32)')
