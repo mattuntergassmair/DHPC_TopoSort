@@ -42,14 +42,29 @@ Figure \ref{fig:strongscaling_randomlin} shows the strong scaling behavior for t
 	\caption{<+caption text+>}
 	\label{fig:<+label+>}
 \end{figure}
-
+ \mypar{Hardware and compiler}
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+    \toprule
+    Processor        & Intel Xeon E5-2697 (Ivy bridge) \\
+    Max. clock rate  & 3.5 GHz (with TurboBoost)\\
+    \# Sockets       & 2 \\
+    Cores / socket   & 12 \\
+    Threads / socket & 24 \\
+    LLC / socket     & 30 MB \\
+    \midrule
+    Compiler and flags & GCC 4.8.2, -O3\\
+    \bottomrule
+    \end{tabular}
+    \caption{Hardware and compiler used for benchmarks}
+    \label{tab:hardware}
+  \end{table}
+ 
+ The following experiments were run on a 24-core system consisting of 2 Intel Xeon E5 processors (see table \ref{tab:hardware}).
+ Hyperthreading was not used for the benchmarks.
+ The implementations were written in \Cpp, using OpenMP and GCC atomic built-in functions. The graph was stored in an adjacency list.
 \begin{invisible}
-	{\Large \color{red} Hardware and compiler}
- \mypar{Experimental setup}
- \Cpp  OpenMP
- (processor, frequency, maybe OS, maybe cache sizes)
- compiler, version, and flags used.
- %TODO: Should we play with optimization flags?
 
  \mypar{Benchmarks}
  For each item, mention graph type, number of nodes, node degree, optimizations from above
