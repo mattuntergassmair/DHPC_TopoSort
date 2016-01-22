@@ -37,7 +37,7 @@ As a consequence, the nodes can be appended to the solution concurrently without
 Still, the solution list has to be locked for every appending of a node, which is not optimal.
 
 The optimization that we propose here is simple: Every thread first inserts the nodes in a thread-local list and then appends the whole local list to the solution list.
-Thereby, each thread grabs the lock only once per front and not for every node individually.
+Thanks to this batch-insertion, each thread grabs the lock only once per front and not for every node individually.
 For lists, appending another list can be done in constant time.
 
 \mypar{Decrementing and checking the parent counter}

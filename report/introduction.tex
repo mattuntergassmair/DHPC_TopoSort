@@ -1,7 +1,8 @@
 \section{Introduction}\label{sec:intro}
 
 \mypar{Motivation}
-Topological sorting is used to yield a total order from a set of partial orders. For example this is needed to schedule tasks which depend on other tasks. It can also be used by a linker to resolve software dependencies. Furthermore, a compiler can use topological sorting during static code analysis to rearrange different code slices.
+Topological sorting is used to yield a total order from a set of partial orders. In general, topological sorting can always be used if dependencies need to be resolved. For example 
+ a linker can use topological sorting to resolve software dependencies. Furthermore, a compiler needs to resolve dependencies during static code analysis to rearrange different code slices.
 
 Like other graph algorithms, topological sorting is a heavily memory bound problem. As such, even though it has not received much scientific attention, parallelizing the topological sorting algorithm is challenging and relevant, as hardware trends suggest future applications of high performance computing to shift towards the memory bound realm.
 
