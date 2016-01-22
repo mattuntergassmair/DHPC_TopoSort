@@ -12,7 +12,7 @@ A list of these single-threaded timings can be found in table \ref{tab:t1timings
 (the 95\% confidence interval of each set of measurements of $t_1$ is less than $\pm 10\%$ around the mean). \\
 The discussion in this paper will focus on the topological sorting of a random graph with average node degree 32 and a base size of 1Mio nodes.\footnote{All plots in this section refer to graphs with 1Mio nodes except for the weak scaling graphs where the base size is 1Mio and the effective size in each execution is given by number~of~threads~$\times$~1Mio} 
 While the speedup of our algorithms highly depend on the graph type (and in particular on its density), the relative positioning of different optimization strategies is consistent between all the graphs that were tested. \\
-For a more comprehensive overview with more detailed scaling plots we refer to the projects Git repository (see link below).
+For a more comprehensive overview with more detailed scaling plots we refer to the project's Git repository (see link below).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HARDWARE AND COMPILER
@@ -63,7 +63,8 @@ Figure \ref{fig:abstiming} shows the absolute timing of all the different algori
 \mypar{Benchmarks of Optimization Strategies}
 So far we have seen that the Node-Lookup and Worksteal algorithms do in fact allow us to speed up the topological sorting by using multiple threads.
 Next we want to look at the scaling behavior of the optimized algorithms to see which ones perform better. \\
-The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and \ref{fig:strongscaling} respectively. Both plots confirm a relatively good scaling of both the Workstealing and the Node-Lookup techniques, with the Node-Lookup showing better scaling in both cases. \\
+The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and \ref{fig:strongscaling} respectively.
+Both plots confirm a relatively good scaling of both the Workstealing and the Node-Lookup techniques, with the Node-Lookup showing better absolute timing and better scaling in both cases. \\
 %
 \begin{figure}[ht]
 	\centering
@@ -84,15 +85,21 @@ The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and 
 	\label{fig:strongscaling}
 \end{figure}
 %
-However, bearing in mind the inherently serial nature of the topological sorting algorithm, both implementations can be viewed as very successful parallelizations with the Node-Lookup approach showing better timings and scaling than the Worksteal approach.
+However, bearing in mind the inherently serial nature of the topological sorting algorithm, both implementations can be viewed as very successful parallelizations as compared to the simple Scatter-Gather approach.
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % GRAPH TYPES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\mypar{Dependency on Graph Type} As mentioned in the introduction to this section, we chose to focus our analysis to a random graph of node degree 32.
-	For a 
+\mypar{Dependency on Graph Type} So far, our analysis only considered a sparse random graph of average node degree 32.
+Next, we want to look at the performance of parallel topological sorting applied to other graph types.
+All the graphs we analyzed for this purpose were sparse with the number of edges $|E|$ much smaller than the maximum possible number of vertices $|V|(|V|-1)$.
+In particular, the the number of edges in the graph scales linearly with the graph size, $|E| \sim \mathcal{O} ( |V| )$). \\
+It should also be noted that all of the analyzed graphs are artificial (i.e. they do not come from real-world datasets but are rather constructed to meet some requirements).
+Nevertheless, the performance analysis that was carried out in this report should still be a good indicator of how the topological sorting algorithms would scale on real-world graphs with similar densities. \\
+The strong scaling of the Node-Lookup algorithm for several different input graphs is presented in Figure \ref{fig:strongscaling_graphtypes}.
+In fact, it clearly shows how the scaling behavior of the algorithm gets better for graphs with higher density, i.e. more edges per node.
 %
 \begin{figure}[ht]
 	\centering
@@ -103,13 +110,7 @@ However, bearing in mind the inherently serial nature of the topological sorting
 	\label{fig:strongscaling_graphtypes}
 \end{figure}
 %
-Figure \ref{fig:strongscaling_graphtypes} shows the strong scaling of the Node-Lookup algorithm for several different input graphs.
-It should be noted that all of the analyzed graphs are artificial (i.e. they do not come from real-world datasets but are rather constructed to meet some requirements).
-However, the construction of the software graph was done according to the description in \cite{musco2014generative} and should to some extend be a realistic emulation of a real world software graph. \\
-However, the average node degree in such a software graph is very low meaning that the overhead required to synchronize the threads becomes large compared to the work that needs to be performed which in turn destroys most of the parallelism. \\
-In fact, figure \ref{fig:strongscaling_graphtypes} clearly shows how the scaling behavior of the algorithm gets better for graphs that have more edges per node.
-Nevertheless, even the random graph with average mode degree 32 that we used for our performance analysis is sparse since the number of edges $|E|$ in the graph is clearly much smaller than the maximum possible number of vertices $|V|(|V|-1)$ (in particular that the number of edges in the graph scale linearly with the graph size, $|E| \sim \mathcal{O} ( |V| )$). \\
-Although the analyzed graphs are somewhat artificial, the performance analysis that was carried out in this report should still be a good indicator of how the topological sorting algorithms would scale on real-world graphs with similar densities.
-To this point however, the performance of the algorithms on real-world graphs was not tested yet, and an investigation of such could be content of further research. \\
+The software graph was constructed according to the description in \cite{musco2014generative} and should to some extend be a realistic emulation of a real world software graph. \\
+The average node degree in such a software graph is very low meaning that the overhead required to synchronize the threads becomes large compared to the work that needs to be performed which in turn destroys most of the parallelism. \\
 %
-Plots for other graph types can be found in the repository of our project which is listed at the end of this report.
+While similar results can be expected for real-world graphs with similar densities, the performance of the algorithms on such graphs was not tested yet and an investigation of such could be content of further research.
