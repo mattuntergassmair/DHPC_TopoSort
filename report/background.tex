@@ -47,7 +47,9 @@ Figure \ref{fig:ts-example} shows a DAG for which one possible topological sorti
 \label{fig:ts-example}
 \end{figure}
 
-Although the results of the breadth-first-search (BFS) algorithm seem to be similar to topological sortings, they are not equivalent. A topological sorting is a total order with respect to the partial order represented by the input graph. In contrast, the traversal sequences of a BFS (and DFS) generally don’t correspond to a total order induced by a DAG. A simple example is shown in figure \ref{fig:diff-bfs}. The visiting sequence A,C,B is a possible traversal sequence in BFS but is not a topological sorting. The only valid topological sorting for this graph is A,B,C.
+Although the results of the breadth-first-search (BFS) algorithm seem to be similar to topological sortings, they are not equivalent. A topological sorting is a total order with respect to the partial order represented by the input graph. In contrast, the traversal sequences of a BFS (and DFS) generally don’t correspond to a total order induced by a DAG. 
+In particular, each node only has to be visited once in BFS - an assumption that does not hold for topological sorting. As a consequence, many of the ideas that are used in parallel BFS (such as the ones presented in \cite{bulucc2011parallel} and \cite{beamer2013direction}) cannot be directly transfered to topological sorting. \\
+A simple example is shown in figure \ref{fig:diff-bfs}. The visiting sequence A,C,B is a possible traversal sequence in BFS but is not a topological sorting. The only valid topological sorting for this graph is A,B,C.
 
 
 \begin{figure}[!hbp]
@@ -92,7 +94,7 @@ The asymptotic parallel runtime of the above algorithm is stated by M. C. Er as 
 \mypar{Improvements}
 We propose not to use node values, but to directly put the node into the solution list. This avoids sorting the nodes by their value at the end. However, it must be made sure that no node is written more than once to the result list and race conditions while writing to the solution list must be avoided.
 
-Furthermore, we introduce a parent counter to address the problem of several threads processing the same nodes. For each node, the parent counter is initialized to the number of parent nodes. During the algorithm each thread arriving at a node will decrease the counter by one. It will only process the node if the parent counter is zero. Thus a node will be processed only by the last arriving thread. Care has to be taken of the race condition while updating the parent counter.
+Furthermore, we introduce a \emph{parent counter} to address the problem of several threads processing the same nodes and ``following'' each other throught the graph. For each node, the parent counter is initialized to the number of parent nodes. During the algorithm each thread arriving at a node will decrease the counter by one. It will only process the node if the parent counter is zero. Thus a node will be processed only by the last arriving thread. Care has to be taken of the race condition while updating the parent counter.
 
 
 

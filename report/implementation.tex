@@ -8,27 +8,27 @@ Especially, we show how to ensure load balancing, how to efficiently append node
 \mypar{Parallelization and load balancing}
 Parallelization is achieved by distributing the nodes in the front among the threads. We experimented with three implementations.
 
-Firstly, the ``Scatter-Gather'' implementation, represents the front using a linked list of node (pointers). Initially, the source nodes are inserted into this list.
+Firstly, the \emph{``Scatter-Gather''} implementation, represents the front using a linked list of node (pointers). Initially, the source nodes are inserted into this list.
 Following an idea described in \cite{bulucc2011parallel}, the nodes in the front are scattered among the threads, such that each thread owns a thread-local list,
 that represents its share of the nodes in the front.
 Child nodes for the next front are first inserted to another thread-local list.
 When the whole front was processed, one thread gathers all thread-local lists and redistributes the new child nodes among the threads.
 Redistribution for each front already yields some level of load balancing.
 
-Secondly, the ``Worksteal'' implementation further refines load balancing using a work stealing policy.
-If one thread runs out of nodes within a front, it can steal nodes from another thread that has not finished yet.
+Secondly, the \emph{``Worksteal''} implementation further refines load balancing using a work stealing policy.
+If one thread runs out of nodes within a front (i.e. the thread-local node list is empty), it can steal nodes from another thread that has not finished yet. In our implementation we randomly select the thread from which to steal.
 
-Thirdly, the ``Node-Lookup'' implementation represents the front using a array of boolean flags, as used in the context of BFS in \cite{agarwal2010scalable} or \cite{beamer2013direction}. The size of the bitset is equal to the number of nodes.
+Thirdly, the \emph{``Node-Lookup''} implementation represents the front using an array of boolean flags, as used in the context of BFS in \cite{agarwal2010scalable} or \cite{beamer2013direction}. The size of the bitset is equal to the number of nodes.
 The last parent visiting a child node sets the child nodes' flag to true. Parallelization is then enabled by parallelizing the loop over the bitset.
 Load balancing is conveniently achieved using a dynamic scheduler.
-Notice that we cannot use a space-efficient bitset, because is not thread-safe.
+Notice that we cannot use a space-efficient bitset for the parallel implementation, because is not thread-safe.
 
 \mypar{Appending to the solution list}
 %All nodes in the current front have already been visited by all their parent nodes. % This is actually an invariant, but never mind.
 %This is ensured by admitting only those child nodes to the next front, for which the current node is the last visiting parent node. % Maybe belongs to algorithm description
 Nodes can be added to the global solution list, if they are in the current front.
-The order among the nodes on one front does not matter for the topological sorting,
-because one node cannot be a parent of another node in the current front since all nodes in the current front have been visited by all of their parent nodes, 
+The order among the nodes on one front does not matter for the topological sorting:
+By construction of our algorithm, the front only contains nodes that have already been visited by all their parents (parent counter). Thus, one node cannot be parent of another node in the current front.
 As a consequence, the nodes can be appended to the solution concurrently without any restrictions on the order.
 Still, the solution list has to be locked for every appending of a node, which is not optimal.
 
