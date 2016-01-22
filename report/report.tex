@@ -40,7 +40,7 @@
 % bold paragraph titles
 \newcommand{\mypar}[1]{{\bf #1.}}
 
-\ifthenelse{\boolean{true}}% TODO: change to false to hide invisible notes
+\ifthenelse{\boolean{false}}% TODO: change to false to hide invisible notes
 { \newenvironment{invisible}{\par\bigskip\color{gray}}{\par\bigskip} }%
 { \newenvironment{invisible}{\expandafter\comment}{\expandafter\endcomment} }
 

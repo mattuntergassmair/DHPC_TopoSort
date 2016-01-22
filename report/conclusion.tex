@@ -2,10 +2,12 @@
 %
 As discussed in the introduction to this report, topological sorting and in particular its parallel implementation have not recently been in the center of attention of the scientific community.
 As a result, many of the papers on the topic are rather outdated and make unrealistic or even unfeasible assumptions on the hardware to be used. \\
-Even the parallel sorting algorithm that is presented in  \cite{er1983parallel} omits almost all technical details and still leaves many open questions about the practical implementation of the algorithm. \\
+Even the parallel sorting algorithm that is presented in  \cite{er1983parallel} omits almost all technical details and still leaves many open questions about the practical implementation of the algorithm. 
+
 In this project we have not only extended the algorithmic idea of topological sorting, but also discussed and efficiently implemented it in parallel.
-Bearing in mind the inherently serial nature of the topological sorting algorithm, it can be said that both the Worksteal and the Node-Lookup approach are successful parallelizations of the topological sorting algorithm, with the latter showing better absolute timings and scaling behavior for the graphs that were analyzed. \\
-Finally, one main finding of this project is that the efficiency of the parallelization highly depends on the graph type: if the graph is too sparse and each node has only very few outgoing edges, then the parallelizable portion of the algorithm shrinks and by Amdahl's law the synchronization overhead dominates the runtime, which in turn results in bad scaling of the code. \\
+Bearing in mind the inherently serial nature of the topological sorting algorithm, both the Worksteal and the Node-Lookup approach are successful parallelizations of the topological sorting algorithm, with the latter showing better absolute timings and scaling behavior for the graphs that were analyzed.
+
+Finally, one main finding of this project is that the efficiency of the parallelization highly depends on the graph type. If the graph is too sparse and each node has only very few outgoing edges, then the parallelizable portion of the algorithm shrinks and by Amdahl's law the synchronization overhead dominates the runtime, which in turn results in bad scaling of the code.
 
 \begin{invisible}
  \begin{itemize}

@@ -4,7 +4,8 @@ In this section, we present our experimental setup and the impact of the differe
 
 \mypar{General note about the presented plots}
 In all the plots, the red dashed lines in the represent perfect scaling.
-For the computation of the speedup on $n$ threads defined as $t_1/t_n$ the mean value of the one-threaded timing $t_1$ of the parallel code was used.\\
+For the computation of the speedup on $n$ threads defined as $t_1/t_n$ the mean value of the one-threaded timing $t_1$ of the parallel code was used.
+
 All time measurements were performed using the C++ high precision clock and a list of these single-threaded timings can be found in table \ref{tab:t1timings}.
 \par\medskip
 
@@ -85,7 +86,7 @@ In other words, the big bottleneck of the algorithm seems to lie in processing c
 This assumption is further backed by the huge performance gain when using atomic operations instead of locks for the parent counter decrement and check.
 Using atomic operations clearly overshadows batch-insertion, i.e. even if batch-insertion is used, the performance gain is only mediocre if atomic operations are not used.
 
-The barrier-free implementation could not be measured in direct comparison, since it could only be implemented for the \emph{``Scatter-Gather''} implementation.
+The barrier-free implementation could not be measured in direct comparison, since it could only be implemented for the Scatter-Gather implementation.
 However, removing the barriers did not lead to better performance. The reason for this behavior probably lies in the properties of the graphs.
 The depth of a graph is logarithmic with respect to the number of nodes. Since the number of barriers is equal to depth, the number of barriers is logarithmic, which can be very, very low compared to the number of nodes.
 Hence, the overhead due to barriers is probably negligible.
@@ -152,8 +153,8 @@ This means, that the overhead required to synchronize the threads becomes large 
 %
 \begin{figure}[ht]
         \centering
-        \includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000.pdf}
-        %\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000_multicolor.pdf}
+        %\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000.pdf}
+        \includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000_multicolor.pdf}
         \caption{Strong scaling of the Node-Lookup implementation for several different input graphs of size 1M nodes. The scaling is better for random graphs with higher node degree than for those with low node degree.
                 The software graph (average node degree approx. 2) achieves a speedup of roughly 6x on 10 threads but does not scale any further.
 }
