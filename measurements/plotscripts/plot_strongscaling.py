@@ -61,11 +61,11 @@ allsize = 1000000
 # addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN16', hostnamelike='e%',colorindex=1,markertype='v-',linelabel='Random (Deg16)')
 # addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN32', hostnamelike='e%',colorindex=1,markertype='D-',linelabel='Random (Deg32)')
 
-addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,markertype='>-',linelabel='Random (degree 64)',additionalwhere=' AND graph_num_edges=63995794')
-addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=1,markertype='v-',linelabel='Random (degree 32)',additionalwhere=' AND graph_num_edges=31998947')
-addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=2,markertype='D-',linelabel='Random (degree 16)',additionalwhere=' AND graph_num_edges=15999722')
-addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=3,markertype='s-',linelabel='Random (degree 8)',additionalwhere=' AND graph_num_edges=7999910')
-addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=4,markertype='*-',linelabel='Software')
+addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,markertype='s-',linelabel='Random (degree 64)',additionalwhere=' AND graph_num_edges=63995794')
+addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,markertype='D-',linelabel='Random (degree 32)',additionalwhere=' AND graph_num_edges=31998947')
+addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,markertype='v-',linelabel='Random (degree 16)',additionalwhere=' AND graph_num_edges=15999722')
+addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='RANDOMLIN', hostnamelike='e%',colorindex=0,markertype='>-',linelabel='Random (degree 8)',additionalwhere=' AND graph_num_edges=7999910')
+addline.addStrongScaling(axis=ax, algorithm=allalgorithm, optimistic='1', size=allsize, graphtype='SOFTWARE', hostnamelike='e%',colorindex=0,markertype='*-',linelabel='Software')
 ax.plot(range(1,24),range(1,24),'r--') # ideal scaling
 ax.legend(loc='upper left')
 ax.minorticks_on()
