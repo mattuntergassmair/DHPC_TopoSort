@@ -3,17 +3,15 @@
 In this section, we present our experimental setup and the impact of the different optimizations and implementations described in the previous section. \\
 %
 \mypar{General note about the presented plots}
-In all the plots that are presented in this section the marker symbol locates the mean of each measurement while the variance of the data is shown as a probability density around that mean value.
-The red dashed lines in the plots represent perfect scaling.
+In all the plots, the red dashed lines in the represent perfect scaling.
 For the computation of the speedup on $n$ threads defined as $t_1/t_n$ the mean value of the one-threaded timing $t_1$ of the parallel code was used. \\
-All time measurements were performed using the C++ high precision clock and a list of these single-threaded timings can be found in table \ref{tab:t1timings} (the 95\% confidence interval of each set of measurements of $t_1$ is less than $\pm 10\%$ around the mean). \\
+All time measurements were performed using the C++ high precision clock and a list of these single-threaded timings can be found in table \ref{tab:t1timings}. \\
 \par\medskip
-The following table lists the time required for applying topological sorting on a single thread for a random graph.
 
   \begin{table}[h]
 	  \textbf{Single threaded solution time [sec] for graph size 100k}
     \centering
-    \begin{tabular}{ll}
+    \begin{tabular}{lll}
 		Implementation	& median & quartile interval \\
     \toprule
 	Serial				& $0.150$ & $[0.147,0.151]$ \\
@@ -26,7 +24,7 @@ The following table lists the time required for applying topological sorting on 
     \par\medskip
 	  \textbf{Single threaded solution time [sec] for graph size 1M}
     \centering
-    \begin{tabular}{ll}
+    \begin{tabular}{lll}
 		Implementation	& median & quartile interval \\
     \toprule
 	Serial				& $2.91$ & $[2.84,2.97]$ \\
@@ -37,8 +35,8 @@ The following table lists the time required for applying topological sorting on 
     \end{tabular}
     %
     \par\medskip
-    \caption{Sorting time with 95\% confidence interval. Single threaded execution for a random graph of with average node degree 32.}
-    \label{tab:abstimings}
+    \caption{Median and quartiles for single threaded sorting times of a random graph with average node degree 32.}
+    \label{tab:t1timings}
   \end{table}
 \par\medskip
 The discussion in this paper will focus on the topological sorting of a random graph with average node degree 32.\footnote{All plots in this section refer to graphs with 1M nodes except for the weak scaling graphs where the base size is 100k and the effective size in each execution is given by number~of~threads~$\times$~100k} 
