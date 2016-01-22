@@ -8,7 +8,21 @@ The red dashed lines in the plots represent perfect scaling.
 For the computation of the speedup on $n$ threads defined as $t_1/t_n$ the mean value of the one-threaded timing $t_1$ of the parallel code was used. \\
 All time measurements were performed using the C++ high precision clock and a list of these single-threaded timings can be found in table \ref{tab:t1timings} (the 95\% confidence interval of each set of measurements of $t_1$ is less than $\pm 10\%$ around the mean). \\
 \par\medskip
-{\Large TODO: timing table}
+The following table lists the time required for applying topological sorting on a single thread for a random graph.
+
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+		Implementation	& Solution time [sec] with 95\% CI \\
+    \toprule
+    Scatter-Gather		& $3.44 \pm 0.22$ \\
+    Worksteal			& $3.75 \pm 0.27$ \\
+    Node-Lookup			& $3.76 \pm 0.24$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{Sorting time with 95\% confidence interval. Single threaded execution for a random graph of size 1Mio nodes with average node degree 32.}
+    \label{tab:abstimings}
+  \end{table}
 \par\medskip
 The discussion in this paper will focus on the topological sorting of a random graph with average node degree 32 and a base size of 1Mio nodes.\footnote{All plots in this section refer to graphs with 1Mio nodes except for the weak scaling graphs where the base size is 1Mio and the effective size in each execution is given by number~of~threads~$\times$~1Mio} 
 While the speedup of our implementations highly depend on the graph type (and in particular on its density), the relative positioning of different optimization strategies is consistent between all the graphs that were tested. \\
@@ -41,8 +55,10 @@ Hyperthreading was not used for the benchmarks.
 The implementations were written in \Cpp, using OpenMP and GCC atomic built-in functions. The graph was stored in an adjacency list.
 
 
-
-\mypar{Effect of Optimization Strategies}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EFFECT OF OPTIMIZATIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mypar{Effect of Optimizations}
 How does the initial, naive code compare to code that was enhanced with the Node-Lookup, Worksteal and other optimizations?
 Figure \ref{fig:abstiming} shows the absolute timing of all the different implementations that were developed for this project.
 \par\medskip
@@ -62,7 +78,6 @@ Figure \ref{fig:abstiming} shows the absolute timing of all the different implem
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \mypar{Benchmarks of Optimization Strategies}
-So far we have seen that the Node-Lookup and Worksteal implementations do in fact allow us to speed up the topological sorting by using multiple threads.
 Next we want to look at the scaling behavior of the optimized implementations to see which ones perform better. \\
 The weak and strong scaling plots are shown in figure \ref{fig:weakscaling} and \ref{fig:strongscaling} respectively.
 Both plots confirm a relatively good scaling of both the Workstealing and the Node-Lookup techniques, with the Node-Lookup showing better absolute timing and better scaling in both cases. \\
@@ -105,13 +120,6 @@ In fact, it clearly shows how the scaling behavior gets better for graphs with h
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000.pdf}
-	\caption{Strong scaling of the Node-Lookup implementation for several different input graphs of size 1Mio nodes. The scaling is better for random graphs with higher node degree than for those with low node degree.
-		The software graph (average node degree approx. 2) achieves a speedup of roughly 6x on 10 threads but does not scale any further.
-}
-	\label{fig:strongscaling_graphtypes}
-\end{figure}
-\begin{figure}[ht]
-	\centering
 	\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000_multicolor.pdf}
 	\caption{Strong scaling of the Node-Lookup implementation for several different input graphs of size 1Mio nodes. The scaling is better for random graphs with higher node degree than for those with low node degree.
 		The software graph (average node degree approx. 2) achieves a speedup of roughly 6x on 10 threads but does not scale any further.

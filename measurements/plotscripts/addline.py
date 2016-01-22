@@ -60,7 +60,7 @@ def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', ho
 		# Compute mean and stddev of first timing
 		if(len(avgtimings)==0):
 			mean, dev = helper.mean_and_confdev(data=timings,confidence=helper.confidence)
-			print mean, "+/-", dev[0]
+			print algorithm, " :   ", mean, "+/-", dev[0]
 
 		avgtimings.append(np.mean(timings))
 		speedups = avgtimings[0]/timings
