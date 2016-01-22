@@ -8,13 +8,13 @@ import addline
 
 
 
-def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' AND total_time>0 ',suffix='',basesize=100000):
+def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' AND total_time>0 ',suffix='',basesize=100000, title=''):
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
-	addline.addWeakScaling(axis=ax, algorithm='locallist', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Scatter-Gather')
 	#addline.addWeakScaling(axis=ax, algorithm='dynamic_nobarrier', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='DynNoBarrier')
-	addline.addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Node-Lookup Atomic')
-	addline.addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Worksteal CAS')
+	addline.addWeakScaling(axis=ax, algorithm='bitset', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Node-Lookup')
+	addline.addWeakScaling(axis=ax, algorithm='worksteal', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Worksteal')
+	addline.addWeakScaling(axis=ax, algorithm='locallist', optimistic='1', size=basesize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Scatter-Gather')
 	ax.plot([1,24],[1,1],'r--')
 	ax.legend(loc='upper right')
 	ax.minorticks_on()
@@ -22,10 +22,14 @@ def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere='
 	filename = helper.plotdir + 'weakscaling_gt' + allgraphtype + '_n' + str(allsize)
 
 	plt.title('Speedup vs. Number of Threads',fontsize=helper.fontsize_label)
-	if(suffix==''):
+	if(title!=''):
+		plt.suptitle(title,fontsize=helper.fontsize_title)
+	elif(suffix==''):
 		plt.suptitle('Weak Scaling for ' + allgraphtype + ' Graph (' + str(allsize) + 'nodes)',fontsize=helper.fontsize_title)
 	else:
 		plt.suptitle('Weak Scaling for ' + allgraphtype + ' Graph (' + str(allsize) + 'nodes, ' + suffix + ')',fontsize=helper.fontsize_title)
+	
+	if(suffix!=''):
 		filename = filename + '_' + suffix
 
 	filename = filename + '.pdf'
@@ -38,8 +42,8 @@ def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere='
 ############################################################
 # Call Plotting functions
 ############################################################
-plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE') # software graph
-plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN8',suffix='deg8') # degree 8
-plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN16',suffix='deg16') # degree 16
-plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN32',suffix='deg32') # degree 32
-#plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN',alladditionalwhere=' AND graph_num_edges=63995794',suffix='deg64') # degree 64
+plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',title='Weak scaling for Software graph (1M nodes)') # software graph
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN8',suffix='deg8',title='Weak scaling for Random graph (1M nodes, degree 8)') # degree 8
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN16',suffix='deg16',title='Weak scaling for Random graph (1M nodes, degree 16)') # degree 16
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN32',suffix='deg32',title='Weak scaling for Random graph (1M nodes, degree 32)') # degree 32
+# degree 64 has incomplete data
