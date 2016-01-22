@@ -8,10 +8,10 @@ import addline
 def plotAbsTiming(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere=' AND total_time>0 ',suffix='', title=''):
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
-	addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='SingleAppend, Lock')
-	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='MultiAppend, Lock')
-	addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='SingleAppend, Atomic')
-	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=3,linelabel='MultiAppend, Atomic')
+	addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=0,linelabel='Single insertion, Lock')
+	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='0', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=1,linelabel='Batch insertion, Lock')
+	addline.addAbsTiming(axis=ax, algorithm='bitset_global', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=2,linelabel='Single insertion, Atomic')
+	addline.addAbsTiming(axis=ax, algorithm='bitset', optimistic='1', size=allsize, graphtype=allgraphtype, hostnamelike='e%',colorindex=3,linelabel='Batch insertion, Atomic')
 	ax.legend(loc='upper left')
 	ax.minorticks_on()
 
