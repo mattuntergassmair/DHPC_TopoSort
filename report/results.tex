@@ -11,7 +11,20 @@ All time measurements were performed using the C++ high precision clock and a li
 The following table lists the time required for applying topological sorting on a single thread for a random graph.
 
   \begin{table}[h]
+	  \textbf{Graph size 100k}
     \centering
+    \begin{tabular}{ll}
+		Implementation	& Solution time [sec] with 95\% CI \\
+    \toprule
+    Serial				& $0.150 \pm 0.003$ \\
+	Node-Lookup			& $0.198 \pm 0.006$ \\
+	Worksteal			& $0.172 \pm 0.010$ \\
+	Scatter-Gather		& $0.171 \pm 0.021$
+    \bottomrule
+    \end{tabular}
+    %
+    \par\medskip
+	  \textbf{Graph size 1M}
     \begin{tabular}{ll}
 		Implementation	& Solution time [sec] with 95\% CI \\
     \toprule
@@ -21,11 +34,11 @@ The following table lists the time required for applying topological sorting on 
     Node-Lookup			& $3.76 \pm 0.24$ \\
     \bottomrule
     \end{tabular}
-    \caption{Sorting time with 95\% confidence interval. Single threaded execution for a random graph of size 1Mio nodes with average node degree 32.}
+    \caption{Sorting time with 95\% confidence interval. Single threaded execution for a random graph of with average node degree 32.}
     \label{tab:abstimings}
   \end{table}
 \par\medskip
-The discussion in this paper will focus on the topological sorting of a random graph with average node degree 32 and a base size of 1Mio nodes.\footnote{All plots in this section refer to graphs with 1Mio nodes except for the weak scaling graphs where the base size is 1Mio and the effective size in each execution is given by number~of~threads~$\times$~1Mio} 
+The discussion in this paper will focus on the topological sorting of a random graph with average node degree 32.\footnote{All plots in this section refer to graphs with 1M nodes except for the weak scaling graphs where the base size is 100k and the effective size in each execution is given by number~of~threads~$\times$~100k} 
 While the speedup of our implementations highly depend on the graph type (and in particular on its density), the relative positioning of different optimization strategies is consistent between all the graphs that were tested. \\
 For a more comprehensive overview with more detailed scaling plots we refer to the project's Git repository (see link below).
 
@@ -87,10 +100,10 @@ Both plots confirm a relatively good scaling of both the Workstealing and the No
 	\centering
 	\includegraphics[width=\columnwidth]{plots/weakscaling_gtRANDOMLIN32_n1000000_deg32.pdf}
 	\caption{The base size of the graphs in this weak scaling plot is 100'000 nodes.
-		The Node-Lookup implementation achieves the best performance and is only roughly 3 times slower at sorting a 24Mio node graph on 24 threads than in the base case. The Worksteal implementation takes approx. 5 times longer than the base case. \\
+		The Node-Lookup implementation achieves the best performance and is only roughly 3 times slower at sorting a 2400k node graph on 24 threads than it is in the base case. The Worksteal implementation takes approx. 5 times longer than the base case. \\
 	It can also be noted that there is a relatively high speedup drop between 12 and 13 threads.
 	This can be explained by the hardware on which the program is run. In fact, there are 24 cores but only 12 of them are on the same socket.
-	Also the variance of the timings almost vanishes thread numbers higher than 12. (Absolute timings of the base case can be found in table \ref{tab:abstimings})
+	Also the variance of the timings almost vanishes thread numbers higher than 12. (Absolute timings of the base case with size 100k nodes can be found in table \ref{tab:abstimings}, top)
 }
 	\label{fig:weakscaling}
 \end{figure}
@@ -98,7 +111,7 @@ Both plots confirm a relatively good scaling of both the Workstealing and the No
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\columnwidth]{plots/strongscaling_gtRANDOMLIN_n1000000_deg32.pdf}
-	\caption{The Node-Lookup again shows better scaling than the Worksteal implementation. On 24 cores they achieve a speedup factor of 15x and 10x respectively. (Absolute timings of the base case can be found in table \ref{tab:abstimings})}
+	\caption{The Node-Lookup again shows better scaling than the Worksteal implementation. On 24 cores they achieve a speedup factor of 15x and 10x respectively. (Absolute timings of the base case with size 1M nodes can be found in table \ref{tab:abstimings}, bottom)}
 	\label{fig:strongscaling}
 \end{figure}
 %
@@ -122,7 +135,7 @@ In fact, it clearly shows how the scaling behavior gets better for graphs with h
 	\centering
 	\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000.pdf}
 	\includegraphics[width=\columnwidth]{plots/strongscaling_gtALL_n1000000_multicolor.pdf}
-	\caption{Strong scaling of the Node-Lookup implementation for several different input graphs of size 1Mio nodes. The scaling is better for random graphs with higher node degree than for those with low node degree.
+	\caption{Strong scaling of the Node-Lookup implementation for several different input graphs of size 1M nodes. The scaling is better for random graphs with higher node degree than for those with low node degree.
 		The software graph (average node degree approx. 2) achieves a speedup of roughly 6x on 10 threads but does not scale any further.
 }
 	\label{fig:strongscaling_graphtypes}
