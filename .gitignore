@@ -60,6 +60,7 @@ src/results/*.xml
 
 # don't ignore plots
 !measurements/plots/*.pdf
+!report/plots/*.pdf
 
 
 # ignore compiled python
