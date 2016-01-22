@@ -48,7 +48,7 @@ Figure \ref{fig:ts-example} shows a DAG for which one possible topological sorti
 \end{figure}
 
 Although the results of the breadth-first-search (BFS) algorithm seem to be similar to topological sortings, they are not equivalent. A topological sorting is a total order with respect to the partial order represented by the input graph. In contrast, the traversal sequences of a BFS (and DFS) generally don’t correspond to a total order induced by a DAG. 
-In particular, each node only has to be visited once in BFS - an assumption that does not hold for topological sorting. As a consequence, many of the ideas that are used in parallel BFS (such as the ones presented in \cite{bulucc2011parallel} and \cite{beamer2013direction}) cannot be directly transfered to topological sorting. \\
+In particular, each node only has to be visited once in BFS - an assumption that does not hold for topological sorting. As a consequence, many of the ideas that are used in parallel BFS (such as the ones presented in \cite{beamer2013direction}) cannot be directly transfered to topological sorting. \\
 A simple example is shown in figure \ref{fig:diff-bfs}. The visiting sequence A,C,B is a possible traversal sequence in BFS but is not a topological sorting. The only valid topological sorting for this graph is A,B,C.
 
 

@@ -6,7 +6,11 @@ Especially, we show how to ensure load balancing, how to efficiently append node
 \end{invisible}
 
 \mypar{Parallelization and load balancing}
-Parallelization is achieved by distributing the nodes in the front among the threads. We experimented with three implementations.
+Parallelization is achieved by distributing the nodes in the front among the threads.
+The front initially consists of all source nodes.
+After all front nodes have been processed, all their child nodes are added to the front while the former front nodes are removed from the front.
+If there are no more child nodes, all nodes have been processed and the algorithm terminates.
+We experimented with three different implementations to achieve parallelization and load balancing.
 
 Firstly, the \emph{``Scatter-Gather''} implementation, represents the front using a linked list of node (pointers). Initially, the source nodes are inserted into this list.
 Following an idea described in \cite{bulucc2011parallel}, the nodes in the front are scattered among the threads, such that each thread owns a thread-local list,
@@ -18,8 +22,8 @@ Redistribution for each front already yields some level of load balancing.
 Secondly, the \emph{``Worksteal''} implementation further refines load balancing using a work stealing policy.
 If one thread runs out of nodes within a front (i.e. the thread-local node list is empty), it can steal nodes from another thread that has not finished yet. In our implementation we randomly select the thread from which to steal.
 
-Thirdly, the \emph{``Node-Lookup''} implementation represents the front using an array of boolean flags, as used in the context of BFS in \cite{agarwal2010scalable} or \cite{beamer2013direction}. The size of the bitset is equal to the number of nodes.
-The last parent visiting a child node sets the child nodes' flag to true. Parallelization is then enabled by parallelizing the loop over the bitset.
+Thirdly, the \emph{``Node-Lookup''} implementation represents the front using an array of boolean flags, as used in the context of BFS in \cite{agarwal2010scalable} or \cite{beamer2013direction}. The size of the flag-array is equal to the number of nodes.
+The last parent visiting a child node sets the child nodes' flag to true. Parallelization is then enabled by parallelizing the loop over the array.
 Load balancing is conveniently achieved using a dynamic scheduler.
 Notice that we cannot use a space-efficient bitset for the parallel implementation, because is not thread-safe.
 
@@ -70,7 +74,7 @@ If the front is implemented as an array of flags, the compare-and-swap is in fac
 
 \mypar{Barrier-free implementation}
 Barriers are used to process the nodes in a front-by-front fashion.
-Each front is finished with a barrier, either explicitly, if the front was implemented with a list, or implicitly by a for-loop, if the front was implemented using a bitset.
+Each front is finished with a barrier, either explicitly, if the front was implemented with a list, or implicitly by a for-loop, if the front was implemented using a array of flags.
 
 If barriers are given up, it is no longer certain that all threads work on nodes of the same front.
 Some threads may already work on nodes of the next front, while other threads are still working on the previous front.
