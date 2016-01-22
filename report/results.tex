@@ -69,7 +69,7 @@ Both plots confirm a relatively good scaling of both the Workstealing and the No
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\columnwidth]{plots/weakscaling_gtRANDOMLIN32_n1000000_deg32.pdf}
-	\caption{The base size of the graphs in this weak scaling plot is 1Mio nodes.
+	\caption{The base size of the graphs in this weak scaling plot is 100'000 nodes.
 		The Node-Lookup algorithm achieves the best performance and is only roughly 3 times slower at sorting a 24Mio node graph on 24 threads than in the base case. The Worksteal implementation takes approx. 5 times longer than the base case. \\
 	It can also be noted that there is a relatively high speedup drop between 12 and 13 threads.
 	This can be explained by the hardware on which the program is run. In fact, there are 24 cores but only 12 of them are on the same socket.

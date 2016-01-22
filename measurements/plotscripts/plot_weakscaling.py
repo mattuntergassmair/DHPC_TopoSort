@@ -42,8 +42,8 @@ def plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',alladditionalwhere='
 ############################################################
 # Call Plotting functions
 ############################################################
-plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',title='Weak scaling for Software graph (1M nodes)') # software graph
-plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN8',suffix='deg8',title='Weak scaling for Random graph (1M nodes, degree 8)') # degree 8
-plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN16',suffix='deg16',title='Weak scaling for Random graph (1M nodes, degree 16)') # degree 16
-plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN32',suffix='deg32',title='Weak scaling for Random graph (1M nodes, degree 32)') # degree 32
+plotWeakScaling(allsize=1000000,allgraphtype='SOFTWARE',title='Weak scaling for Software graph (basesize 100k nodes)') # software graph
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN8',suffix='deg8',title='Weak scaling for Random graph (basesize 100k nodes, degree 8)') # degree 8
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN16',suffix='deg16',title='Weak scaling for Random graph (basesize 100k nodes, degree 16)') # degree 16
+plotWeakScaling(allsize=1000000,allgraphtype='RANDOMLIN32',suffix='deg32',title='Weak scaling for Random graph (basesize 100k nodes, degree 32)') # degree 32
 # degree 64 has incomplete data
