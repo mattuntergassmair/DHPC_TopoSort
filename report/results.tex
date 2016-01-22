@@ -89,7 +89,7 @@ Both plots confirm a relatively good scaling of both the Workstealing and the No
 		The Node-Lookup implementation achieves the best performance and is only roughly 3 times slower at sorting a 24Mio node graph on 24 threads than in the base case. The Worksteal implementation takes approx. 5 times longer than the base case. \\
 	It can also be noted that there is a relatively high speedup drop between 12 and 13 threads.
 	This can be explained by the hardware on which the program is run. In fact, there are 24 cores but only 12 of them are on the same socket.
-	Also the variance of the timings almost vanishes thread numbers higher than 12.
+	Also the variance of the timings almost vanishes thread numbers higher than 12. (Absolute timings of the base case can be found in table \ref{tab:abstimings})
 }
 	\label{fig:weakscaling}
 \end{figure}
@@ -97,7 +97,7 @@ Both plots confirm a relatively good scaling of both the Workstealing and the No
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\columnwidth]{plots/strongscaling_gtRANDOMLIN_n1000000_deg32.pdf}
-	\caption{The Node-Lookup again shows better scaling than the Worksteal implementation. On 24 cores they achieve a speedup factor of 15x and 10x respectively.}
+	\caption{The Node-Lookup again shows better scaling than the Worksteal implementation. On 24 cores they achieve a speedup factor of 15x and 10x respectively. (Absolute timings of the base case can be found in table \ref{tab:abstimings})}
 	\label{fig:strongscaling}
 \end{figure}
 %
