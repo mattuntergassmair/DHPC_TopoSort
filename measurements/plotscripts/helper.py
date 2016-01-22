@@ -24,14 +24,12 @@ fontsize_title=14
 fontsize_label=12
 
 
-def mean_and_confdev(data, confidence=0.95):
+def median_and_quantiles(data):
 	a = np.array(data)
-	n = len(a)
-	m, se = np.mean(a), scipy.stats.sem(a)
-	h = se * sp.stats.t._ppf((1+confidence)/2., n-1)
-	return m, h
-
-confidence = 0.95
+	median = np.median(a)
+	q25 = np.percentile(a,25)
+	q75 = np.percentile(a,75)
+	return median, q25, q75
 
 plotdir = "plots/";
 show = False

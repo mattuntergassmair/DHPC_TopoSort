@@ -25,6 +25,12 @@ def addAbsTiming(axis, algorithm, optimistic, size, graphtype='SOFTWARE', hostna
 		# print "NUMTHREADS = ", nt
 		where = fixedwhere + ' AND number_of_threads={0}'.format(nt)
 		timings = helper.getData('total_time',where)
+		
+		# Compute mean and stddev of first timing
+		if(len(avgtimings)==0):
+			mean, q25, q75 = helper.median_and_quantiles(data=timings)
+			print algorithm, " :   ", mean, " , [", q25 , ",", q75, "]"
+	
 		violin_parts = axis.violinplot(timings,[nt],widths=0.8)
 
 		for pc in violin_parts['bodies']:
@@ -59,8 +65,8 @@ def addStrongScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', ho
 
 		# Compute mean and stddev of first timing
 		if(len(avgtimings)==0):
-			mean, dev = helper.mean_and_confdev(data=timings,confidence=helper.confidence)
-			print algorithm, " :   ", mean, "+/-", dev[0]
+			mean, q25, q75 = helper.median_and_quantiles(data=timings)
+			print algorithm, " :   ", mean, " , [", q25 , ",", q75, "]"
 
 		avgtimings.append(np.mean(timings))
 		speedups = avgtimings[0]/timings
@@ -83,7 +89,7 @@ def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', host
 
 	numthreads = helper.getData('number_of_threads', fixedwhere + ' GROUP BY number_of_threads')
 
-	print(numthreads)
+	# print(numthreads)
 
 	avgtimings = []
 
@@ -97,8 +103,8 @@ def addWeakScaling(axis, algorithm, optimistic, size, graphtype='SOFTWARE', host
 
 		# Compute mean and stddev of first timing
 		if(len(avgtimings)==0):
-			mean, dev = helper.mean_and_confdev(data=timings,confidence=helper.confidence)
-			print mean, "+/-", dev[0]
+			mean, q25, q75 = helper.median_and_quantiles(data=timings)
+			print algorithm, " :   ", mean, " , [", q25 , ",", q75, "]"
 
 		avgtimings.append(np.mean(timings))
 		speedups = avgtimings[0]/timings

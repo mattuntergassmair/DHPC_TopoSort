@@ -11,29 +11,32 @@ All time measurements were performed using the C++ high precision clock and a li
 The following table lists the time required for applying topological sorting on a single thread for a random graph.
 
   \begin{table}[h]
-	  \textbf{Graph size 100k}
+	  \textbf{Single threaded solution time [sec] for graph size 100k}
     \centering
     \begin{tabular}{ll}
-		Implementation	& Solution time [sec] with 95\% CI \\
+		Implementation	& median & quartile interval \\
     \toprule
-    Serial				& $0.150 \pm 0.003$ \\
-	Node-Lookup			& $0.198 \pm 0.006$ \\
-	Worksteal			& $0.172 \pm 0.010$ \\
-	Scatter-Gather		& $0.171 \pm 0.021$ \\
+	Serial				& $0.150$ & $[0.147,0.151]$ \\
+	Node-Lookup			& $0.183$ & $[0.181,0.192]$ \\
+	Worksteal			& $0.167$ & $[0.166,0.172]$ \\
+	Scatter-Gather		& $0.160$ & $[0.159,0.167]$ \\
     \bottomrule
     \end{tabular}
     %
     \par\medskip
-	  \textbf{Graph size 1M}
+	  \textbf{Single threaded solution time [sec] for graph size 1M}
+    \centering
     \begin{tabular}{ll}
-		Implementation	& Solution time [sec] with 95\% CI \\
+		Implementation	& median & quartile interval \\
     \toprule
-    Serial				& $3.00 \pm 0.10$ \\
-    Scatter-Gather		& $3.44 \pm 0.22$ \\
-    Worksteal			& $3.75 \pm 0.27$ \\
-    Node-Lookup			& $3.76 \pm 0.24$ \\
+	Serial				& $2.91$ & $[2.84,2.97]$ \\
+	Node-Lookup			& $3.48$ & $[3.40,4.12]$ \\
+	Worksteal			& $3.40$ & $[3.33,4.15]$ \\
+	Scatter-Gather		& $3.51$ & $[3.01,3.66]$ \\
     \bottomrule
     \end{tabular}
+    %
+    \par\medskip
     \caption{Sorting time with 95\% confidence interval. Single threaded execution for a random graph of with average node degree 32.}
     \label{tab:abstimings}
   \end{table}
